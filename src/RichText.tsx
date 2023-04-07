@@ -80,6 +80,7 @@ export default function App() {
 	// 	}
 	// }, [plainText]);
 
+
 	return (
         <>
 		<ReactQuill
@@ -94,7 +95,9 @@ export default function App() {
         <br/>
         <button onClick={submit}>Submit</button>
 		<br/>
-		{responseText}
+		<div className="responseBox">
+		<div dangerouslySetInnerHTML={{ __html: responseText}}/>
+		</div>
         </>
 
 	);
