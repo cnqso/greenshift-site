@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import NeuralNetworkGen from './NeuralNetworkGen'
+import InfoBar from './InfoBar'
 
 const modules = {
 	toolbar: [],
@@ -13,6 +14,44 @@ const modules = {
 	},
 };
 const formats = ["size", "bold", "italic", "underline", "list", "bullet", "background"];
+
+function orderText(n: number): string {
+	const suffix = ["th", "st", "nd", "rd", "th"][Math.min(n % 10, 4)];
+	if (11 <= (n % 100) && (n % 100) <= 13) {
+		return n.toString() + "th";
+	}
+	return n.toString() + suffix;
+}
+
+function plainLanguageDifficulty(ARI: number): string[] {
+	const plainLanguageARI: string[] = ["Kindergarten", "Elementary School"];
+	const plainDifficulty: string = orderText(Math.floor(ARI));
+	const fourYearNames: string[] = ["Freshman", "Sophomore", "Junior", "Senior"];
+
+	if (ARI < 1) {
+		plainLanguageARI[0] = "Kindergarten";
+	} else if (ARI < 6) {
+		plainLanguageARI[0] = `${plainDifficulty} Grade`;
+		plainLanguageARI[1] = "Elementary School";
+	} else if (ARI < 9) {
+		plainLanguageARI[0] = `${plainDifficulty} Grade`;
+		plainLanguageARI[1] = "Middle School";
+	} else if (ARI < 13) {
+		plainLanguageARI[0] = `${plainDifficulty} Grade`;
+		plainLanguageARI[1] = "High School";
+	} else if (ARI < 17) {
+		plainLanguageARI[0] = `College ${fourYearNames[Math.floor(ARI) - 13]}`;
+		plainLanguageARI[1] = "University";
+	} else if (ARI < 25) {
+		plainLanguageARI[0] = `${orderText(Math.floor(ARI - 16))} year grad student`;
+		plainLanguageARI[1] = "Graduate School";
+	} else {
+		plainLanguageARI[0] = `${orderText(Math.floor(ARI - 16))} year grad student`;
+		plainLanguageARI[1] = "Impenetrable";
+	}
+
+	return plainLanguageARI;
+}
 
 function clearFormatting(html: string): string {
 	// Create a DOM parser to convert the HTML string to a DOM tree
@@ -58,7 +97,7 @@ function hasInvalidElements(html: string): boolean {
 	return !regex.test(html);
 }
 
-const SvgButton = ({ onClick }: { onClick: React.MouseEventHandler<HTMLDivElement> }) => {
+const ClearFormattingButton = ({ onClick }: { onClick: React.MouseEventHandler<HTMLDivElement> }) => {
 	return (
 		<div className='svg-button-container' onClick={onClick}>
 			<svg
@@ -76,12 +115,19 @@ const SvgButton = ({ onClick }: { onClick: React.MouseEventHandler<HTMLDivElemen
 	);
 };
 
+
+
+
+
+
 export default function App() {
 	const [HTMLText, setHTMLText] = useState("Write something");
 	const [plainText, setPlainText] = useState("Write something");
 	const [responseText, setResponseText] = useState("");
 	const [cleanText, setCleanText] = useState(true);
 	const [loading, setLoading] = useState(false);
+	const [currentReadability, setCurrentReadability] = useState("N/A")
+	const [targetReadability, setTargetReadability] = useState(5)
 	const quillRef = useRef(null);
 
 	function handleChange(content: string, delta: any, source: any, editor: any) {
@@ -98,19 +144,20 @@ export default function App() {
 			headers: {
 				"Content-Type": "application/json",
 			},
-			body: JSON.stringify({ text: inputText }),
+			body: JSON.stringify({ text: inputText, target_readability: targetReadability }),
 		});
 
 		if (response.ok) {
 			const data = await response.json();
 			setHTMLText(data.analyzed_text);
+			setCurrentReadability(data.readability.text_ari[1] + ", " + data.readability.text_ari[0])
 			console.log(JSON.stringify(data, null, 2));
 			// setLoading(false);
 		} else {
 			console.error("An error occurred while fetching the reversed text.");
 			// setLoading(false);
 		}
-	
+
 	};
 
 	const sendToCluodGPT = async (inputText: string) => {
@@ -123,7 +170,7 @@ export default function App() {
 			},
 			body: JSON.stringify({
 				user_token: "WilliamKelly",
-				desired_reading_level: 12,
+				desired_reading_level: targetReadability,
 				texts: [inputText],
 			}),
 		});
@@ -156,11 +203,14 @@ export default function App() {
 		sendToCluodGPT(plainText);
 	}
 
+	const plainLangTarget = plainLanguageDifficulty(targetReadability);
+	const plainLangTargetString = plainLangTarget[1] + ", " + plainLangTarget[0];
+
 	return (
 		<>
+			<InfoBar currentReadability={currentReadability} targetReadability={targetReadability} setTargetReadability={setTargetReadability} />
 			<div style={{ position: "relative", marginBottom: "10px" }}>
-				{/* <SvgSpinner /> */}
-				{cleanText ? null : <SvgButton onClick={clearFormattingHandler} />}
+				{cleanText ? null : <ClearFormattingButton onClick={clearFormattingHandler} />}
 				<ReactQuill
 					ref={quillRef}
 					theme='snow'
@@ -186,7 +236,7 @@ export default function App() {
 			<div className='responseBox'>
 				<div dangerouslySetInnerHTML={{ __html: responseText }} />
 			</div>
-			<br/>
+			<br />
 			<div className='responseBox'>
 				<div>{HTMLText}</div>
 			</div>
