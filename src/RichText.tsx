@@ -139,7 +139,7 @@ export default function App() {
 	const sendToCluodAnalyze = async (inputText: string) => {
 		// Way too fast to see the loading screen. Might change in production.
 		// setLoading(true);
-		const response = await fetch("http://localhost:8000/api/reverse/", {
+		const response = await fetch("https://gcfz4xy1q7.execute-api.us-east-2.amazonaws.com/Prod/api/analyze/", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -154,7 +154,7 @@ export default function App() {
 			console.log(JSON.stringify(data, null, 2));
 			// setLoading(false);
 		} else {
-			console.error("An error occurred while fetching the reversed text.");
+			console.error("An error occurred while fetching the analyzed text.");
 			// setLoading(false);
 		}
 
@@ -163,7 +163,7 @@ export default function App() {
 	const sendToCluodGPT = async (inputText: string) => {
 		setLoading(true);
 
-		const response = await fetch("http://localhost:8000/api/readability/", {
+		const response = await fetch("http://localhost:8000/api/simplify/", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -181,7 +181,7 @@ export default function App() {
 			setResponseText(`<div>${data.readability_data.output}</div>`);
 			setLoading(false);
 		} else {
-			console.error("An error occurred while fetching the reversed text.");
+			console.error("An error occurred while fetching the simplified text.");
 			setLoading(false);
 		}
 	};
