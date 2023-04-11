@@ -129,7 +129,7 @@ export default function App() {
 	const [currentReadability, setCurrentReadability] = useState("N/A")
 	const [targetReadability, setTargetReadability] = useState(5)
 	const quillRef = useRef(null);
-
+	const url = "http://localhost:8000/";
 	function handleChange(content: string, delta: any, source: any, editor: any) {
 		setHTMLText(content);
 		setPlainText(editor.getText());
@@ -139,7 +139,7 @@ export default function App() {
 	const sendToCluodAnalyze = async (inputText: string) => {
 		// Way too fast to see the loading screen. Might change in production.
 		// setLoading(true);
-		const response = await fetch("https://gcfz4xy1q7.execute-api.us-east-2.amazonaws.com/Prod/api/analyze/", {
+		const response = await fetch(url+"api/analyze/", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -163,7 +163,7 @@ export default function App() {
 	const sendToCluodGPT = async (inputText: string) => {
 		setLoading(true);
 
-		const response = await fetch("http://localhost:8000/api/simplify/", {
+		const response = await fetch(url+"api/simplify/", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
