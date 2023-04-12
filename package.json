@@ -9,9 +9,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@aws-amplify/ui-react": "^4.6.0",
     "@emotion/react": "^11.10.6",
     "@types/html-to-draftjs": "^1.4.0",
     "@types/slate": "^0.47.11",
+    "amazon-cognito-identity-js": "^6.2.0",
+    "aws-amplify": "^5.0.25",
     "draft-js": "^0.11.7",
     "html-to-draftjs": "^1.5.0",
     "react": "^18.2.0",

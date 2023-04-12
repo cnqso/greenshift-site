@@ -1,0 +1,189 @@
+{
+  "auth": {
+    "greenshift46fb5cb2": {
+      "customAuth": false,
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito",
+      "serviceType": "imported"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_auth_greenshift2e9314b0_allowUnauthenticatedIdentities": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "greenshift2e9314b0"
+        }
+      ]
+    },
+    "AMPLIFY_auth_greenshift2e9314b0_authRoleArn": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "greenshift2e9314b0"
+        }
+      ]
+    },
+    "AMPLIFY_auth_greenshift2e9314b0_authRoleName": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "greenshift2e9314b0"
+        }
+      ]
+    },
+    "AMPLIFY_auth_greenshift2e9314b0_identityPoolId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "greenshift2e9314b0"
+        }
+      ]
+    },
+    "AMPLIFY_auth_greenshift2e9314b0_identityPoolName": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "greenshift2e9314b0"
+        }
+      ]
+    },
+    "AMPLIFY_auth_greenshift2e9314b0_nativeClientId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "greenshift2e9314b0"
+        }
+      ]
+    },
+    "AMPLIFY_auth_greenshift2e9314b0_unauthRoleArn": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "greenshift2e9314b0"
+        }
+      ]
+    },
+    "AMPLIFY_auth_greenshift2e9314b0_unauthRoleName": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "greenshift2e9314b0"
+        }
+      ]
+    },
+    "AMPLIFY_auth_greenshift2e9314b0_userPoolId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "greenshift2e9314b0"
+        }
+      ]
+    },
+    "AMPLIFY_auth_greenshift2e9314b0_userPoolName": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "greenshift2e9314b0"
+        }
+      ]
+    },
+    "AMPLIFY_auth_greenshift2e9314b0_webClientId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "greenshift2e9314b0"
+        }
+      ]
+    },
+    "AMPLIFY_auth_greenshift46fb5cb2_allowUnauthenticatedIdentities": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "greenshift46fb5cb2"
+        }
+      ]
+    },
+    "AMPLIFY_auth_greenshift46fb5cb2_authRoleArn": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "greenshift46fb5cb2"
+        }
+      ]
+    },
+    "AMPLIFY_auth_greenshift46fb5cb2_authRoleName": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "greenshift46fb5cb2"
+        }
+      ]
+    },
+    "AMPLIFY_auth_greenshift46fb5cb2_identityPoolId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "greenshift46fb5cb2"
+        }
+      ]
+    },
+    "AMPLIFY_auth_greenshift46fb5cb2_identityPoolName": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "greenshift46fb5cb2"
+        }
+      ]
+    },
+    "AMPLIFY_auth_greenshift46fb5cb2_nativeClientId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "greenshift46fb5cb2"
+        }
+      ]
+    },
+    "AMPLIFY_auth_greenshift46fb5cb2_unauthRoleArn": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "greenshift46fb5cb2"
+        }
+      ]
+    },
+    "AMPLIFY_auth_greenshift46fb5cb2_unauthRoleName": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "greenshift46fb5cb2"
+        }
+      ]
+    },
+    "AMPLIFY_auth_greenshift46fb5cb2_userPoolId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "greenshift46fb5cb2"
+        }
+      ]
+    },
+    "AMPLIFY_auth_greenshift46fb5cb2_userPoolName": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "greenshift46fb5cb2"
+        }
+      ]
+    },
+    "AMPLIFY_auth_greenshift46fb5cb2_webClientId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "greenshift46fb5cb2"
+        }
+      ]
+    }
+  }
+}

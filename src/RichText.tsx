@@ -129,6 +129,7 @@ export default function App() {
 	const [currentReadability, setCurrentReadability] = useState("N/A")
 	const [targetReadability, setTargetReadability] = useState(5)
 	const quillRef = useRef(null);
+	// const url = "https://gcfz4xy1q7.execute-api.us-east-2.amazonaws.com/Prod/";
 	const url = "http://localhost:8000/";
 	function handleChange(content: string, delta: any, source: any, editor: any) {
 		setHTMLText(content);

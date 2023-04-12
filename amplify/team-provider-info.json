@@ -1,0 +1,45 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-greenshift-dev-225124-authRole",
+      "UnauthRoleArn": "arn:aws:iam::652628641462:role/amplify-greenshift-dev-225124-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::652628641462:role/amplify-greenshift-dev-225124-authRole",
+      "Region": "us-east-2",
+      "DeploymentBucketName": "amplify-greenshift-dev-225124-deployment",
+      "UnauthRoleName": "amplify-greenshift-dev-225124-unauthRole",
+      "StackName": "amplify-greenshift-dev-225124",
+      "StackId": "arn:aws:cloudformation:us-east-2:652628641462:stack/amplify-greenshift-dev-225124/ea9cc220-d8dc-11ed-837e-02ce01b4d39c",
+      "AmplifyAppId": "dsu6louyw67f5"
+    },
+    "categories": {
+      "auth": {
+        "greenshift2e9314b0": {
+          "userPoolId": "us-east-2_YAPrYUokq",
+          "userPoolName": "greenshifters",
+          "webClientId": "6c65pc5ir14db3tn1as0rck8cf",
+          "nativeClientId": "6c65pc5ir14db3tn1as0rck8cf",
+          "identityPoolId": "us-east-2:8464939e-187d-44fb-a81d-7c2c5b37f146",
+          "identityPoolName": "greenshift",
+          "allowUnauthenticatedIdentities": true,
+          "authRoleArn": "arn:aws:iam::652628641462:role/Cognito_greenshiftAuth_Role",
+          "authRoleName": "Cognito_greenshiftAuth_Role",
+          "unauthRoleArn": "arn:aws:iam::652628641462:role/Cognito_greenshiftUnauth_Role",
+          "unauthRoleName": "Cognito_greenshiftUnauth_Role"
+        },
+        "greenshift46fb5cb2": {
+          "userPoolId": "us-east-2_YAPrYUokq",
+          "userPoolName": "greenshifters",
+          "webClientId": "6c65pc5ir14db3tn1as0rck8cf",
+          "nativeClientId": "6c65pc5ir14db3tn1as0rck8cf",
+          "identityPoolId": "us-east-2:8464939e-187d-44fb-a81d-7c2c5b37f146",
+          "identityPoolName": "greenshift",
+          "allowUnauthenticatedIdentities": true,
+          "authRoleArn": "arn:aws:iam::652628641462:role/Cognito_greenshiftAuth_Role",
+          "authRoleName": "Cognito_greenshiftAuth_Role",
+          "unauthRoleArn": "arn:aws:iam::652628641462:role/Cognito_greenshiftUnauth_Role",
+          "unauthRoleName": "Cognito_greenshiftUnauth_Role"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "authSelections": "identityPoolAndUserPool",
+  "resourceName": "greenshift46fb5cb2",
+  "serviceType": "imported",
+  "region": "us-east-2",
+  "aliasAttributes": [
+    "email",
+    "preferred_username"
+  ],
+  "authProvidersUserPool": [],
+  "requiredAttributes": [
+    "email"
+  ],
+  "passwordPolicyMinLength": 8,
+  "passwordPolicyCharacters": [
+    "Requires Lowercase",
+    "Requires Uppercase",
+    "Requires Numbers",
+    "Requires Symbols"
+  ],
+  "mfaConfiguration": "OFF",
+  "autoVerifiedAttributes": [
+    "email"
+  ],
+  "mfaTypes": []
+}
