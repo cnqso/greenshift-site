@@ -5,6 +5,7 @@ import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import NeuralNetworkGen from './NeuralNetworkGen'
 import InfoBar from './InfoBar'
+import { Auth} from 'aws-amplify';
 
 const modules = {
 	toolbar: [],
@@ -120,7 +121,7 @@ const ClearFormattingButton = ({ onClick }: { onClick: React.MouseEventHandler<H
 
 
 
-export default function App() {
+export default function RichText() {
 	const [HTMLText, setHTMLText] = useState("Write something");
 	const [plainText, setPlainText] = useState("Write something");
 	const [responseText, setResponseText] = useState("");
@@ -129,8 +130,8 @@ export default function App() {
 	const [currentReadability, setCurrentReadability] = useState("N/A")
 	const [targetReadability, setTargetReadability] = useState(5)
 	const quillRef = useRef(null);
-	// const url = "https://gcfz4xy1q7.execute-api.us-east-2.amazonaws.com/Prod/";
-	const url = "http://localhost:8000/";
+	const url = "https://gcfz4xy1q7.execute-api.us-east-2.amazonaws.com/Prod/";
+	// const url = "http://localhost:8000/";
 	function handleChange(content: string, delta: any, source: any, editor: any) {
 		setHTMLText(content);
 		setPlainText(editor.getText());
@@ -140,10 +141,16 @@ export default function App() {
 	const sendToCluodAnalyze = async (inputText: string) => {
 		// Way too fast to see the loading screen. Might change in production.
 		// setLoading(true);
+
+		// Retrieve the current JWT token
+		const currentSession = await Auth.currentSession();
+		const idToken = currentSession.getIdToken().getJwtToken();
+		console.log(idToken)
 		const response = await fetch(url+"api/analyze/", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
+				"Authorization": " " + idToken,
 			},
 			body: JSON.stringify({ text: inputText, target_readability: targetReadability }),
 		});
@@ -164,13 +171,18 @@ export default function App() {
 	const sendToCluodGPT = async (inputText: string) => {
 		setLoading(true);
 
+		// Retrieve the current JWT token
+		const currentSession = await Auth.currentSession();
+		const idToken = currentSession.getIdToken().getJwtToken();
+
 		const response = await fetch(url+"api/simplify/", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
+				"Authorization": " " + idToken,
 			},
 			body: JSON.stringify({
-				user_token: "WilliamKelly",
+				user_token: idToken,
 				desired_reading_level: targetReadability,
 				texts: [inputText],
 			}),
