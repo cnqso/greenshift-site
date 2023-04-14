@@ -8,6 +8,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 // console.log((await Auth.currentSession()).getIdToken().getJwtToken())
 import Readability from "./Readability/Readability";
 import Home from "./Home/Home";
+import Account from "./Account/Account";
 import { Amplify } from 'aws-amplify';
 import { Authenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
@@ -30,6 +31,7 @@ function App() {
         <Routes>
 		  <Route path="/readability" element={<Readability/>} />
           <Route path="/" element={<Home/>} />
+          <Route path="/account" element={<Account/>} />
         </Routes>
       </div>
     </Router>

@@ -13,7 +13,7 @@ const HomePage = () => {
             <a href="#about">about</a>
           <a href="#features">features</a>
           <a href="#pricing">pricing</a>
-          <a href="#account">account</a>
+          <Link style={{color:"#fff"}}  to="/account">account</Link>
         </nav>
       </header>
       <main className="content">
