@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import NeuralNetworkGen from './NeuralNetworkGen'
+import NeuralNetworkGen from '../assets/NeuralNetworkGen'
 import InfoBar from './InfoBar'
 import { Auth} from 'aws-amplify';
 
@@ -152,7 +152,7 @@ export default function RichText() {
 				"Content-Type": "application/json",
 				"Authorization": " " + idToken,
 			},
-			body: JSON.stringify({ text: inputText, target_readability: targetReadability }),
+			body: JSON.stringify({ userId: idToken, text: inputText, target_readability: targetReadability }),
 		});
 
 		if (response.ok) {
