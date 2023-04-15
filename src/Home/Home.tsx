@@ -49,8 +49,8 @@ const HomePage = () => {
     </g>
     </svg>
         <section className="hero">
-          <h2>Welcome to Your Piaget Bot</h2>
-          <p>A virtual teaching assistant (or 2 or 3)</p>
+          <h2>Welcome to Piaget Bot</h2>
+          <p>A virtual teaching assistant</p>
           <Link  to="/readability"><button className="cta">Get Started</button></Link>
         </section>
         <section id="features" className="features">
