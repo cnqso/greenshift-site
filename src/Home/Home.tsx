@@ -6,48 +6,8 @@ import { Link } from 'react-router-dom';
 const HomePage = () => {
   return (
     <div className="homepage">
-      <header className="header">
-        <h1 className="logo"><Link style={{color:"#fff"}}  to="/readability">Piaget Bot</Link></h1>
-        <nav className="navigation">
-            
-            <a href="#about">about</a>
-          <a href="#features">features</a>
-          <a href="#pricing">pricing</a>
-          <Link style={{color:"#fff"}}  to="/account">account</Link>
-        </nav>
-      </header>
+     
       <main className="content">
-      <svg width="100%" height="50" xmlns="http://www.w3.org/2000/svg">
-  <g className="dot-matrix-text">
-    <rect className="dot" x="5" y="5" width="3" height="3" />
-    <rect className="dot" x="5" y="10" width="3" height="3" />
-    <rect className="dot" x="5" y="15" width="3" height="3" />
-    <rect className="dot" x="5" y="20" width="3" height="3" />
-    <rect className="dot" x="5" y="25" width="3" height="3" />
-    <rect className="dot" x="10" y="5" width="3" height="3" />
-    <rect className="dot" x="10" y="25" width="3" height="3" />
-    <rect className="dot" x="15" y="5" width="3" height="3" />
-    <rect className="dot" x="15" y="10" width="3" height="3" />
-    <rect className="dot" x="15" y="15" width="3" height="3" />
-    <rect className="dot" x="15" y="20" width="3" height="3" />
-    <rect className="dot" x="15" y="25" width="3" height="3" />
-
-    <rect className="dot" x="25" y="5" width="3" height="3" />
-    <rect className="dot" x="25" y="25" width="3" height="3" />
-    <rect className="dot" x="30" y="5" width="3" height="3" />
-    <rect className="dot" x="30" y="25" width="3" height="3" />
-    <rect className="dot" x="35" y="5" width="3" height="3" />
-    <rect className="dot" x="35" y="25" width="3" height="3" />
-
-    <rect className="dot" x="45" y="5" width="3" height="3" />
-    <rect className="dot" x="50" y="5" width="3" height="3" />
-    <rect className="dot" x="55" y="5" width="3" height="3" />
-    <rect className="dot" x="50" y="10" width="3" height="3" />
-    <rect className="dot" x="50" y="15" width="3" height="3" />
-    <rect className="dot" x="50" y="20" width="3" height="3" />
-    <rect className="dot" x="50" y="25" width="3" height="3" />
-    </g>
-    </svg>
         <section className="hero">
           <h2>Welcome to Piaget Bot</h2>
           <p>A virtual teaching assistant</p>
