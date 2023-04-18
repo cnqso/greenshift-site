@@ -27,6 +27,7 @@
 }
 .RichTextBox {
   width: 900px;
+  margin: 0 auto;
 }
 .rich-text-toolbar {
   display: flex;

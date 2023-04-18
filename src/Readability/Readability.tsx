@@ -4,7 +4,7 @@ import RichText from "./RichText";
 const Readability = () => {
   return (
     <>
-      <h1>GreenShift</h1>
+      <h1>Readability</h1>
       <div className='RichTextBox'>
         <RichText />
       </div>

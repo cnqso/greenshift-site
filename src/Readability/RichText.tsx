@@ -3,9 +3,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import NeuralNetworkGen from '../assets/NeuralNetworkGen'
-import InfoBar from './InfoBar'
-import { Auth} from 'aws-amplify';
+import NeuralNetworkGen from "../assets/NeuralNetworkGen";
+import InfoBar from "./InfoBar";
+import { Auth } from "aws-amplify";
+import Select from "react-select";
+import makeAnimated from "react-select/animated";
 
 const modules = {
 	toolbar: [],
@@ -18,7 +20,7 @@ const formats = ["size", "bold", "italic", "underline", "list", "bullet", "backg
 
 function orderText(n: number): string {
 	const suffix = ["th", "st", "nd", "rd", "th"][Math.min(n % 10, 4)];
-	if (11 <= (n % 100) && (n % 100) <= 13) {
+	if (11 <= n % 100 && n % 100 <= 13) {
 		return n.toString() + "th";
 	}
 	return n.toString() + suffix;
@@ -116,20 +118,29 @@ const ClearFormattingButton = ({ onClick }: { onClick: React.MouseEventHandler<H
 	);
 };
 
-
-
-
-
+const colourOptions = [
+	{ value: "chocolate", label: "Chocolate" },
+	{ value: "strawberry", label: "Strawberry" },
+	{ value: "vanilla", label: "Vanilla" },
+	{ value: "chocolate", label: "Chocolate" },
+	{ value: "strawberry", label: "Strawberry" },
+	{ value: "vanilla", label: "Vanilla" },
+	{ value: "chocolate", label: "Chocolate" },
+	{ value: "strawberry", label: "Strawberry" },
+];
+const animatedComponents = makeAnimated();
 
 export default function RichText() {
 	const [HTMLText, setHTMLText] = useState("Write something");
 	const [plainText, setPlainText] = useState("Write something");
 	const [responseText, setResponseText] = useState("");
+	const [generationText, setGenerationText] = useState("");
 	const [cleanText, setCleanText] = useState(true);
 	const [loading, setLoading] = useState(false);
-	const [currentReadability, setCurrentReadability] = useState("N/A")
-	const [targetReadability, setTargetReadability] = useState(5)
+	const [currentReadability, setCurrentReadability] = useState("N/A");
+	const [targetReadability, setTargetReadability] = useState(5);
 	const quillRef = useRef(null);
+	const generationRef = useRef([]);
 	const url = "https://gcfz4xy1q7.execute-api.us-east-2.amazonaws.com/Prod/";
 	// const url = "http://localhost:8000/";
 	function handleChange(content: string, delta: any, source: any, editor: any) {
@@ -145,12 +156,12 @@ export default function RichText() {
 		// Retrieve the current JWT token
 		const currentSession = await Auth.currentSession();
 		const idToken = currentSession.getIdToken().getJwtToken();
-		console.log(idToken)
-		const response = await fetch(url+"api/analyze/", {
+		console.log(idToken);
+		const response = await fetch(url + "api/analyze/", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
-				"Authorization": " " + idToken,
+				Authorization: " " + idToken,
 			},
 			body: JSON.stringify({ userId: idToken, text: inputText, target_readability: targetReadability }),
 		});
@@ -158,14 +169,13 @@ export default function RichText() {
 		if (response.ok) {
 			const data = await response.json();
 			setHTMLText(data.analyzed_text);
-			setCurrentReadability(data.readability.text_ari[1] + ", " + data.readability.text_ari[0])
+			setCurrentReadability(data.readability.text_ari[1] + ", " + data.readability.text_ari[0]);
 			console.log(JSON.stringify(data, null, 2));
 			// setLoading(false);
 		} else {
 			console.error("An error occurred while fetching the analyzed text.");
 			// setLoading(false);
 		}
-
 	};
 
 	const sendToCluodGPT = async (inputText: string) => {
@@ -175,11 +185,11 @@ export default function RichText() {
 		const currentSession = await Auth.currentSession();
 		const idToken = currentSession.getIdToken().getJwtToken();
 
-		const response = await fetch(url+"api/simplify/", {
+		const response = await fetch(url + "api/simplify/", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
-				"Authorization": " " + idToken,
+				Authorization: " " + idToken,
 			},
 			body: JSON.stringify({
 				user_token: idToken,
@@ -191,10 +201,42 @@ export default function RichText() {
 		if (response.ok) {
 			const data = await response.json();
 			console.log(JSON.stringify(data, null, 2));
-			setResponseText(`<div>${data.readability_data.output}</div>`);
+			setGenerationText(`<div>${data.readability_data.output}</div>`);
 			setLoading(false);
 		} else {
 			console.error("An error occurred while fetching the simplified text.");
+			setLoading(false);
+		}
+	};
+
+	const sendToCluodGenerate = async (inputText: string) => {
+		setLoading(true);
+
+		// Retrieve the current JWT token
+		const currentSession = await Auth.currentSession();
+		const idToken = currentSession.getIdToken().getJwtToken();
+
+		const response = await fetch(url + "api/readabilitygenerate", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: " " + idToken,
+			},
+			body: JSON.stringify({
+				user_token: idToken,
+				desired_reading_level: targetReadability,
+				texts: [inputText],
+				generation_requests: generationRef.current,
+			}),
+		});
+
+		if (response.ok) {
+			const data = await response.json();
+			console.log(JSON.stringify(data, null, 2));
+			setResponseText(`<div>${data.generations.output}</div>`);
+			setLoading(false);
+		} else {
+			console.error("An error occurred while fetching the generated text.");
 			setLoading(false);
 		}
 	};
@@ -216,12 +258,22 @@ export default function RichText() {
 		sendToCluodGPT(plainText);
 	}
 
+	function submitGenerate(e: any) {
+		e.preventDefault();
+		// console.log(plainText);
+		sendToCluodGenerate(plainText);
+	}
+
 	const plainLangTarget = plainLanguageDifficulty(targetReadability);
 	const plainLangTargetString = plainLangTarget[1] + ", " + plainLangTarget[0];
 
 	return (
 		<>
-			<InfoBar currentReadability={currentReadability} targetReadability={targetReadability} setTargetReadability={setTargetReadability} />
+			<InfoBar
+				currentReadability={currentReadability}
+				targetReadability={targetReadability}
+				setTargetReadability={setTargetReadability}
+			/>
 			<div style={{ position: "relative", marginBottom: "10px" }}>
 				{cleanText ? null : <ClearFormattingButton onClick={clearFormattingHandler} />}
 				<ReactQuill
@@ -237,13 +289,24 @@ export default function RichText() {
 			{loading ? (
 				<NeuralNetworkGen />
 			) : (
-				<div className="buttons">
+				<div className='buttons'>
 					<button style={{ marginRight: "10px" }} onClick={submitAnalyze}>
 						Analyze
 					</button>
 					<button style={{ marginRight: "10px" }} onClick={submitGPT}>
 						Simplify
 					</button>
+					<button style={{ marginRight: "10px" }} onClick={submitGenerate}>
+						Generate
+					</button>
+					<Select
+						ref={generationRef}
+						closeMenuOnSelect={false}
+						components={animatedComponents}
+						defaultValue={[colourOptions[2], colourOptions[1]]}
+						isMulti
+						options={colourOptions}
+					/>
 				</div>
 			)}
 			<div className='responseBox'>
@@ -251,7 +314,7 @@ export default function RichText() {
 			</div>
 			<br />
 			<div className='responseBox'>
-				<div>{HTMLText}</div>
+				<div>{generationText}</div>
 			</div>
 		</>
 	);
