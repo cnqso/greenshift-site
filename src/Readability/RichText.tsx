@@ -118,22 +118,19 @@ const ClearFormattingButton = ({ onClick }: { onClick: React.MouseEventHandler<H
 	);
 };
 
-const colourOptions = [
-	{ value: "chocolate", label: "Chocolate" },
-	{ value: "strawberry", label: "Strawberry" },
-	{ value: "vanilla", label: "Vanilla" },
-	{ value: "chocolate", label: "Chocolate" },
-	{ value: "strawberry", label: "Strawberry" },
-	{ value: "vanilla", label: "Vanilla" },
-	{ value: "chocolate", label: "Chocolate" },
-	{ value: "strawberry", label: "Strawberry" },
+const questionOptions = [
+	{ value: "reading comprehension", label: "Comprehension" },
+	{ value: "analysis", label: "Analysis" },
+	{ value: "vocabulary", label: "Vocabulary" },
+	{ value: "essay", label: "Essay" },
+	{ value: "short essay", label: "Short Answer" },
 ];
 const animatedComponents = makeAnimated();
 
 export default function RichText() {
 	const [HTMLText, setHTMLText] = useState("Write something");
 	const [plainText, setPlainText] = useState("Write something");
-	const [responseText, setResponseText] = useState("");
+	const [responseText, setResponseText] = useState("Write Something");
 	const [generationText, setGenerationText] = useState("");
 	const [cleanText, setCleanText] = useState(true);
 	const [loading, setLoading] = useState(false);
@@ -201,7 +198,8 @@ export default function RichText() {
 		if (response.ok) {
 			const data = await response.json();
 			console.log(JSON.stringify(data, null, 2));
-			setGenerationText(`<div>${data.readability_data.output}</div>`);
+			setResponseText(`<div>${data.readability_data.output}</div>`);
+			setHTMLText(`<div>${data.readability_data.output}</div><div>${generationText}</div>`)
 			setLoading(false);
 		} else {
 			console.error("An error occurred while fetching the simplified text.");
@@ -210,13 +208,14 @@ export default function RichText() {
 	};
 
 	const sendToCluodGenerate = async (inputText: string) => {
+		setResponseText(HTMLText);
 		setLoading(true);
 
 		// Retrieve the current JWT token
 		const currentSession = await Auth.currentSession();
 		const idToken = currentSession.getIdToken().getJwtToken();
 
-		const response = await fetch(url + "api/readabilitygenerate", {
+		const response = await fetch(url + "api/readabilitygenerate/", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -226,14 +225,16 @@ export default function RichText() {
 				user_token: idToken,
 				desired_reading_level: targetReadability,
 				texts: [inputText],
-				generation_requests: generationRef.current,
+				// generation_requests: generationRef.current,
+				generation_requests: [{quantity: "3", type: "reading comprehension"}],
 			}),
 		});
 
 		if (response.ok) {
 			const data = await response.json();
 			console.log(JSON.stringify(data, null, 2));
-			setResponseText(`<div>${data.generations.output}</div>`);
+			setGenerationText(`<div>${data.generation_data.message.content}</div>`);
+			setHTMLText(`<div>${responseText}</div><div>${data.generation_data.message.content}</div>`)
 			setLoading(false);
 		} else {
 			console.error("An error occurred while fetching the generated text.");
@@ -283,7 +284,6 @@ export default function RichText() {
 					onChange={handleChange}
 					modules={modules}
 					formats={formats}
-					bounds={".RichText"}
 				/>
 			</div>
 			{loading ? (
@@ -303,19 +303,12 @@ export default function RichText() {
 						ref={generationRef}
 						closeMenuOnSelect={false}
 						components={animatedComponents}
-						defaultValue={[colourOptions[2], colourOptions[1]]}
+						defaultValue={[questionOptions[0]]}
 						isMulti
-						options={colourOptions}
+						options={questionOptions}
 					/>
 				</div>
 			)}
-			<div className='responseBox'>
-				<div dangerouslySetInnerHTML={{ __html: responseText }} />
-			</div>
-			<br />
-			<div className='responseBox'>
-				<div>{generationText}</div>
-			</div>
 		</>
 	);
 }
