@@ -5,9 +5,12 @@ import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import NeuralNetworkGen from "../assets/NeuralNetworkGen";
 import InfoBar from "./InfoBar";
+import SelectOptions from "./SelectOptions";
 import { Auth } from "aws-amplify";
-import Select from "react-select";
-import makeAnimated from "react-select/animated";
+import { XButton } from "../assets/SVGs";
+import type { ListItems, GenerationRequest } from "../types/readability.types";
+import { motion } from "framer-motion";
+import { Collapse } from "react-collapse";
 
 const modules = {
 	toolbar: [],
@@ -102,42 +105,50 @@ function hasInvalidElements(html: string): boolean {
 
 const ClearFormattingButton = ({ onClick }: { onClick: React.MouseEventHandler<HTMLDivElement> }) => {
 	return (
-		<div className='svg-button-container' onClick={onClick}>
-			<svg
-				width='24'
-				height='24'
-				viewBox='0 0 24 24'
-				stroke='currentColor'
-				strokeWidth='2'
-				strokeLinecap='round'
-				strokeLinejoin='round'>
-				<line x1='18' y1='6' x2='6' y2='18'></line>
-				<line x1='6' y1='6' x2='18' y2='18'></line>
-			</svg>
+		<div className='ClearFormattingButton' onClick={onClick}>
+			<XButton />
 		</div>
 	);
 };
 
-const questionOptions = [
-	{ value: "reading comprehension", label: "Comprehension" },
-	{ value: "analysis", label: "Analysis" },
-	{ value: "vocabulary", label: "Vocabulary" },
-	{ value: "essay", label: "Essay" },
-	{ value: "short essay", label: "Short Answer" },
-];
-const animatedComponents = makeAnimated();
+function generationObjectToRequest(items: ListItems): GenerationRequest[] {
+	const tally: { [key: string]: number } = {};
+	// {quantity: "3", type: "reading comprehension"}
+
+	for (const key in items) {
+		const itemType = items[key].selection.value;
+		const itemQuantity = items[key].quant;
+
+		if (tally[itemType]) {
+			tally[itemType] += itemQuantity;
+		} else {
+			tally[itemType] = itemQuantity;
+		}
+	}
+
+	const tallyList: GenerationRequest[] = Object.entries(tally).map(([type, quantity]) => {
+		return {
+			type: type,
+			quantity: quantity.toString(),
+		};
+	});
+
+	return tallyList;
+}
 
 export default function RichText() {
 	const [HTMLText, setHTMLText] = useState("Write something");
 	const [plainText, setPlainText] = useState("Write something");
-	const [responseText, setResponseText] = useState("Write Something");
 	const [generationText, setGenerationText] = useState("");
 	const [cleanText, setCleanText] = useState(true);
 	const [loading, setLoading] = useState(false);
 	const [currentReadability, setCurrentReadability] = useState("N/A");
 	const [targetReadability, setTargetReadability] = useState(5);
+	const [generationVisible, setGenerationVisible] = useState(false);
 	const quillRef = useRef(null);
-	const generationRef = useRef([]);
+	const [generationItems, setGenerationItems] = useState({
+		0: { selection: { value: "reading comprehension", label: "Comprehension" }, quant: 3 },
+	});
 	const url = "https://gcfz4xy1q7.execute-api.us-east-2.amazonaws.com/Prod/";
 	// const url = "http://localhost:8000/";
 	function handleChange(content: string, delta: any, source: any, editor: any) {
@@ -145,7 +156,7 @@ export default function RichText() {
 		setPlainText(editor.getText());
 		setCleanText(hasInvalidElements(content));
 	}
-
+	console.log(JSON.stringify(generationItems, null, 2));
 	const sendToCluodAnalyze = async (inputText: string) => {
 		// Way too fast to see the loading screen. Might change in production.
 		// setLoading(true);
@@ -198,8 +209,7 @@ export default function RichText() {
 		if (response.ok) {
 			const data = await response.json();
 			console.log(JSON.stringify(data, null, 2));
-			setResponseText(`<div>${data.readability_data.output}</div>`);
-			setHTMLText(`<div>${data.readability_data.output}</div><div>${generationText}</div>`)
+			setHTMLText(`<div>${data.readability_data.output}</div>`);
 			setLoading(false);
 		} else {
 			console.error("An error occurred while fetching the simplified text.");
@@ -208,9 +218,11 @@ export default function RichText() {
 	};
 
 	const sendToCluodGenerate = async (inputText: string) => {
-		setResponseText(HTMLText);
 		setLoading(true);
 
+		const requestArray: GenerationRequest[] = generationObjectToRequest(generationItems);
+
+		console.log(JSON.stringify(requestArray, null, 2));
 		// Retrieve the current JWT token
 		const currentSession = await Auth.currentSession();
 		const idToken = currentSession.getIdToken().getJwtToken();
@@ -226,15 +238,25 @@ export default function RichText() {
 				desired_reading_level: targetReadability,
 				texts: [inputText],
 				// generation_requests: generationRef.current,
-				generation_requests: [{quantity: "3", type: "reading comprehension"}],
+				generation_requests: requestArray,
 			}),
 		});
 
 		if (response.ok) {
+			// const data = await response.json();
+			// console.log(JSON.stringify(data, null, 2));
+			// setGenerationText(`<div>${data.generation_data[0].message.content}</div>`);
+			// setLoading(false);
+
 			const data = await response.json();
 			console.log(JSON.stringify(data, null, 2));
-			setGenerationText(`<div>${data.generation_data.message.content}</div>`);
-			setHTMLText(`<div>${responseText}</div><div>${data.generation_data.message.content}</div>`)
+			let newHTMLText = "";
+			
+			for (let i=0; i<data.generation_data.length; i++) {
+				const capitalizedType = requestArray[i].type.charAt(0).toUpperCase() + requestArray[i].type.slice(1) + " questions"
+				newHTMLText += `<div><h4>${capitalizedType}</h4>${data.generation_data[i].message.content}</div>`;
+			}
+			setGenerationText(newHTMLText);
 			setLoading(false);
 		} else {
 			console.error("An error occurred while fetching the generated text.");
@@ -275,7 +297,7 @@ export default function RichText() {
 				targetReadability={targetReadability}
 				setTargetReadability={setTargetReadability}
 			/>
-			<div style={{ position: "relative", marginBottom: "10px" }}>
+			<div className='editorBox'>
 				{cleanText ? null : <ClearFormattingButton onClick={clearFormattingHandler} />}
 				<ReactQuill
 					ref={quillRef}
@@ -286,6 +308,7 @@ export default function RichText() {
 					formats={formats}
 				/>
 			</div>
+
 			{loading ? (
 				<NeuralNetworkGen />
 			) : (
@@ -296,19 +319,28 @@ export default function RichText() {
 					<button style={{ marginRight: "10px" }} onClick={submitGPT}>
 						Simplify
 					</button>
-					<button style={{ marginRight: "10px" }} onClick={submitGenerate}>
-						Generate
-					</button>
-					<Select
-						ref={generationRef}
-						closeMenuOnSelect={false}
-						components={animatedComponents}
-						defaultValue={[questionOptions[0]]}
-						isMulti
-						options={questionOptions}
-					/>
 				</div>
 			)}
+			
+			<Collapse isOpened={!generationVisible}>
+				<div className="collapseBar" onClick={()=>{setGenerationVisible(!generationVisible)}}>
+					Add reading questions
+				</div>
+			</Collapse>
+			<Collapse isOpened={generationVisible}>
+				<SelectOptions
+					submitGenerate={submitGenerate}
+					items={generationItems}
+					setItems={setGenerationItems}
+					loading={loading}
+					setGenerationVisible={setGenerationVisible}
+				/>
+				{generationText ? (
+					<motion.div layout className='responseBox'>
+						<div style={{marginTop: "-15px"}}dangerouslySetInnerHTML={{ __html: generationText }} />
+					</motion.div>
+				) : null}
+			</Collapse>
 		</>
 	);
 }

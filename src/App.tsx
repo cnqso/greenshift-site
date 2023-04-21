@@ -125,6 +125,23 @@ function App() {
 			if (userData || userClaims || userGenerations) return;
 			try {
 				const userInfo = await Auth.currentAuthenticatedUser();
+				const storedUserData = JSON.parse(localStorage.getItem("userData") ?? "{}");
+				console.log(storedUserData);
+				// Load states with local storage data if it exists
+				if (storedUserData.databaseInfo && storedUserData.user_claims) {
+					setUserData(JSON.parse(storedUserData.databaseInfo.preferences.S));
+					setUserGenerations(storedUserData.databaseInfo.generations["M"]);
+					setUserClaims(storedUserData.user_claims);
+				}
+
+				// Check if userData exists and is up-to-date.
+				if (
+					storedUserData.date &&
+					new Date(storedUserData.date).toDateString() === new Date().toDateString()
+				) {
+					return;
+				}
+
 				const response = await fetch(url + "api/userdata", {
 					method: "GET",
 					headers: {
@@ -132,8 +149,12 @@ function App() {
 						Authorization: `${userInfo.signInUserSession.idToken.jwtToken}`,
 					},
 				});
+
 				const data = await response.json();
 				console.log(JSON.stringify(data, null, 2));
+
+				// Save the user data to local storage with a timestamp.
+				localStorage.setItem("userData", JSON.stringify({ ...data, date: new Date() }));
 
 				setUserData(JSON.parse(data.databaseInfo.preferences.S));
 				setUserGenerations(data.databaseInfo.generations["M"]);
@@ -181,7 +202,6 @@ function App() {
 					<Route path='/lessonplanner' element={<LessonPlan />} />
 				</Routes>
 			</div>
-			
 		</Router>
 	);
 }
