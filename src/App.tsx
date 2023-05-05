@@ -118,8 +118,8 @@ function App() {
 	const [userData, setUserData] = useState<UserData | null>(null);
 	const [userClaims, setUserClaims] = useState<UserClaims | null>(null);
 	const [userGenerations, setUserGenerations] = useState<Generations | null>(null);
-	const url = "https://gcfz4xy1q7.execute-api.us-east-2.amazonaws.com/Prod/";
-	// const url = "http://localhost:8000/";
+	// const url = "https://gcfz4xy1q7.execute-api.us-east-2.amazonaws.com/Prod/";
+	const url = "http://localhost:8000/";
 	useEffect(() => {
 		const fetchUserData = async () => {
 			if (userData || userClaims || userGenerations) return;

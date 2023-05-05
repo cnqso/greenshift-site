@@ -1,5 +1,24 @@
 import React, { useState } from "react";
 import LessonStep from "./LessonStep";
+import "./LessonStep.css";
+
+
+interface LessonPlanRequest {
+  subject: string;
+  topic: string;
+  gradeLevel: number;
+  stateStandards: string | null;
+  focusPoints: string | null;
+  priorKnowledge: string | null;
+  scaffoldingGoals: string | null;
+  targetSkills: string | null;
+}
+
+
+
+//Between each step, add AI generation loading screen that ends when you've received the generations.
+// Create automatic formatting, so that GPT can simply respond in plain text or numbered lists, and the formatting will be done automatically.
+// Can be done in HTML just fine and then converted to PDF, though DOCX will be more difficult.
 
 const LessonPlan = () => {
   const [currentStep, setCurrentStep] = useState(1);

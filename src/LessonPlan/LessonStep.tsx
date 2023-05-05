@@ -1,152 +1,189 @@
 /** @format */
 
-import './LessonStep.css';
 import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+
+const schema = yup.object().shape({
+	subject: yup.string().required("Subject is required."),
+	topic: yup.string().required("Topic is required."),
+	gradeLevel: yup.number().positive().integer().required("Grade is required."),
+	stateStandards: yup.string().nullable().notRequired(),
+	focusPoints: yup.string().nullable().notRequired(),
+	priorKnowledge: yup.string().nullable().notRequired(),
+	scaffoldingGoals: yup.string().nullable().notRequired(),
+	targetSkills: yup.string().nullable().notRequired(),
+});
+
+type FormData = yup.InferType<typeof schema>;
 
 const StepOne = ({ nextStep }: { nextStep: any }) => {
-    const [subject, setSubject] = useState("");
-    const [topic, setTopic] = useState("");
-    const [grade, setGrade] = useState("");
+	const {
+		register,
+		handleSubmit,
+		formState: { errors },
+	} = useForm<FormData>({
+		resolver: yupResolver(schema),
+	});
 
-    const [stateStandards, setStateStandards] = useState("");
-    const [focusPoints, setFocusPoints] = useState("");
-    const [priorKnowledge, setPriorKnowledge] = useState("");
-    const [scaffoldingGoals, setScaffoldingGoals] = useState("");
-    const [targetSkills, setTargetSkills] = useState("");
+	const onSubmit = (data: FormData) => {
+		console.log(data);
+		nextStep();
+	};
 
-    const handleSubmit = (e: any) => {
-        e.preventDefault();
-        // Save entered data and proceed to the next step
-        nextStep();
-    };
+	return (
+		<div className='container'>
+			<form onSubmit={handleSubmit(onSubmit)}>
+				<div className='form-group'>
+					<label htmlFor='subject' className='label'>
+						Subject* :
+					</label>
+					<input
+						id='subject'
+						{...register("subject")}
+						className={`input ${errors.subject ? "error" : ""}`}
+					/>
+					<p className='error-message'>{errors.subject?.message}</p>
 
-    return (
-        <div className='step-one'>
-            <h2>Step 1: Basic Information</h2>
-            <form onSubmit={handleSubmit}>
-                <label htmlFor='subject'>Subject</label>
-                <input
-                    type='text'
-                    id='subject'
-                    value={subject}
-                    onChange={(e) => setSubject(e.target.value)}
-                    required
-                />
+					<label htmlFor='topic' className='label'>
+						Topic* :
+					</label>
+					<input
+						id='topic'
+						{...register("topic")}
+						className={`input ${errors.topic ? "error" : ""}`}
+					/>
+					<p className='error-message'>{errors.topic?.message}</p>
 
-                <label htmlFor='topic'>Topic</label>
-                <input
-                    type='text'
-                    id='topic'
-                    value={topic}
-                    onChange={(e) => setTopic(e.target.value)}
-                    required
-                />
+					<label htmlFor='grade' className='label'>
+						Grade Level* :
+					</label>
+					<input
+						id='grade'
+						{...register("gradeLevel")}
+						className={`input ${errors.gradeLevel ? "error" : ""}`}
+					/>
+					<p className='error-message'>{errors.gradeLevel?.message}</p>
 
-                <label htmlFor='grade'>Grade</label>
-                <input
-                    type='text'
-                    id='grade'
-                    value={grade}
-                    onChange={(e) => setGrade(e.target.value)}
-                    required
-                />
+					<label htmlFor='stateStandards' className='label'>
+						State Standards:
+					</label>
+					<input
+						id='stateStandards'
+						{...register("stateStandards")}
+						className={`input ${errors.stateStandards ? "error" : ""}`}
+					/>
+					<p className='error-message'>{errors.stateStandards?.message}</p>
 
-                <label htmlFor='stateStandards'>State Standards (Optional)</label>
-                <input
-                    type='text'
-                    id='stateStandards'
-                    value={stateStandards}
-                    onChange={(e) => setStateStandards(e.target.value)}
-                />
+					<label htmlFor='focusPoints' className='label'>
+						Focus Points:
+					</label>
+					<input
+						id='focusPoints'
+						{...register("focusPoints")}
+						className={`input ${errors.focusPoints ? "error" : ""}`}
+					/>
+					<p className='error-message'>{errors.focusPoints?.message}</p>
 
-                <label htmlFor='focusPoints'>Focus Points (Optional)</label>
-                <input
-                    type='text'
-                    id='focusPoints'
-                    value={focusPoints}
-                    onChange={(e) => setFocusPoints(e.target.value)}
-                />
+					<label htmlFor='priorKnowledge' className='label'>
+						Prior Knowledge:
+					</label>
+					<input
+						id='priorKnowledge'
+						{...register("priorKnowledge")}
+						className={`input ${errors.priorKnowledge ? "error" : ""}`}
+					/>
+					<p className='error-message'>{errors.priorKnowledge?.message}</p>
 
-                <label htmlFor='priorKnowledge'>Prior Knowledge (Optional)</label>
-                <input
-                    type='text'
-                    id='priorKnowledge'
-                    value={priorKnowledge}
-                    onChange={(e) => setPriorKnowledge(e.target.value)}
-                />
+					<label htmlFor='scaffoldingGoals' className='label'>
+						Scaffolding Goals:
+					</label>
+					<input
+						id='scaffoldingGoals'
+						{...register("scaffoldingGoals")}
+						className={`input ${errors.scaffoldingGoals ? "error" : ""}`}
+					/>
+					<p className='error-message'>{errors.scaffoldingGoals?.message}</p>
 
-                <label htmlFor='scaffoldingGoals'>Scaffolding Goals (Optional)</label>
-                <input
-                    type='text'
-                    id='scaffoldingGoals'
-                    value={scaffoldingGoals}
-                    onChange={(e) => setScaffoldingGoals(e.target.value)}
-                />
-
-                <label htmlFor='targetSkills'>Target Skills (Optional)</label>
-                <input
-                    type='text'
-                    id='targetSkills'
-                    value={targetSkills}
-                    onChange={(e) => setTargetSkills(e.target.value)}
-                />
-
-                <button type='submit'>Next</button>
-            </form>
-        </div>
-    );
+					<label htmlFor='targetSkills' className='label'>
+						Target Skills:
+					</label>
+					<input
+						id='targetSkills'
+						{...register("targetSkills")}
+						className={`input ${errors.targetSkills ? "error" : ""}`}
+					/>
+					<p className='error-message'>{errors.targetSkills?.message}</p>
+				</div>
+				{/* Other form elements */}
+				<button type='submit'>Submit</button>
+			</form>
+		</div>
+	);
 };
 
-const StepTwo = ({ nextStep, prevStep }: { nextStep: any, prevStep: any }) => {
-    return (
-        <div className='step-one'>
-            <h2>Step 1: Basic Information</h2>
-        </div>
-    );
+const StepTwo = ({ nextStep, prevStep }: { nextStep: any; prevStep: any }) => {
+	return (
+		<div className='step-one'>
+			<h2>Step 2: Review Objectives</h2>
+			<div>Retrieve the generated lesson objectives, make any desired edits</div>
+		</div>
+	);
 };
-const StepThree = ({ nextStep, prevStep }: { nextStep: any, prevStep: any }) => {
-    return (
-        <div className='step-one'>
-            <h2>Step 1: Basic Information</h2>
-        </div>
-    );
+
+const StepThree = ({ nextStep, prevStep }: { nextStep: any; prevStep: any }) => {
+	return (
+		<div className='step-one'>
+			<h2>Step 3: Review Assessments</h2>
+			<div>Retrieve the generated assessments for the lesson objectives, make any desired edits</div>
+		</div>
+	);
 };
-const StepFour = ({ nextStep, prevStep }: { nextStep: any, prevStep: any }) => {
-    return (
-        <div className='step-one'>
-            <h2>Step 1: Basic Information</h2>
-        </div>
-    );
+const StepFour = ({ nextStep, prevStep }: { nextStep: any; prevStep: any }) => {
+	return (
+		<div className='step-one'>
+			<h2>Step 4: Review Activities</h2>
+			<div>
+				Review the generated activities, make any desired edits, then either download as PDF/docx or
+				continue to step 5: generate materials
+			</div>
+		</div>
+	);
 };
-const StepFive = ({ nextStep, prevStep }: { nextStep: any, prevStep: any }) => {
-    return (
-        <div className='step-one'>
-            <h2>Step 1: Basic Information</h2>
-        </div>
-    );
+const StepFive = ({ nextStep, prevStep }: { nextStep: any; prevStep: any }) => {
+	return (
+		<div className='step-one'>
+			<h2>Step 5: Review Materials</h2>
+			<div>
+				Review the generated materials, make any desired edits, then either download as PDF/docx or
+				continue to step 5: generate materials
+			</div>
+		</div>
+	);
 };
 
 export default function LessonStep({
-    step,
-    nextStep,
-    prevStep,
+	step,
+	nextStep,
+	prevStep,
 }: {
-    step: number;
-    nextStep: any;
-    prevStep: any;
+	step: number;
+	nextStep: any;
+	prevStep: any;
 }) {
-    switch (step) {
-        case 1:
-            return <StepOne nextStep={nextStep} />;
-        case 2:
-            return <StepTwo nextStep={nextStep} prevStep={prevStep} />;
-        case 3:
-            return <StepThree nextStep={nextStep} prevStep={prevStep} />;
-        case 4:
-            return <StepFour nextStep={nextStep} prevStep={prevStep} />;
-        case 5:
-            return <StepFive nextStep={nextStep} prevStep={prevStep} />;
-        default:
-            return <StepOne nextStep={nextStep} />;
-    }
+	switch (step) {
+		case 1:
+			return <StepOne nextStep={nextStep} />;
+		case 2:
+			return <StepTwo nextStep={nextStep} prevStep={prevStep} />;
+		case 3:
+			return <StepThree nextStep={nextStep} prevStep={prevStep} />;
+		case 4:
+			return <StepFour nextStep={nextStep} prevStep={prevStep} />;
+		case 5:
+			return <StepFive nextStep={nextStep} prevStep={prevStep} />;
+		default:
+			return <StepOne nextStep={nextStep} />;
+	}
 }
