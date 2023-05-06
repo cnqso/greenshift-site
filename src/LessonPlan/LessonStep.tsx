@@ -5,6 +5,9 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
+
+
+
 const schema = yup.object().shape({
 	subject: yup.string().required("Subject is required."),
 	topic: yup.string().required("Topic is required."),
@@ -18,6 +21,31 @@ const schema = yup.object().shape({
 
 type FormData = yup.InferType<typeof schema>;
 
+export default function LessonStep({
+	step,
+	nextStep,
+	prevStep,
+}: {
+	step: number;
+	nextStep: any;
+	prevStep: any;
+}) {
+	switch (step) {
+		case 1:
+			return <StepOne nextStep={nextStep} />;
+		case 2:
+			return <StepTwo nextStep={nextStep} prevStep={prevStep} />;
+		case 3:
+			return <StepThree nextStep={nextStep} prevStep={prevStep} />;
+		case 4:
+			return <StepFour nextStep={nextStep} prevStep={prevStep} />;
+		case 5:
+			return <StepFive nextStep={nextStep} prevStep={prevStep} />;
+		default:
+			return <StepOne nextStep={nextStep} />;
+	}
+}
+
 const StepOne = ({ nextStep }: { nextStep: any }) => {
 	const {
 		register,
@@ -28,8 +56,7 @@ const StepOne = ({ nextStep }: { nextStep: any }) => {
 	});
 
 	const onSubmit = (data: FormData) => {
-		console.log(data);
-		nextStep();
+		nextStep(data);
 	};
 
 	return (
@@ -163,27 +190,4 @@ const StepFive = ({ nextStep, prevStep }: { nextStep: any; prevStep: any }) => {
 	);
 };
 
-export default function LessonStep({
-	step,
-	nextStep,
-	prevStep,
-}: {
-	step: number;
-	nextStep: any;
-	prevStep: any;
-}) {
-	switch (step) {
-		case 1:
-			return <StepOne nextStep={nextStep} />;
-		case 2:
-			return <StepTwo nextStep={nextStep} prevStep={prevStep} />;
-		case 3:
-			return <StepThree nextStep={nextStep} prevStep={prevStep} />;
-		case 4:
-			return <StepFour nextStep={nextStep} prevStep={prevStep} />;
-		case 5:
-			return <StepFive nextStep={nextStep} prevStep={prevStep} />;
-		default:
-			return <StepOne nextStep={nextStep} />;
-	}
-}
+

@@ -4,7 +4,7 @@ import { useState, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { XButton } from "../assets/SVGs";
 import Select from "react-select";
-import type { ListItems } from "../types/readability.types";
+import type { ListItems } from "../@types/readability.types";
 import NeuralNetworkGen from "../assets/NeuralNetworkGen";
 
 const questionOptions = [

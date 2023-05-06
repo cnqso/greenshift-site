@@ -13,9 +13,14 @@ import LessonPlan from "./LessonPlan/LessonPlan";
 import { Amplify } from "aws-amplify";
 import { Authenticator } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
+
 import awsExports from "./aws-exports";
 import Modal from "@mui/material/Modal";
 import { Box } from "@mui/system";
+import { fetchUserData } from "./requests"
+
+
+
 
 Amplify.configure(awsExports);
 
@@ -118,53 +123,12 @@ function App() {
 	const [userData, setUserData] = useState<UserData | null>(null);
 	const [userClaims, setUserClaims] = useState<UserClaims | null>(null);
 	const [userGenerations, setUserGenerations] = useState<Generations | null>(null);
-	// const url = "https://gcfz4xy1q7.execute-api.us-east-2.amazonaws.com/Prod/";
-	const url = "http://localhost:8000/";
 	useEffect(() => {
-		const fetchUserData = async () => {
-			if (userData || userClaims || userGenerations) return;
-			try {
-				const userInfo = await Auth.currentAuthenticatedUser();
-				const storedUserData = JSON.parse(localStorage.getItem("userData") ?? "{}");
-				console.log(storedUserData);
-				// Load states with local storage data if it exists
-				if (storedUserData.databaseInfo && storedUserData.user_claims) {
-					setUserData(JSON.parse(storedUserData.databaseInfo.preferences.S));
-					setUserGenerations(storedUserData.databaseInfo.generations["M"]);
-					setUserClaims(storedUserData.user_claims);
-				}
-
-				// Check if userData exists and is up-to-date.
-				if (
-					storedUserData.date &&
-					new Date(storedUserData.date).toDateString() === new Date().toDateString()
-				) {
-					return;
-				}
-
-				const response = await fetch(url + "api/userdata", {
-					method: "GET",
-					headers: {
-						"Content-Type": "application/json",
-						Authorization: `${userInfo.signInUserSession.idToken.jwtToken}`,
-					},
-				});
-
-				const data = await response.json();
-				console.log(JSON.stringify(data, null, 2));
-
-				// Save the user data to local storage with a timestamp.
-				localStorage.setItem("userData", JSON.stringify({ ...data, date: new Date() }));
-
-				setUserData(JSON.parse(data.databaseInfo.preferences.S));
-				setUserGenerations(data.databaseInfo.generations["M"]);
-				setUserClaims(data.user_claims);
-			} catch (error) {
-				console.error("Error fetching user data:", error);
-			}
-		};
-
-		fetchUserData();
+		if (userData || userClaims || userGenerations) {
+            console.log(userData);
+            return;
+        }
+		fetchUserData(setUserData, setUserClaims, setUserGenerations);
 	}, []);
 
 	return (

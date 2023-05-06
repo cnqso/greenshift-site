@@ -8,9 +8,10 @@ import InfoBar from "./InfoBar";
 import SelectOptions from "./SelectOptions";
 import { Auth } from "aws-amplify";
 import { XButton } from "../assets/SVGs";
-import type { ListItems, GenerationRequest } from "../types/readability.types";
+import type { ListItems, GenerationRequest } from "../@types/readability.types";
 import { motion } from "framer-motion";
 import { Collapse } from "react-collapse";
+import {sendToCluod} from "../requests"
 
 const modules = {
 	toolbar: [],
@@ -149,142 +150,72 @@ export default function RichText() {
 	const [generationItems, setGenerationItems] = useState({
 		0: { selection: { value: "reading comprehension", label: "Comprehension" }, quant: 3 },
 	});
-	const url = "https://gcfz4xy1q7.execute-api.us-east-2.amazonaws.com/Prod/";
-	// const url = "http://localhost:8000/";
+
+
+	async function submitAnalyze(e: any) {
+		e.preventDefault();
+		setLoading(true);
+		const body = { text: plainText, target_readability: targetReadability };
+		const data = await sendToCluod("analyze", body);
+		if (data) {
+			setHTMLText(data.analyzed_text);
+			setCurrentReadability(data.readability.text_ari[1] + ", " + data.readability.text_ari[0]);
+		} else {
+			// Error handling
+
+		}
+		setLoading(false);
+	}
+
+	async function submitGPT(e: any) {
+		e.preventDefault();
+		setLoading(true);
+		const body = { desired_reading_level: targetReadability, texts: [plainText] };
+		const data = await sendToCluod("simplify", body);
+		if (data) {
+			setHTMLText(`<div>${data.readability_data.output}</div>`);
+		} else {
+			console.error("An error occurred while fetching the simplified text.");
+		}
+		setLoading(false);
+	}
+
+	async function submitGenerate(e: any) {
+		e.preventDefault();
+		setLoading(true);
+		const requestArray: GenerationRequest[] = generationObjectToRequest(generationItems);
+		const body = {
+			desired_reading_level: targetReadability,
+			texts: [plainText],
+			generation_requests: requestArray,
+		};
+		const data = await sendToCluod("readabilitygenerate", body);
+
+		if (data) {
+			let newHTMLText = "";
+			for (let i = 0; i < data.generation_data.length; i++) {
+				const capitalizedType =
+					requestArray[i].type.charAt(0).toUpperCase() +
+					requestArray[i].type.slice(1) +
+					" questions";
+				newHTMLText += `<div><h4>${capitalizedType}</h4>${data.generation_data[i]}</div>`;
+			}
+			setGenerationText(newHTMLText);
+		} else {
+			console.error("An error occurred while fetching the generated text.");
+		}
+		setLoading(false);
+	}
+
 	function handleChange(content: string, delta: any, source: any, editor: any) {
 		setHTMLText(content);
 		setPlainText(editor.getText());
 		setCleanText(hasInvalidElements(content));
 	}
-	console.log(JSON.stringify(generationItems, null, 2));
-	const sendToCluodAnalyze = async (inputText: string) => {
-		// Way too fast to see the loading screen. Might change in production.
-		// setLoading(true);
-
-		// Retrieve the current JWT token
-		const currentSession = await Auth.currentSession();
-		const idToken = currentSession.getIdToken().getJwtToken();
-		console.log(idToken);
-		const response = await fetch(url + "api/analyze/", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: " " + idToken,
-			},
-			body: JSON.stringify({ userId: idToken, text: inputText, target_readability: targetReadability }),
-		});
-
-		if (response.ok) {
-			const data = await response.json();
-			setHTMLText(data.analyzed_text);
-			setCurrentReadability(data.readability.text_ari[1] + ", " + data.readability.text_ari[0]);
-			console.log(JSON.stringify(data, null, 2));
-			// setLoading(false);
-		} else {
-			console.error("An error occurred while fetching the analyzed text.");
-			// setLoading(false);
-		}
-	};
-
-	const sendToCluodGPT = async (inputText: string) => {
-		setLoading(true);
-
-		// Retrieve the current JWT token
-		const currentSession = await Auth.currentSession();
-		const idToken = currentSession.getIdToken().getJwtToken();
-
-		const response = await fetch(url + "api/simplify/", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: " " + idToken,
-			},
-			body: JSON.stringify({
-				user_token: idToken,
-				desired_reading_level: targetReadability,
-				texts: [inputText],
-			}),
-		});
-
-		if (response.ok) {
-			const data = await response.json();
-			console.log(JSON.stringify(data, null, 2));
-			setHTMLText(`<div>${data.readability_data.output}</div>`);
-			setLoading(false);
-		} else {
-			console.error("An error occurred while fetching the simplified text.");
-			setLoading(false);
-		}
-	};
-
-	const sendToCluodGenerate = async (inputText: string) => {
-		setLoading(true);
-
-		const requestArray: GenerationRequest[] = generationObjectToRequest(generationItems);
-
-		console.log(JSON.stringify(requestArray, null, 2));
-		// Retrieve the current JWT token
-		const currentSession = await Auth.currentSession();
-		const idToken = currentSession.getIdToken().getJwtToken();
-
-		const response = await fetch(url + "api/readabilitygenerate/", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: " " + idToken,
-			},
-			body: JSON.stringify({
-				user_token: idToken,
-				desired_reading_level: targetReadability,
-				texts: [inputText],
-				// generation_requests: generationRef.current,
-				generation_requests: requestArray,
-			}),
-		});
-
-		if (response.ok) {
-			// const data = await response.json();
-			// console.log(JSON.stringify(data, null, 2));
-			// setGenerationText(`<div>${data.generation_data[0].message.content}</div>`);
-			// setLoading(false);
-
-			const data = await response.json();
-			console.log(JSON.stringify(data, null, 2));
-			let newHTMLText = "";
-			
-			for (let i=0; i<data.generation_data.length; i++) {
-				const capitalizedType = requestArray[i].type.charAt(0).toUpperCase() + requestArray[i].type.slice(1) + " questions"
-				newHTMLText += `<div><h4>${capitalizedType}</h4>${data.generation_data[i].message.content}</div>`;
-			}
-			setGenerationText(newHTMLText);
-			setLoading(false);
-		} else {
-			console.error("An error occurred while fetching the generated text.");
-			setLoading(false);
-		}
-	};
 
 	function clearFormattingHandler() {
 		setHTMLText(clearFormatting(HTMLText));
 		setCleanText(true);
-	}
-
-	function submitAnalyze(e: any) {
-		e.preventDefault();
-		// console.log(plainText);
-		sendToCluodAnalyze(plainText);
-	}
-
-	function submitGPT(e: any) {
-		e.preventDefault();
-		// console.log(plainText);
-		sendToCluodGPT(plainText);
-	}
-
-	function submitGenerate(e: any) {
-		e.preventDefault();
-		// console.log(plainText);
-		sendToCluodGenerate(plainText);
 	}
 
 	const plainLangTarget = plainLanguageDifficulty(targetReadability);
@@ -321,9 +252,13 @@ export default function RichText() {
 					</button>
 				</div>
 			)}
-			
+
 			<Collapse isOpened={!generationVisible}>
-				<div className="collapseBar" onClick={()=>{setGenerationVisible(!generationVisible)}}>
+				<div
+					className='collapseBar'
+					onClick={() => {
+						setGenerationVisible(!generationVisible);
+					}}>
 					Add reading questions
 				</div>
 			</Collapse>
@@ -337,7 +272,10 @@ export default function RichText() {
 				/>
 				{generationText ? (
 					<motion.div layout className='responseBox'>
-						<div style={{marginTop: "-15px"}}dangerouslySetInnerHTML={{ __html: generationText }} />
+						<div
+							style={{ marginTop: "-15px" }}
+							dangerouslySetInnerHTML={{ __html: generationText }}
+						/>
 					</motion.div>
 				) : null}
 			</Collapse>

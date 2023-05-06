@@ -11,3 +11,6 @@ export interface GenerationRequest {
 	type: string;
 	quantity: string;
 }
+
+export declare const awsmobile: {};
+
