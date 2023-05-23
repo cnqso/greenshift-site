@@ -84,16 +84,6 @@ interface LessonPlanRequest {
 	targetSkills: string | null;
 }
 
-// Form in StepContent in submitted to backend
-// Show loading screen while waiting for backend
-// Receive response from backend and display on the next step
-
-//submitToBackend() function which returns either the display information or false
-// submitToBackend() is placed in handleNext
-// handleNext takes in the form information
-
-// handleNext() then passes the form information to a state variable
-
 export default function HorizontalLinearStepper() {
 	const [activeStep, setActiveStep] = useState(0);
 	const [skipped, setSkipped] = useState(new Set<number>());
@@ -131,6 +121,7 @@ export default function HorizontalLinearStepper() {
 		}
 
 		const serverOutput = await submitStep(data);
+		console.log(serverOutput);
 		if (serverOutput) {
 			setOutputText(serverOutput.lessonPlan);
 			setActiveStep((prevActiveStep) => prevActiveStep + 1);
