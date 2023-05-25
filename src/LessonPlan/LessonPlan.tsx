@@ -8,6 +8,7 @@ import StepLabel from "@mui/material/StepLabel";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { StepOne, StepTwo, StepThree, StepFour, StepFive } from "./LessonStep";
+import type { LessonPlan } from "../@types/lessonPlan.types";
 import { sendToCluod } from "../requests";
 import NeuralNetworkGen from "../assets/NeuralNetworkGen";
 
@@ -25,7 +26,7 @@ function StepContent({
 	handleNext: any;
 	handleSkip: any;
 	handleBack: any;
-	outputText: string;
+	outputText: LessonPlan;
 	setOutputText: any;
 }) {
 	switch (step) {
@@ -73,36 +74,47 @@ function StepContent({
 	}
 }
 
-interface LessonPlanRequest {
-	subject: string;
-	topic: string;
-	gradeLevel: number;
-	stateStandards: string | null;
-	focusPoints: string | null;
-	priorKnowledge: string | null;
-	scaffoldingGoals: string | null;
-	targetSkills: string | null;
-}
 
 export default function HorizontalLinearStepper() {
 	const [activeStep, setActiveStep] = useState(0);
 	const [skipped, setSkipped] = useState(new Set<number>());
-	const [outputText, setOutputText] = useState<string>("");
+	const [outputText, setOutputText] = useState<LessonPlan>({
+		specification: {
+			subject: "History",
+			topic: "The Civil War",
+			gradeLevel: 12,
+			stateStandards: null,
+			focusPoints: null,
+			priorKnowledge: null,
+			scaffoldingGoals: null,
+			targetSkills: null,
+		},
+		swbat: "",
+		assessments: "",
+		activities: "",
+		materials: null,
+	});
 	const [loading, setLoading] = useState<boolean>(false);
 
 	const submitStep = async (input: any) => {
 		setLoading(true);
+		let body = {step: activeStep, lessonPlan: outputText};
+		if (activeStep === 0) {
+			body.lessonPlan.specification = input;
+			setOutputText({...outputText, specification: input});
+		}
+		console.log(JSON.stringify(body, null, 2))
 
-		const body = { step: activeStep, input: input };
 		const data = await sendToCluod("lessonplan", body);
-		if (data) {
-			console.log(data);
+		const parsedData = JSON.parse(data.lessonPlan);
+		if (parsedData) {
+			console.log(parsedData);
 		} else {
 			console.error("An error occurred while fetching the simplified text.");
 			return false;
 		}
 		setLoading(false);
-		return data;
+		return {parsedData};
 	};
 
 	const isStepOptional = (step: number) => {
@@ -123,7 +135,7 @@ export default function HorizontalLinearStepper() {
 		const serverOutput = await submitStep(data);
 		console.log(serverOutput);
 		if (serverOutput) {
-			setOutputText(serverOutput.lessonPlan);
+			setOutputText(serverOutput.parsedData);
 			setActiveStep((prevActiveStep) => prevActiveStep + 1);
 		} else {
 			console.error("An error occurred while fetching the simplified text.");

@@ -12,6 +12,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import ReactQuill, { Quill } from "react-quill";
 import { XButton } from "../assets/SVGs";
+import type { LessonPlan } from "../@types/lessonPlan.types";
 
 const schema = yup.object().shape({
 	subject: yup.string().required("Subject is required."),
@@ -49,6 +50,28 @@ const ClearFormattingButton = ({ onClick }: { onClick: React.MouseEventHandler<H
 		</div>
 	);
 };
+
+function outputTextToHTML(outputText: LessonPlan): string {
+	let html_output = "";
+	if (outputText.swbat) {
+		let swbat = outputText.swbat.split('\n');
+		html_output += swbat.map(paragraph => `<p>${paragraph}</p>`).join('');
+		html_output += '<br/>'
+	}
+	if (outputText.assessments) {
+		let assessments = outputText.assessments.split('\n');
+		html_output += assessments.map(paragraph => `<p>${paragraph}</p>`).join('');
+		html_output += '<br/>'
+	}
+	if (outputText.activities) {
+		let activities = outputText.activities.split('\n');
+		html_output += activities.map(paragraph => `<p>${paragraph}</p>`).join('');
+		html_output += '<br/>'
+	}
+
+
+	return html_output;
+}
 
 function clearFormatting(html: string): string {
 	// Create a DOM parser to convert the HTML string to a DOM tree
@@ -244,26 +267,27 @@ const StepTwo = ({
 }: {
 	handleNext: any;
 	handleBack: any;
-	outputText: string;
+	outputText: LessonPlan;
 	setOutputText: any;
 }) => {
+
 	const onSubmit = () => {
 		console.log(JSON.stringify({ outputText }, null, 2));
 		handleNext({ outputText });
 	};
 
-	const [HTMLText, setHTMLText] = useState(outputText.slice(1, -1));
-	console.log(outputText)
-	console.log(HTMLText)
-	//TextBox = ({HTMLText, setHTMLText, setPlainText
+	const [HTMLText, setHTMLText] = useState(outputTextToHTML(outputText));
+
+	function newPlainOutputText(newText: string) {
+		setOutputText({ ...outputText, swbat: newText });
+	}
 
 	return (
 		<div>
 			<div className='step-one'>
 				<h2>Step 2: Review Objectives</h2>
-				{/* <div dangerouslySetInnerHTML={{__html: outputText}} /> */}
 				<div>Retrieve the generated lesson objectives, make any desired edits</div>
-				<TextBox HTMLText = {HTMLText} setHTMLText = {setHTMLText} setPlainText = {setOutputText} />
+				<TextBox HTMLText = {HTMLText} setHTMLText = {setHTMLText} setPlainText = {newPlainOutputText} />
 			</div>
 			<Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
 				<Button color='inherit' onClick={handleBack} sx={{ mr: 1 }}>
@@ -285,21 +309,28 @@ const StepThree = ({
 }: {
 	handleNext: any;
 	handleBack: any;
-	outputText: string;
+	outputText: LessonPlan;
 	setOutputText: any;
 }) => {
 	const onSubmit = () => {
 		console.log(JSON.stringify({ outputText }, null, 2));
 		handleNext({ outputText });
 	};
+
+	const [HTMLText, setHTMLText] = useState(outputTextToHTML(outputText));
+
+	function newPlainOutputText(newText: string) {
+		setOutputText({ ...outputText, assessments: newText });
+	}
+
 	return (
 		<div>
 			<div className='step-one'>
 				<h2>Step 3: Review Assessments</h2>
-				{outputText}
 				<div>
 					Retrieve the generated assessments for the lesson objectives, make any desired edits
 				</div>
+				<TextBox HTMLText = {HTMLText} setHTMLText = {setHTMLText} setPlainText = {newPlainOutputText} />
 			</div>
 			<Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
 				<Button color='inherit' onClick={handleBack} sx={{ mr: 1 }}>
@@ -322,22 +353,30 @@ const StepFour = ({
 	handleNext: any;
 	handleSkip: any;
 	handleBack: any;
-	outputText: string;
+	outputText: LessonPlan;
 	setOutputText: any;
 }) => {
 	const onSubmit = () => {
 		console.log(JSON.stringify({ outputText }, null, 2));
 		handleNext({ outputText });
 	};
+
+	const [HTMLText, setHTMLText] = useState(outputTextToHTML(outputText));
+
+	function newPlainOutputText(newText: string) {
+		setOutputText({ ...outputText, activities: newText });
+	}
+
 	return (
 		<div>
 			<div className='step-one'>
 				<h2>Step 4: Review Activities</h2>
-				{outputText}
+				
 				<div>
 					Review the generated activities, make any desired edits, then either download as PDF/docx
 					or continue to step 5: generate materials
 				</div>
+				<TextBox HTMLText = {HTMLText} setHTMLText = {setHTMLText} setPlainText = {newPlainOutputText} />
 			</div>
 			<Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
 				<Button color='inherit' onClick={handleBack} sx={{ mr: 1 }}>
@@ -360,22 +399,31 @@ const StepFive = ({
 }: {
 	handleNext: any;
 	handleBack: any;
-	outputText: string;
+	outputText: LessonPlan;
 	setOutputText: any;
 }) => {
 	const onSubmit = () => {
 		console.log(JSON.stringify({ outputText }, null, 2));
 		handleNext({ outputText });
 	};
+
+	const [HTMLText, setHTMLText] = useState(outputTextToHTML(outputText));
+
+	function newPlainOutputText(newText: string) {
+		setOutputText({ ...outputText, swbat: newText });
+	}
+
+
 	return (
 		<div>
 			<div className='step-one'>
 				<h2>Step 5: Review Materials</h2>
-				{outputText}
+				
 				<div>
 					Review the generated materials, make any desired edits, then either download as PDF/docx
 					or continue to step 5: generate materials
 				</div>
+				<TextBox HTMLText = {HTMLText} setHTMLText = {setHTMLText} setPlainText = {newPlainOutputText} />
 			</div>
 			<Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
 				<Button color='inherit' onClick={handleBack} sx={{ mr: 1 }}>
