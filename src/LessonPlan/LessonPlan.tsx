@@ -11,6 +11,7 @@ import { StepOne, StepTwo, StepThree, StepFour, StepFive } from "./LessonStep";
 import type { LessonPlan } from "../@types/lessonPlan.types";
 import { sendToCluod } from "../requests";
 import NeuralNetworkGen from "../assets/NeuralNetworkGen";
+import "./LessonPlan.css";
 
 const steps = ["Objectives", "Assessments", "Activities", "Materials", "Review"];
 
@@ -92,7 +93,7 @@ export default function HorizontalLinearStepper() {
 		swbat: "",
 		assessments: "",
 		activities: "",
-		materials: null,
+		materials: "",
 	});
 	const [loading, setLoading] = useState<boolean>(false);
 

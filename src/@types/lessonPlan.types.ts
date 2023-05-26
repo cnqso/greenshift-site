@@ -13,7 +13,7 @@ export interface LessonPlan {
 	swbat: string;
 	assessments: string;
 	activities: string;
-	materials: Materials | null;
+	materials: string;
 }
 
 export interface Materials {

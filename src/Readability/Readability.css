@@ -7,7 +7,7 @@
     margin: 0 auto;
 }
 
-.ql-editor {
+.editorBox .ql-editor {
 	font-family: "Spectral", serif;
 	border: 2px solid #000000;
 	font-size: 1.2rem;
@@ -15,9 +15,7 @@
 	color: #2d2d2d;
 	padding: 1rem;
 	min-height: 300px;
-	border-radius: 3px;
-    
-    
+	border-radius: 3px; 
 }
 .ql-container.ql-snow {
 	border: none;
