@@ -79,19 +79,21 @@ function clearFormatting(html: string): string {
 export default function TextBox({
 	outputText,
 	setOutputText,
+	step,
 }: {
 	outputText: LessonPlan;
 	setOutputText: any;
+	step: number;
 }) {
 	const objectivesRef = useRef(null);
 	const assessmentsRef = useRef(null);
-    const activitiesRef = useRef(null);
-    const materialsRef = useRef(null);
+	const activitiesRef = useRef(null);
+	const materialsRef = useRef(null);
 	// const [cleanText, setCleanText] = useState(true);
 	const [swbatHTMLText, setSwbatHTMLText] = useState(outputTextToHTML(outputText.swbat));
 	const [assessmentsHTMLText, setAssessmentsHTMLText] = useState(outputTextToHTML(outputText.assessments));
-    const [activitiesHTMLText, setActivitiesHTMLText] = useState(outputTextToHTML(outputText.activities));
-    const [materialsHTMLText, setMaterialsHTMLText] = useState(outputTextToHTML(outputText.materials));
+	const [activitiesHTMLText, setActivitiesHTMLText] = useState(outputTextToHTML(outputText.activities));
+	const [materialsHTMLText, setMaterialsHTMLText] = useState(outputTextToHTML(outputText.materials));
 
 	// function clearFormattingHandler() {
 	// 	setSwbatHTMLText(clearFormatting(swbatHTMLText));
@@ -107,22 +109,70 @@ export default function TextBox({
 		setAssessmentsHTMLText(content);
 		setOutputText({ ...outputText, assessments: editor.getText() });
 	}
-    function activitiesHandleChange(content: string, delta: any, source: any, editor: any) {
+	function activitiesHandleChange(content: string, delta: any, source: any, editor: any) {
 		setActivitiesHTMLText(content);
 		setOutputText({ ...outputText, activities: editor.getText() });
 	}
-    function materialsHandleChange(content: string, delta: any, source: any, editor: any) {
+	function materialsHandleChange(content: string, delta: any, source: any, editor: any) {
 		setMaterialsHTMLText(content);
 		setOutputText({ ...outputText, materials: editor.getText() });
 	}
 
-	return (
-		<div className='lessonPlanEditor'>
-			<div className="subject">
-				{outputText.specification.topic}
+	if (step === 2) {
+		return (
+			<div className='reviewObjectives'>
+				<div className='lessonPlanTextBox'>
+					<h4 className='stepLabel'>Review the lesson objectives and make any desired edits.</h4>
+					<ReactQuill
+						ref={objectivesRef}
+						theme='snow'
+						value={swbatHTMLText}
+						onChange={swbatHandleChange}
+						modules={modules}
+						formats={formats}
+					/>
+				</div>
 			</div>
+		);
+	}
+
+	if (step === 3) {
+		return (
+			<div className='reviewObjectives'>
+				<div className='objectives lessonPlanTextBox'>
+					<h3 className='stepLabel'>Review the assessments and make any desired edits.</h3>
+					<h4 className='textBoxLabel'>Objectives</h4>
+					{/* {cleanText ? null : <ClearFormattingButton onClick={clearFormattingHandler} />} */}
+					<ReactQuill
+						ref={objectivesRef}
+						theme='snow'
+						value={swbatHTMLText}
+						onChange={swbatHandleChange}
+						modules={modules}
+						formats={formats}
+					/>
+				</div>
+				<div className='assessments lessonPlanTextBox'>
+					<h4 className='textBoxLabel'>Assessments</h4>
+					<ReactQuill
+						ref={assessmentsRef}
+						theme='snow'
+						value={assessmentsHTMLText}
+						onChange={assessmentsHandleChange}
+						modules={modules}
+						formats={formats}
+					/>
+				</div>
+			</div>
+		);
+	}
+
+	if (step === 4) {
+		return (
+		<div className='reviewObjectives'>
 			<div className='objectives lessonPlanTextBox'>
-				<h4 className="textBoxLabel">Objectives</h4>
+				<h3 className='stepLabel'>Review the lesson plan and make any desired edits.</h3>
+				<h4 className='textBoxLabel'>Objectives</h4>
 				{/* {cleanText ? null : <ClearFormattingButton onClick={clearFormattingHandler} />} */}
 				<ReactQuill
 					ref={objectivesRef}
@@ -134,38 +184,76 @@ export default function TextBox({
 				/>
 			</div>
 			<div className='assessments lessonPlanTextBox'>
-			<h4 className="textBoxLabel">Assessments</h4>
+				<h4 className='textBoxLabel'>Procedure</h4>
 				<ReactQuill
-					ref={assessmentsRef}
+						ref={activitiesRef}
+						theme='snow'
+						value={activitiesHTMLText}
+						onChange={activitiesHandleChange}
+						modules={modules}
+						formats={formats}
+					/>
+			</div>
+		</div>
+		);
+	}
+
+	return (
+		<div className='lessonPlanEditor'>
+			<div className='subject'>{outputText.specification.topic}</div>
+			<div className='objectives lessonPlanTextBox'>
+				<h4 className='textBoxLabel'>Objectives</h4>
+				{/* {cleanText ? null : <ClearFormattingButton onClick={clearFormattingHandler} />} */}
+				<ReactQuill
+					ref={objectivesRef}
 					theme='snow'
-					value={assessmentsHTMLText}
-					onChange={assessmentsHandleChange}
+					value={swbatHTMLText}
+					onChange={swbatHandleChange}
 					modules={modules}
 					formats={formats}
 				/>
 			</div>
-			<div className='activities lessonPlanTextBox'>
-            <h4 className="textBoxLabel">Activities</h4>
-				<ReactQuill
-					ref={activitiesRef}
-					theme='snow'
-					value={activitiesHTMLText}
-					onChange={activitiesHandleChange}
-					modules={modules}
-					formats={formats}
-				/>
-			</div>
-			<div className='materials lessonPlanTextBox'>
-            <h4 className="textBoxLabel">Materials</h4>
-				<ReactQuill
-					ref={materialsRef}
-					theme='snow'
-					value={materialsHTMLText}
-					onChange={materialsHandleChange}
-					modules={modules}
-					formats={formats}
-				/>
-			</div>
+			{step > 4 ? (
+				<div className='materials lessonPlanTextBox'>
+					<h4 className='textBoxLabel'>Materials</h4>
+					<ReactQuill
+						ref={materialsRef}
+						theme='snow'
+						value={materialsHTMLText}
+						onChange={materialsHandleChange}
+						modules={modules}
+						formats={formats}
+					/>
+				</div>
+			) : null}
+
+			{step > 3 ? (
+				<div className='activities lessonPlanTextBox'>
+					<h4 className='textBoxLabel'>Procedure</h4>
+					<ReactQuill
+						ref={activitiesRef}
+						theme='snow'
+						value={activitiesHTMLText}
+						onChange={activitiesHandleChange}
+						modules={modules}
+						formats={formats}
+					/>
+				</div>
+			) : null}
+						{step > 2 ? (
+				<div className='assessments lessonPlanTextBox'>
+					<h4 className='textBoxLabel'>Assessments</h4>
+					<ReactQuill
+						ref={assessmentsRef}
+						theme='snow'
+						value={assessmentsHTMLText}
+						onChange={assessmentsHandleChange}
+						modules={modules}
+						formats={formats}
+					/>
+				</div>
+			) : null}
+
 		</div>
 	);
 }

@@ -6,26 +6,26 @@ import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
 import { StepOne, StepTwo, StepThree, StepFour, StepFive } from "./LessonStep";
 import type { LessonPlan } from "../@types/lessonPlan.types";
 import { sendToCluod } from "../requests";
 import NeuralNetworkGen from "../assets/NeuralNetworkGen";
 import "./LessonPlan.css";
+import LessonPDF from "./LessonPDF";
 
-const steps = ["Objectives", "Assessments", "Activities", "Materials", "Review"];
+const steps = ["Information", "Objectives", "Assessments", "Procedure", "Materials"];
 
 function StepContent({
 	step,
 	handleNext,
-	handleSkip,
+
 	handleBack,
 	outputText,
 	setOutputText,
 }: {
 	step: number;
 	handleNext: any;
-	handleSkip: any;
+
 	handleBack: any;
 	outputText: LessonPlan;
 	setOutputText: any;
@@ -55,7 +55,7 @@ function StepContent({
 			return (
 				<StepFour
 					handleNext={handleNext}
-					handleSkip={handleSkip}
+
 					handleBack={handleBack}
 					outputText={outputText}
 					setOutputText={setOutputText}
@@ -119,14 +119,18 @@ export default function HorizontalLinearStepper() {
 	};
 
 	const isStepOptional = (step: number) => {
-		return step === 3;
+		return step === null;
 	};
 
 	const isStepSkipped = (step: number) => {
 		return skipped.has(step);
 	};
 
-	const handleNext = async (data: any) => {
+	const handleNext = async (data: any, step: number = 1) => {
+		if (step !== 1) {
+			setActiveStep(5);
+			return;
+		}
 		let newSkipped = skipped;
 		if (isStepSkipped(activeStep)) {
 			newSkipped = new Set(newSkipped.values());
@@ -149,36 +153,20 @@ export default function HorizontalLinearStepper() {
 		setActiveStep((prevActiveStep) => prevActiveStep - 1);
 	};
 
-	const handleSkip = () => {
-		if (!isStepOptional(activeStep)) {
-			// You probably want to guard against something like this,
-			// it should never occur unless someone's actively trying to break something.
-			throw new Error("You can't skip a step that isn't optional.");
-		}
-
-		setActiveStep((prevActiveStep) => prevActiveStep + 1);
-		setSkipped((prevSkipped) => {
-			const newSkipped = new Set(prevSkipped.values());
-			newSkipped.add(activeStep);
-			return newSkipped;
-		});
-	};
+	
 
 	const handleReset = () => {
 		setActiveStep(0);
 	};
 
 	return (
-		<Box sx={{ width: "100%" }}>
+		<div className="lessonPlan">
 			<Stepper activeStep={activeStep}>
 				{steps.map((label, index) => {
 					const stepProps: { completed?: boolean } = {};
 					const labelProps: {
 						optional?: ReactNode;
 					} = {};
-					if (isStepOptional(index)) {
-						labelProps.optional = <Typography variant='caption'>Optional</Typography>;
-					}
 					if (isStepSkipped(index)) {
 						stepProps.completed = false;
 					}
@@ -190,9 +178,9 @@ export default function HorizontalLinearStepper() {
 				})}
 			</Stepper>
 
-			{activeStep === steps.length ? (
+			{activeStep === 5 ? (
 				<div>
-					<Typography sx={{ mt: 2, mb: 1 }}>All steps completed - you&apos;re finished</Typography>
+					<LessonPDF outputText={outputText}/>
 					<Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
 						<Box sx={{ flex: "1 1 auto" }} />
 						<Button onClick={handleReset}>Reset</Button>
@@ -205,13 +193,12 @@ export default function HorizontalLinearStepper() {
 					<StepContent
 						step={activeStep}
 						handleNext={handleNext}
-						handleSkip={handleSkip}
 						handleBack={handleBack}
 						outputText={outputText}
 						setOutputText={setOutputText}
 					/>
 				</>
 			)}
-		</Box>
+		</div>
 	);
 }

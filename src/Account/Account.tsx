@@ -1,7 +1,9 @@
+/** @format */
+
 // src/components/Account.tsx
-import React, { useState, useEffect } from 'react';
-import { Auth } from 'aws-amplify';
-import UserDataComponent from '../UserData';
+import React, { useState, useEffect } from "react";
+import { Auth } from "aws-amplify";
+// import UserDataComponent from '../UserData';
 
 interface UserClaims {
 	sub: string;
@@ -48,7 +50,7 @@ interface Generation {
 }
 
 interface Generations {
-  [key: string]: {[S:string]: string}
+	[key: string]: { [S: string]: string };
 }
 
 interface InputData {
@@ -56,119 +58,99 @@ interface InputData {
 	databaseInfo: DatabaseInfo;
 }
 
-const Account = ({propDrill}:{propDrill: any}) => {
-  console.log(JSON.stringify(propDrill, null, 2))
-  const [editMode, setEditMode] = useState(false);
-  const [formValues, setFormValues] = useState<UserData | null>(null);
-  const userData = propDrill[0];
-  const userClaims = propDrill[1];
-  const userGenerations = propDrill[2];
- 
-  
-  // useEffect(() => {
-  //   const fetchUserData = async () => {
-  //     try {
-  //       const userInfo = await Auth.currentAuthenticatedUser();
-  //       const { attributes } = userInfo;
-  //       setUserData({
-  //         email: attributes.email,
-  //         username: userInfo.username,
-  //       });
-  //       setFormValues({
-  //         email: attributes.email,
-  //         username: userInfo.username,
-  //       });
-  //     } catch (error) {
-  //       console.error('Error fetching user data:', error);
-  //     }
-  //   };
+const Account = ({ propDrill }: { propDrill: any }) => {
+	console.log(JSON.stringify(propDrill, null, 2));
+	const [editMode, setEditMode] = useState(false);
+	const [formValues, setFormValues] = useState<UserData | null>(null);
+	const userData = propDrill[0];
+	const userGenerations = propDrill[1];
+	const userClaims = propDrill[2];
 
-  //   fetchUserData();
-  // }, []);
+	// useEffect(() => {
+	//   const fetchUserData = async () => {
+	//     try {
+	//       const userInfo = await Auth.currentAuthenticatedUser();
+	//       const { attributes } = userInfo;
+	//       setUserData({
+	//         email: attributes.email,
+	//         username: userInfo.username,
+	//       });
+	//       setFormValues({
+	//         email: attributes.email,
+	//         username: userInfo.username,
+	//       });
+	//     } catch (error) {
+	//       console.error('Error fetching user data:', error);
+	//     }
+	//   };
 
-  // const handleEditButtonClick = () => {
-  //   setEditMode(true);
-  // };
+	//   fetchUserData();
+	// }, []);
 
-  // const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   if (formValues) {
-  //     setFormValues({ ...formValues, [event.target.name]: event.target.value });
-  //   }
-  // };
+	// const handleEditButtonClick = () => {
+	//   setEditMode(true);
+	// };
 
-  // const handleSaveButtonClick = async () => {
-  //   // Save the updated data to your Django backend and DynamoDB
-  //   // You can make API calls to your Django backend to update user preferences
-  //   // or other data stored in your DynamoDB table
+	// const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+	//   if (formValues) {
+	//     setFormValues({ ...formValues, [event.target.name]: event.target.value });
+	//   }
+	// };
 
-  //   // Update user attributes like email using Amplify's Auth.updateUserAttributes()
-  //   try {
-  //     const user = await Auth.currentAuthenticatedUser();
-  //     await Auth.updateUserAttributes(user, {
-  //       email: formValues?.email || '',
-  //     });
-  //     setUserData(formValues);
-  //     console.log('User attributes updated successfully!')
-  //   } catch (error) {
-  //     console.error('Error updating user attributes:', error);
-  //   }
+	// const handleSaveButtonClick = async () => {
+	//   // Save the updated data to your Django backend and DynamoDB
+	//   // You can make API calls to your Django backend to update user preferences
+	//   // or other data stored in your DynamoDB table
 
-  //   setEditMode(false);
-  // };
+	//   // Update user attributes like email using Amplify's Auth.updateUserAttributes()
+	//   try {
+	//     const user = await Auth.currentAuthenticatedUser();
+	//     await Auth.updateUserAttributes(user, {
+	//       email: formValues?.email || '',
+	//     });
+	//     setUserData(formValues);
+	//     console.log('User attributes updated successfully!')
+	//   } catch (error) {
+	//     console.error('Error updating user attributes:', error);
+	//   }
 
-  // const handleCancelButtonClick = () => {
-  //   setFormValues(userData);
-  //   setEditMode(false);
-  // };
+	//   setEditMode(false);
+	// };
 
-  return (
-    <div>
-      <h1 style={{marginTop: 0}}>My Account</h1>
+	// const handleCancelButtonClick = () => {
+	//   setFormValues(userData);
+	//   setEditMode(false);
+	// };
+	console.log(Object.keys(userGenerations).length)
+	return (
+		<div
+			style={{ maxWidth: "100%", maxHeight: "600px", whiteSpace: "break-spaces", }}>
+			<h1 style={{ marginTop: 0 }}>My Account</h1>
 			{userData && userClaims ? (
 				<div>
-					<div>User ID: {userClaims.sub}</div>
-					<div>Username: {userClaims["cognito:username"]}</div>
-					<div>Email: {userClaims.email}</div>
-					<div>Subscription: {userData.subscription}</div>
-					<div>Credits: {userData.credits}</div>
-					<div>
-						Transactions:{" "}
-						{Object.entries(userData.transactions).map(
-							([date, transaction]: [string, Transaction]) => {
-								return (
-									<div key={date} style={{display: "flex", justifyContent: "space-around"}}>
-                    <span>Date: {date}</span>
-										<span>Amount: {transaction.amount}</span>
-										<span>Type: {transaction.type}</span>
-									</div>
-								);
-							}
-						)}
+					<div >
+						<span>User: {userClaims["cognito:username"]}</span>
 					</div>
-          <div>
-						Generations:{" "}
-            {Object.entries(userGenerations)[0] ? <>
-            {Object.entries(userGenerations).map(
-							([date, generationString]: [string, any]) => {
-                const generation = JSON.parse(generationString.S)
-                const day = new Date(parseInt(date.slice(1,14))).toLocaleDateString("en-US")
-								return (
-									<div key={date} style={{display: "flex", justifyContent: "space-around"}}>
-                    <span>Date: {day}</span>
-										<span>Input: {generation.input}</span>
-										<span>Output: {generation.output}</span>
-									</div>
-								);
-							}
-						)}</> : <p>No generations</p>}
+					<div >
+						<span>Email: {userClaims["email"]}</span>
+					</div>
+					<div >
+						<span>Generations: {Object.keys(userGenerations).length}</span>
+					</div>
+					<div >
+						<span>Credits: {userData.credits}</span>
+					</div>
+					<div >
+						<span>Subscription: {userData.subscription}</span>
+					</div>
+					<br/>
 
-					</div>
 				</div>
 			) : (
 				<p>Loading user data...</p>
 			)}
 		</div>
-  );
+	);
 };
 
 export default Account;
