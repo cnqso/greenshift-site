@@ -1,14 +1,11 @@
-import React from 'react';
+/** @format */
+
+import React from "react";
 import RichText from "./RichText";
-import "./Readability.css"
+import "./Readability.css";
 
 const Readability = () => {
-  return (
-    <>
-      <h1>Readability</h1>
-        <RichText />
-    </>
-  );
-}
+	return <RichText />;
+};
 
 export default Readability;

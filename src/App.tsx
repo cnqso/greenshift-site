@@ -10,6 +10,7 @@ import Readability from "./Readability/Readability";
 import Home from "./Home/Home";
 import Account from "./Account/Account";
 import LessonPlan from "./LessonPlan/LessonPlan";
+import WorksheetGen from "./WorksheetGen/WorksheetGen";
 import { Amplify } from "aws-amplify";
 import { Authenticator } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
@@ -141,8 +142,12 @@ function App() {
 						</Link>
 					</h1>
 					<nav className='navigation'>
-						<a href='#dashboard'>dashboard</a>
-						<a href='#pricing'>pricing</a>
+					<Link style={{ color: "#fff" }} to='/'>
+							dashboard
+						</Link>
+						<Link style={{ color: "#fff" }} to='/'>
+							about
+						</Link>
 						<button
 							style={{
 								color: "#fff",
@@ -164,8 +169,12 @@ function App() {
 					<Route path='/readability' element={<Readability />} />
 					<Route path='/' element={<Home />} />
 					<Route path='/lessonplanner' element={<LessonPlan />} />
+					<Route path='worksheetgenerator' element={<WorksheetGen />} />
 				</Routes>
 			</div>
+			<footer className='footer'>
+				<p>© 2023</p>
+			</footer>
 		</Router>
 	);
 }

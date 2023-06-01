@@ -59,13 +59,11 @@ interface InputData {
 }
 
 const Account = ({ propDrill }: { propDrill: any }) => {
-	console.log(JSON.stringify(propDrill, null, 2));
-	const [editMode, setEditMode] = useState(false);
-	const [formValues, setFormValues] = useState<UserData | null>(null);
 	const userData = propDrill[0];
 	const userGenerations = propDrill[1];
 	const userClaims = propDrill[2];
-
+	// const [editMode, setEditMode] = useState(false);
+	// const [formValues, setFormValues] = useState<UserData | null>(null);
 	// useEffect(() => {
 	//   const fetchUserData = async () => {
 	//     try {
@@ -121,7 +119,6 @@ const Account = ({ propDrill }: { propDrill: any }) => {
 	//   setFormValues(userData);
 	//   setEditMode(false);
 	// };
-	console.log(Object.keys(userGenerations).length)
 	return (
 		<div
 			style={{ maxWidth: "100%", maxHeight: "600px", whiteSpace: "break-spaces", }}>
