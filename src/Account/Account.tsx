@@ -3,6 +3,7 @@
 // src/components/Account.tsx
 import React, { useState, useEffect } from "react";
 import { Auth } from "aws-amplify";
+import { fetchUserData } from "../requests";
 // import UserDataComponent from '../UserData';
 
 interface UserClaims {
@@ -59,9 +60,9 @@ interface InputData {
 }
 
 const Account = ({ propDrill }: { propDrill: any }) => {
-	const userData = propDrill[0];
-	const userGenerations = propDrill[1];
-	const userClaims = propDrill[2];
+	const { userData, userGenerations, userClaims, updateUserInfo }:any = { ...propDrill };
+
+	
 	// const [editMode, setEditMode] = useState(false);
 	// const [formValues, setFormValues] = useState<UserData | null>(null);
 	// useEffect(() => {
@@ -119,6 +120,15 @@ const Account = ({ propDrill }: { propDrill: any }) => {
 	//   setFormValues(userData);
 	//   setEditMode(false);
 	// };
+
+
+	useEffect(() => {
+		if (userData && userClaims) {
+            return;
+        }
+		updateUserInfo();
+	}, []);
+
 	return (
 		<div
 			style={{ maxWidth: "100%", maxHeight: "600px", whiteSpace: "break-spaces", }}>

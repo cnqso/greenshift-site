@@ -5,7 +5,6 @@ import RichText from "./Readability/RichText";
 import "./App.css";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import { Auth } from "aws-amplify";
-// console.log((await Auth.currentSession()).getIdToken().getJwtToken())
 import Readability from "./Readability/Readability";
 import Home from "./Home/Home";
 import Account from "./Account/Account";
@@ -78,15 +77,24 @@ interface InputData {
 	databaseInfo: DatabaseInfo;
 }
 
+
+  const formFields = {
+	signIn: {
+	  username: {
+		placeholder: 'Enter Your Email or Username',
+		isRequired: true,
+		label: 'Email:'
+	  },
+	},
+  }
+
 function AuthModal({ show, onClose, propDrill }: { show: boolean; onClose: () => void; propDrill: any }) {
 	if (!show) return null;
 
 	return (
 		<Modal
 			open={show}
-			onClose={onClose}
-			aria-labelledby='auth-modal-title'
-			aria-describedby='auth-modal-description'>
+			onClose={onClose}>
 			<Box
 				sx={{
 					color: "#000000",
@@ -94,14 +102,14 @@ function AuthModal({ show, onClose, propDrill }: { show: boolean; onClose: () =>
 					top: "50%",
 					left: "50%",
 					transform: "translate(-50%, -50%)",
-					width: "80%",
-					maxWidth: 400,
+					maxWidth: 750,
+					minWidth: 375,
 					bgcolor: "#fff",
 					borderRadius: 2,
 					boxShadow: 24,
 					p: 4,
 				}}>
-				<Authenticator>
+				<Authenticator formFields={formFields}>
 					{({ signOut, user }) => (
 						<div>
 							<Account propDrill={propDrill} />
@@ -115,6 +123,10 @@ function AuthModal({ show, onClose, propDrill }: { show: boolean; onClose: () =>
 }
 
 function App() {
+
+
+	
+
 	const [showAuthModal, setShowAuthModal] = useState(false);
 
 	function toggleAuthModal() {
@@ -124,13 +136,18 @@ function App() {
 	const [userData, setUserData] = useState<UserData | null>(null);
 	const [userClaims, setUserClaims] = useState<UserClaims | null>(null);
 	const [userGenerations, setUserGenerations] = useState<Generations | null>(null);
-	useEffect(() => {
-		if (userData || userClaims || userGenerations) {
-            console.log(userData);
-            return;
-        }
+	// useEffect(() => {
+		
+	// 	if (userData || userClaims || userGenerations) {
+    //         console.log(userData);
+    //         return;
+    //     }
+	// 	fetchUserData(setUserData, setUserClaims, setUserGenerations);
+	// }, []);
+
+	function updateUserInfo() {
 		fetchUserData(setUserData, setUserClaims, setUserGenerations);
-	}, []);
+	}
 
 	return (
 		<Router>
@@ -163,7 +180,7 @@ function App() {
 				<AuthModal
 					show={showAuthModal}
 					onClose={toggleAuthModal}
-					propDrill={[userData, userClaims, userGenerations]}
+					propDrill={{userData:userData, userClaims:userClaims, userGenerations:userGenerations, updateUserInfo:updateUserInfo}}
 				/>
 				<Routes>
 					<Route path='/readability' element={<Readability />} />

@@ -6,11 +6,22 @@
 #root {
   max-width: 1280px;
   margin: 0 auto;
- 
   text-align: center;
 }
 
+.amplify-tabs-item {
+  color: #000 !important; 
+}
 
+[data-state="active"] {
+  border-top-color: #000 !important;
+}
 
+.amplify-button--primary {
+  background-color: #000 !important;
+  color: #fff !important;
+}
 
-
+.amplify-button--small {
+  color: #000 !important;
+}

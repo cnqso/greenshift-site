@@ -9,7 +9,7 @@ import NeuralNetworkGen from "../assets/NeuralNetworkGen";
 import "./WorksheetGen.css";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import {sendToCluod} from "../requests"
+import { sendToCluod } from "../requests";
 
 const modules = {
 	toolbar: [],
@@ -94,15 +94,7 @@ function optionsToTextRequest(options: any) {
 	return textRequests;
 }
 
-const SelectOption = ({
-	id,
-	items,
-	setItems,
-}: {
-	id: number;
-	items: any;
-	setItems: any;
-}) => {
+const SelectOption = ({ id, items, setItems }: { id: number; items: any; setItems: any }) => {
 	const thisSelectOptionRef = useRef(null);
 	// const thisItem = items[id];
 	const [HTMLText, setHTMLText] = useState(items[id].text);
@@ -114,7 +106,6 @@ const SelectOption = ({
 		newItems[id].selection.label = e.label;
 		setItems(newItems);
 	};
-
 
 	function handleTextChange(content: string, delta: any, source: any, editor: any) {
 		setHTMLText(content);
@@ -211,11 +202,7 @@ function SelectOptions({
 							style={{ marginBottom: "-15px" }}>
 							<span style={{ display: "flex", justifyContent: "space-around" }}>
 								<UpDownSelector items={items} setItems={setItems} id={parseInt(key, 10)} />
-								<SelectOption
-									id={parseInt(key, 10)}
-									items={items}
-									setItems={setItems}
-								/>
+								<SelectOption id={parseInt(key, 10)} items={items} setItems={setItems} />
 
 								<RemoveGenerationButton
 									onClick={() => {
@@ -294,10 +281,12 @@ export default function WorksheetGen() {
 
 		if (data) {
 			let newHTMLText = "";
-			console.log(data.generation_data)
+			console.log(data.generation_data);
 			const genKeys = Object.keys(generationItems);
 			for (let i = 0; i < genKeys.length; i++) {
-				newHTMLText += `<div><h4>${"capitalizedType"}</h4>${replaceMarkdownWithHTML(data.generation_data[i])}</div>`;
+				newHTMLText += `<div><h4>${"capitalizedType"}</h4>${replaceMarkdownWithHTML(
+					data.generation_data[i]
+				)}</div>`;
 			}
 			setGenerationText(newHTMLText);
 		} else {
@@ -316,10 +305,7 @@ export default function WorksheetGen() {
 				loading={loading}
 				setGenerationVisible={setGenerationVisible}
 			/>
-			<div
-				style={{ marginTop: "-15px" }}
-				dangerouslySetInnerHTML={{ __html: generationText }}
-			/>
+			<div style={{ marginTop: "-15px" }} dangerouslySetInnerHTML={{ __html: generationText }} />
 		</div>
 	);
 }

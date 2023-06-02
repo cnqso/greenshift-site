@@ -26,12 +26,12 @@ async function sendToCluod(api: string, body: any) {
 	}
 }
 
-async function fetchUserData(setUserData: Function, setUserGenerations: Function, setUserClaims: Function) {
+async function fetchUserData(setUserData: Function, setUserClaims: Function, setUserGenerations: Function,) {
+	console.log("Fetching user data from server")
 	try {
 		const userInfo = await Auth.currentAuthenticatedUser();
 		console.log(userInfo);
 		const storedUserData = JSON.parse(localStorage.getItem("userData") ?? "{}");
-		console.log(storedUserData);
 		// Load states with local storage data if it exists
 		if (storedUserData.databaseInfo && storedUserData.user_claims) {
 			if (!storedUserData.databaseInfo.Allinfo) {
