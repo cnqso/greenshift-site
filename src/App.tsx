@@ -17,30 +17,20 @@ import "@aws-amplify/ui-react/styles.css";
 import awsExports from "./aws-exports";
 import Modal from "@mui/material/Modal";
 import { Box } from "@mui/system";
-import { fetchUserData } from "./requests"
+import { fetchUserData, fetchUserPreferences } from "./requests"
 
 
 
 
 Amplify.configure(awsExports);
 
-interface UserClaims {
-	sub: string;
-	email_verified: boolean;
-	iss: string;
-	"cognito:username": string;
-	origin_jti: string;
-	aud: string;
-	event_id: string;
-	token_use: string;
-	auth_time: number;
-	exp: number;
-	iat: number;
-	jti: string;
+interface UserInfo {
+	username: string;
 	email: string;
+	sub: string;
 }
 
-interface UserData {
+interface UserPreferences {
 	transactions: { [key: string]: Transaction };
 	generations: { [key: string]: Generation };
 	credits: number;
@@ -73,7 +63,7 @@ interface Generations {
 }
 
 interface InputData {
-	user_claims: UserClaims;
+	user_claims: UserInfo;
 	databaseInfo: DatabaseInfo;
 }
 
@@ -123,30 +113,28 @@ function AuthModal({ show, onClose, propDrill }: { show: boolean; onClose: () =>
 }
 
 function App() {
-
-
-	
-
 	const [showAuthModal, setShowAuthModal] = useState(false);
 
 	function toggleAuthModal() {
 		setShowAuthModal(!showAuthModal);
 	}
 
-	const [userData, setUserData] = useState<UserData | null>(null);
-	const [userClaims, setUserClaims] = useState<UserClaims | null>(null);
-	const [userGenerations, setUserGenerations] = useState<Generations | null>(null);
+	const [userPreferences, setUserPreferences] = useState<UserPreferences | null>(null);
+	const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
 	// useEffect(() => {
 		
-	// 	if (userData || userClaims || userGenerations) {
-    //         console.log(userData);
+	// 	if (userPreferences || userInfo || userGenerations) {
+    //         console.log(userPreferences);
     //         return;
     //     }
-	// 	fetchUserData(setUserData, setUserClaims, setUserGenerations);
+	// 	fetchUserData(setUserPreferences, setUserInfo, setUserGenerations);
 	// }, []);
 
 	function updateUserInfo() {
-		fetchUserData(setUserData, setUserClaims, setUserGenerations);
+		fetchUserData(setUserInfo);
+	}
+	function updateUserPreferences() {
+		fetchUserPreferences(setUserPreferences);
 	}
 
 	return (
@@ -180,7 +168,7 @@ function App() {
 				<AuthModal
 					show={showAuthModal}
 					onClose={toggleAuthModal}
-					propDrill={{userData:userData, userClaims:userClaims, userGenerations:userGenerations, updateUserInfo:updateUserInfo}}
+					propDrill={{userPreferences:userPreferences, userInfo:userInfo, updateUserInfo:updateUserInfo, updateUserPreferences:updateUserPreferences}}
 				/>
 				<Routes>
 					<Route path='/readability' element={<Readability />} />

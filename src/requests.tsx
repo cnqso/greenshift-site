@@ -26,32 +26,40 @@ async function sendToCluod(api: string, body: any) {
 	}
 }
 
-async function fetchUserData(setUserData: Function, setUserClaims: Function, setUserGenerations: Function,) {
-	console.log("Fetching user data from server")
+async function fetchUserData(setUserClaims: Function) {
+	console.log("Grabbing user data")
 	try {
 		const userInfo = await Auth.currentAuthenticatedUser();
-		console.log(userInfo);
-		const storedUserData = JSON.parse(localStorage.getItem("userData") ?? "{}");
-		// Load states with local storage data if it exists
-		if (storedUserData.databaseInfo && storedUserData.user_claims) {
-			if (!storedUserData.databaseInfo.Allinfo) {
-				setUserData(JSON.parse(storedUserData.databaseInfo.preferences.S));
-				setUserGenerations(storedUserData.databaseInfo.generations["M"]);
-				setUserClaims(storedUserData.user_claims);
-				// If the data is from today, don't fetch new data.
-				if (
-					storedUserData.date &&
-					new Date(storedUserData.date).toDateString() === new Date().toDateString()
-				) {
-					return;
-				}
-			} else {
-				console.log("Stored user data is the result of a failed transaction.");
-			}
-		}
+		const userClaims = {username: userInfo.username, email: userInfo.attributes.email, sub: userInfo.attributes.sub}
+		setUserClaims(userClaims);
+	} catch (error) {
+		console.error("Error fetching user data:", error);
+	}
+}
 
-		console.log("Fetching user data from API.");
-		const response = await fetch(url + "api/userdata", {
+async function fetchUserGenerations(setUserGenerations: Function,) {
+	console.log("Fetching user generations from server")
+	try {
+		// const storedUserData = JSON.parse(localStorage.getItem("userData") ?? "{}");
+		// Load states with local storage data if it exists
+		// if (storedUserData.databaseInfo && storedUserData.user_claims) {
+		// 	if (!storedUserData.databaseInfo.Allinfo) {
+		// 		setUserGenerations(storedUserData.databaseInfo.generations["M"]);
+		// 		// If the data is from today, don't fetch new data.
+		// 		if (
+		// 			storedUserData.date &&
+		// 			new Date(storedUserData.date).toDateString() === new Date().toDateString()
+		// 		) {
+		// 			return;
+		// 		}
+		// 	} else {
+		// 		console.log("Stored user data is the result of a failed transaction.");
+		// 	}
+		// }
+
+		const userInfo = await Auth.currentAuthenticatedUser();
+		
+		const response = await fetch(url + "api/usergenerations", {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
@@ -60,17 +68,35 @@ async function fetchUserData(setUserData: Function, setUserClaims: Function, set
 		});
 
 		const data = await response.json();
-		console.log(JSON.stringify(data, null, 2));
+		console.log(JSON.stringify(data.generations["M"], null, 2));
 
-		// Save the user data to local storage with a timestamp.
-		localStorage.setItem("userData", JSON.stringify({ ...data, date: new Date() }));
-
-		setUserData(JSON.parse(data.databaseInfo.preferences.S));
-		setUserGenerations(data.databaseInfo.generations["M"]);
-		setUserClaims(data.user_claims);
+		setUserGenerations(data.generations["M"]);
 	} catch (error) {
 		console.error("Error fetching user data:", error);
 	}
 }
 
-export { sendToCluod, fetchUserData };
+async function fetchUserPreferences(setUserPreferences: Function,) {
+	console.log("Fetching user generations from server")
+	try {
+
+		const userInfo = await Auth.currentAuthenticatedUser();
+		const response = await fetch(url + "api/userpreferences", {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `${userInfo.signInUserSession.idToken.jwtToken}`,
+			},
+		});
+
+		const data = await response.json();
+		console.log(JSON.stringify(JSON.parse(data.preferences.S), null, 2));
+
+		setUserPreferences(JSON.parse(data.preferences.S));
+	} catch (error) {
+		console.error("Error fetching user data:", error);
+	}
+}
+
+
+export { sendToCluod, fetchUserData, fetchUserGenerations, fetchUserPreferences };
