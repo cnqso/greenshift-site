@@ -6,6 +6,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import {MaterialUISwitch} from "../assets/utilities";
+
 
 import type { LessonPlan } from "../@types/lessonPlan.types";
 import TextBox from "./LessonPlanEditor";
@@ -27,6 +29,8 @@ const schema = yup.object().shape({
 
 type FormData = yup.InferType<typeof schema>;
 
+
+
 const StepOne = ({ handleNext }: { handleNext: any }) => {
 	const {
 		register,
@@ -36,14 +40,23 @@ const StepOne = ({ handleNext }: { handleNext: any }) => {
 		resolver: yupResolver(schema),
 	});
 
+	const [premiumModel, setPremiumModel] = useState(false);
+
 	const onSubmit = (data: FormData) => {
 		console.log(JSON.stringify(data, null, 2));
 		handleNext(data);
 	};
 
+	function handleSwitch(event: React.ChangeEvent<HTMLInputElement>) {
+		setPremiumModel(event.target.checked);
+	}
+
 	return (
 		<form className='stepOne' onSubmit={handleSubmit(onSubmit)}>
-			<h3 className='stepTitle'>Lesson Information</h3>
+			<h3 className='stepTitle'>
+				Lesson Information{" "}
+				
+			</h3>
 			<div className='stepOneForm'>
 				<label htmlFor='subject' className='label'>
 					Subject* :
@@ -71,8 +84,6 @@ const StepOne = ({ handleNext }: { handleNext: any }) => {
 				/>
 				<p className='formError'>{errors.gradeLevel?.message}</p>
 
-				
-
 				<label htmlFor='focusPoints' className='label'>
 					Focus Points:
 				</label>
@@ -83,6 +94,9 @@ const StepOne = ({ handleNext }: { handleNext: any }) => {
 				/>
 				<p className='formError'>{errors.focusPoints?.message}</p>
 			</div>
+			<span>{premiumModel ? "Premium Model" : "Basic Model"}</span>
+			<MaterialUISwitch checked={premiumModel} onChange={handleSwitch} sx={{ m: 1 }} />
+				
 			<Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
 				<Button color='inherit' disabled={true} sx={{ mr: 1 }}>
 					Back

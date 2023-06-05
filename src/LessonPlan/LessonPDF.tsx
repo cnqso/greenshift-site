@@ -12,6 +12,7 @@ import {
 	PDFDownloadLink,
 } from "@react-pdf/renderer";
 import { LessonPlan } from "../@types/lessonPlan.types";
+import {orderText} from "../assets/utilities";
 
 
 const styles = StyleSheet.create({
@@ -66,14 +67,6 @@ const styles = StyleSheet.create({
 		color: "grey",
 	},
 });
-
-function orderText(n: number): string {
-	const suffix = ["th", "st", "nd", "rd", "th"][Math.min(n % 10, 4)];
-	if (11 <= n % 100 && n % 100 <= 13) {
-		return n.toString() + "th";
-	}
-	return n.toString() + suffix;
-}
 
 // Create Document Component
 export default function LessonPDF({ outputText }: { outputText: LessonPlan }) {

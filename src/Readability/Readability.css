@@ -41,10 +41,11 @@
 /* Top bar */
 
 .infoBar {
+	width: 75%;
 	display: flex;
-	justify-content: space-around;
+	justify-content: space-between;
 	align-items: center;
-	margin: 10px 0;
+	margin: 10px auto;
 	font-size: 1.2em;
 }
 

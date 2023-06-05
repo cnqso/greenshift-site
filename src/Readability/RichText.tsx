@@ -12,6 +12,7 @@ import type { ListItems, GenerationRequest } from "../@types/readability.types";
 import { motion } from "framer-motion";
 import { Collapse } from "react-collapse";
 import {sendToCluod} from "../requests"
+import {orderText, plainLanguageDifficulty} from "../assets/utilities"
 
 const modules = {
 	toolbar: [],
@@ -22,43 +23,7 @@ const modules = {
 };
 const formats = ["size", "bold", "italic", "underline", "list", "bullet", "background"];
 
-function orderText(n: number): string {
-	const suffix = ["th", "st", "nd", "rd", "th"][Math.min(n % 10, 4)];
-	if (11 <= n % 100 && n % 100 <= 13) {
-		return n.toString() + "th";
-	}
-	return n.toString() + suffix;
-}
 
-function plainLanguageDifficulty(ARI: number): string[] {
-	const plainLanguageARI: string[] = ["Kindergarten", "Elementary School"];
-	const plainDifficulty: string = orderText(Math.floor(ARI));
-	const fourYearNames: string[] = ["Freshman", "Sophomore", "Junior", "Senior"];
-
-	if (ARI < 1) {
-		plainLanguageARI[0] = "Kindergarten";
-	} else if (ARI < 6) {
-		plainLanguageARI[0] = `${plainDifficulty} Grade`;
-		plainLanguageARI[1] = "Elementary School";
-	} else if (ARI < 9) {
-		plainLanguageARI[0] = `${plainDifficulty} Grade`;
-		plainLanguageARI[1] = "Middle School";
-	} else if (ARI < 13) {
-		plainLanguageARI[0] = `${plainDifficulty} Grade`;
-		plainLanguageARI[1] = "High School";
-	} else if (ARI < 17) {
-		plainLanguageARI[0] = `College ${fourYearNames[Math.floor(ARI) - 13]}`;
-		plainLanguageARI[1] = "University";
-	} else if (ARI < 25) {
-		plainLanguageARI[0] = `${orderText(Math.floor(ARI - 16))} year grad student`;
-		plainLanguageARI[1] = "Graduate School";
-	} else {
-		plainLanguageARI[0] = `${orderText(Math.floor(ARI - 16))} year grad student`;
-		plainLanguageARI[1] = "Impenetrable";
-	}
-
-	return plainLanguageARI;
-}
 
 function clearFormatting(html: string): string {
 	// Create a DOM parser to convert the HTML string to a DOM tree
@@ -150,6 +115,7 @@ export default function RichText() {
 	const [generationItems, setGenerationItems] = useState({
 		0: { selection: { value: "reading comprehension", label: "Comprehension" }, quant: 3 },
 	});
+	const [premiumModel, setPremiumModel] = useState(false);
 
 
 	async function submitAnalyze(e: any) {
@@ -227,6 +193,8 @@ export default function RichText() {
 				currentReadability={currentReadability}
 				targetReadability={targetReadability}
 				setTargetReadability={setTargetReadability}
+				premiumModel={premiumModel}
+				setPremiumModel={setPremiumModel}
 			/>
 			<div className='editorBox'>
 				{cleanText ? null : <ClearFormattingButton onClick={clearFormattingHandler} />}

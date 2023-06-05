@@ -10,6 +10,7 @@ import "./WorksheetGen.css";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { sendToCluod } from "../requests";
+import WorksheetInfoBar from "./WorksheetInfoBar";
 
 const modules = {
 	toolbar: [],
@@ -26,10 +27,12 @@ const questionOptions = [
 	{ value: "multiple choice questions", label: "Multiple Choice Questions" },
 	{ value: "true or false questions", label: "True/False Questions" },
 ];
+
 function removeItem<T>(arr: T[], item: T) {
 	const index = arr.indexOf(item);
 	if (index > -1) arr.splice(index, 1);
 }
+
 const RemoveGenerationButton = ({ onClick }: { onClick: React.MouseEventHandler<HTMLDivElement> }) => {
 	return (
 		<div className='RemoveGenerationButton' onClick={onClick}>
@@ -266,6 +269,8 @@ export default function WorksheetGen() {
 	const [loading, setLoading] = useState(false);
 	const [generationVisible, setGenerationVisible] = useState(true);
 	const [generationText, setGenerationText] = useState("");
+	const [gradeLevel, setGradeLevel] = useState(5);
+	const [premiumModel, setPremiumModel] = useState(false);
 	function replaceMarkdownWithHTML(input: string): string {
 		let output = input.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
 		return output;
@@ -297,7 +302,13 @@ export default function WorksheetGen() {
 
 	return (
 		<div>
-			<h1>Worksheet Generator</h1>
+			<WorksheetInfoBar
+				gradeLevel={gradeLevel}
+				setGradeLevel={setGradeLevel}
+				premiumModel={premiumModel}
+				setPremiumModel={setPremiumModel}
+			/>
+			<br/>
 			<SelectOptions
 				submitGenerate={submitGenerate}
 				items={generationItems}
