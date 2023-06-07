@@ -1,27 +1,97 @@
-
-
-
-
+/** @format */
 
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  text-align: center;
+	max-width: 1280px;
+	margin: 0 auto;
+	text-align: center;
+}
+
+.App {
+	min-height: 100vh;
+}
+
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 65px;
+  background-color: #222;
+  color: #fff;
+}
+
+.footer {
+  display: none;
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	color: #fff;
 }
 
 .amplify-tabs-item {
-  color: #000 !important; 
+	color: #000 !important;
 }
 
 [data-state="active"] {
-  border-top-color: #000 !important;
+	border-top-color: #000 !important;
 }
 
 .amplify-button--primary {
-  background-color: #000 !important;
-  color: #fff !important;
+	background-color: #000 !important;
+	color: #fff !important;
 }
 
 .amplify-button--small {
-  color: #000 !important;
+	color: #000 !important;
+}
+
+.invisibleText {
+	color: transparent;
+	-webkit-user-select: none; /* Safari */
+	-moz-user-select: none; /* Firefox */
+	-ms-user-select: none; /* IE10+/Edge */
+	user-select: none; /* Standard */
+}
+
+.navigation {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.navbutton, .navlink {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding-inline: 20px;
+  
+  color: #FFFFFF;
+  background-color: #222;
+  border: none;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.navbutton:hover, .navlink:hover {
+  background-color: #333;
+}
+
+.logo {
+  font-size: 1.5rem;
+  margin: 0;
+  height: 100%;
+}
+
+
+.mainlink {
+  font-size: 1.2em;
+  padding-block: 0;
+  height: 100%;
+  background-color: #222;
+  display: flex;
+  align-items: center;
 }

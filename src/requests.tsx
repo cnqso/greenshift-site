@@ -37,7 +37,7 @@ async function fetchUserData(setUserClaims: Function) {
 	}
 }
 
-async function fetchUserGenerations(setUserGenerations: Function,) {
+async function fetchUserGenerations() {
 	console.log("Fetching user generations from server")
 	try {
 		// const storedUserData = JSON.parse(localStorage.getItem("userData") ?? "{}");
@@ -70,7 +70,7 @@ async function fetchUserGenerations(setUserGenerations: Function,) {
 		const data = await response.json();
 		console.log(JSON.stringify(data.generations["M"], null, 2));
 
-		setUserGenerations(data.generations["M"]);
+		return data.generations["M"];
 	} catch (error) {
 		console.error("Error fetching user data:", error);
 	}

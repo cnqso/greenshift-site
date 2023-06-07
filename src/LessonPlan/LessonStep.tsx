@@ -96,6 +96,8 @@ const StepOne = ({ handleNext }: { handleNext: any }) => {
 			</div>
 			<span>{premiumModel ? "Premium Model" : "Basic Model"}</span>
 			<MaterialUISwitch checked={premiumModel} onChange={handleSwitch} sx={{ m: 1 }} />
+			<span className="invisibleText">{premiumModel ? "Premium Model" : "Basic Model"}</span>
+			{/*This is hacky, but also I'm a genius */}
 				
 			<Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
 				<Button color='inherit' disabled={true} sx={{ mr: 1 }}>

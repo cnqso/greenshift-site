@@ -8,13 +8,7 @@ import { Link } from "react-router-dom";
 const HomePage = () => {
 	return (
 		<div className='homepage'>
-			{/* <section className='hero'>
-					<h2>Piaget Bot</h2>
-					<p>A virtual teaching assistant</p>
-					<Link to='/readability'>
-						<button className='cta'>Get Started</button>
-					</Link>
-				</section> */}
+
 			<div className='feature-items'>
 				<div className='feature-item'>
 					<Link to='/readability'>
@@ -34,6 +28,11 @@ const HomePage = () => {
 					</Link>
 
 					<p>Create a detailed lesson plan, materials included, in seconds. </p>
+				</div>
+				<div className='feature-item'>
+					<Link to='/generations'>
+						<h3>View Generations</h3>
+					</Link>
 				</div>
 			</div>
 		</div>

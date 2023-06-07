@@ -10,6 +10,7 @@ import Home from "./Home/Home";
 import Account from "./Account/Account";
 import LessonPlan from "./LessonPlan/LessonPlan";
 import WorksheetGen from "./WorksheetGen/WorksheetGen";
+import Generations from "./Generations/Generations";
 import { Amplify } from "aws-amplify";
 import { Authenticator } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
@@ -17,10 +18,7 @@ import "@aws-amplify/ui-react/styles.css";
 import awsExports from "./aws-exports";
 import Modal from "@mui/material/Modal";
 import { Box } from "@mui/system";
-import { fetchUserData, fetchUserPreferences } from "./requests"
-
-
-
+import { fetchUserData, fetchUserPreferences } from "./requests";
 
 Amplify.configure(awsExports);
 
@@ -67,24 +65,21 @@ interface InputData {
 	databaseInfo: DatabaseInfo;
 }
 
-
-  const formFields = {
+const formFields = {
 	signIn: {
-	  username: {
-		placeholder: 'Enter Your Email or Username',
-		isRequired: true,
-		label: 'Email:'
-	  },
+		username: {
+			placeholder: "Enter Your Email or Username",
+			isRequired: true,
+			label: "Email:",
+		},
 	},
-  }
+};
 
 function AuthModal({ show, onClose, propDrill }: { show: boolean; onClose: () => void; propDrill: any }) {
 	if (!show) return null;
 
 	return (
-		<Modal
-			open={show}
-			onClose={onClose}>
+		<Modal open={show} onClose={onClose}>
 			<Box
 				sx={{
 					color: "#000000",
@@ -121,14 +116,6 @@ function App() {
 
 	const [userPreferences, setUserPreferences] = useState<UserPreferences | null>(null);
 	const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
-	// useEffect(() => {
-		
-	// 	if (userPreferences || userInfo || userGenerations) {
-    //         console.log(userPreferences);
-    //         return;
-    //     }
-	// 	fetchUserData(setUserPreferences, setUserInfo, setUserGenerations);
-	// }, []);
 
 	function updateUserInfo() {
 		fetchUserData(setUserInfo);
@@ -137,44 +124,69 @@ function App() {
 		fetchUserPreferences(setUserPreferences);
 	}
 
+	useEffect(() => {
+		if (userInfo) {
+			return;
+		}
+		updateUserInfo();
+	}, []);
+
+	const getStartedOrPremium = () => {
+		if (!userPreferences) {
+			return (
+				<Link className='navlink' to='/'>
+					Get Started
+				</Link>
+			);
+		}
+		if (userPreferences?.subscription === "premium") {
+			return null;
+		}
+		return (
+			<Link className='navlink' to='/'>
+				Premium
+			</Link>
+		);
+	};
+
 	return (
 		<Router>
 			<div className='App'>
 				<header className='header'>
 					<h1 className='logo'>
-						<Link style={{ color: "#fff" }} to='/'>
+						<Link className='navlink mainlink' to='/'>
 							Piaget Bot
 						</Link>
 					</h1>
 					<nav className='navigation'>
-					<Link style={{ color: "#fff" }} to='/'>
-							dashboard
+						<Link className='navlink' to='/'>
+							Dashboard
 						</Link>
-						<Link style={{ color: "#fff" }} to='/'>
-							about
+						<Link className='navlink' to='/'>
+							About
 						</Link>
-						<button
-							style={{
-								color: "#fff",
-								background: "none",
-								border: "none",
-								cursor: "pointer",
-							}}
-							onClick={toggleAuthModal}>
-							account
+						<button className='navbutton' onClick={toggleAuthModal}>
+							{userInfo ? "Account" : "Login"}
 						</button>
+						{getStartedOrPremium()}
 					</nav>
 				</header>
 				<AuthModal
 					show={showAuthModal}
 					onClose={toggleAuthModal}
-					propDrill={{userPreferences:userPreferences, userInfo:userInfo, updateUserInfo:updateUserInfo, updateUserPreferences:updateUserPreferences}}
+					propDrill={{
+						userPreferences: userPreferences,
+						userInfo: userInfo,
+						updateUserInfo: updateUserInfo,
+						updateUserPreferences: updateUserPreferences,
+					}}
 				/>
 				<Routes>
 					<Route path='/readability' element={<Readability />} />
 					<Route path='/' element={<Home />} />
 					<Route path='/lessonplanner' element={<LessonPlan />} />
 					<Route path='worksheetgenerator' element={<WorksheetGen />} />
+					<Route path='generations' element={<Generations />} />
 				</Routes>
 			</div>
 			<footer className='footer'>

@@ -33,7 +33,7 @@ function WorksheetInfoBar({
 		<div className='infoBar'>
 			<span className='infoBarText'>
 			<MaterialUISwitch checked={premiumModel} onChange={handleSwitch} sx={{ m: 1 }} /><span>{premiumModel ? "Premium Model" : "Basic Model"}</span>
-
+			
 			</span>
 
 			<span className='infoBarText'>

@@ -72,7 +72,7 @@ const Account = ({ propDrill }: { propDrill: any }) => {
 
 	function seeGenerations() {
 		console.log("see generations");
-		fetchUserGenerations(setUserGenerations);
+		setUserGenerations(fetchUserGenerations());
 	}
 
 	function seePreferences() {
@@ -82,39 +82,32 @@ const Account = ({ propDrill }: { propDrill: any }) => {
 
 	return (
 		<div style={{ maxWidth: "100%", maxHeight: "600px", whiteSpace: "break-spaces" }}>
-			<h1 style={{ marginTop: 0 }}>My Account</h1>
 			{userInfo ? (
 				<div>
-					<div>
-						<span>User: {userInfo["username"]}</span>
+					<div style={{ fontSize: "1.3em" }}>
+						<span>Hello, {userInfo["username"]}</span>
 					</div>
 					<div>
 						<span>Email: {userInfo["email"]}</span>
 					</div>
-					<br />
 					<div>
-						<span>Generations: {Object.keys(userGenerations).length}</span>
+						<span>Credits: {userPreferences?.credits ?? "..."}</span>
 					</div>
-
-					<br />
-
-					{userPreferences ? (
-						<div>
-							<div>
-								<span>Credits: {userPreferences.credits}</span>
-							</div>
-							<div>
-								<span>Subscription: {userPreferences.subscription}</span>
-							</div>
-						</div>
-					) : (
-						<p>Loading user preferences...</p>
-					)}
+					<div>
+						<span>Subscription: {userPreferences?.subscription ?? "..."}</span>
+					</div>
+					<div>
+						{userPreferences?.subscription !== "none" ? (
+							<span>Subscription renews: {userPreferences?.subscription?.expiration}</span>
+						) : null}
+					</div>
 				</div>
 			) : (
 				<p>Loading user info...</p>
 			)}
-
+			<div>
+				<span>Generations: {Object.keys(userGenerations).length}</span>
+			</div>
 			<button onClick={seeGenerations}>See generations</button>
 			<button onClick={seePreferences}>See preferences</button>
 		</div>
