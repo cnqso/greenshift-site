@@ -62,7 +62,6 @@ interface InputData {
 const Account = ({ propDrill }: { propDrill: any }) => {
 	const { userInfo, userPreferences, updateUserInfo, updateUserPreferences }: any = { ...propDrill };
 
-	const [userGenerations, setUserGenerations] = useState({});
 	useEffect(() => {
 		if (userInfo) {
 			return;
@@ -70,10 +69,6 @@ const Account = ({ propDrill }: { propDrill: any }) => {
 		updateUserInfo();
 	}, []);
 
-	function seeGenerations() {
-		console.log("see generations");
-		setUserGenerations(fetchUserGenerations());
-	}
 
 	function seePreferences() {
 		console.log("see generations");
@@ -105,11 +100,6 @@ const Account = ({ propDrill }: { propDrill: any }) => {
 			) : (
 				<p>Loading user info...</p>
 			)}
-			<div>
-				<span>Generations: {Object.keys(userGenerations).length}</span>
-			</div>
-			<button onClick={seeGenerations}>See generations</button>
-			<button onClick={seePreferences}>See preferences</button>
 		</div>
 	);
 };

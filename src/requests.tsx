@@ -26,12 +26,13 @@ async function sendToCluod(api: string, body: any) {
 	}
 }
 
-async function fetchUserData(setUserClaims: Function) {
+async function fetchUserData(setUserClaims: Function, setUserPreferences: Function) {
 	console.log("Grabbing user data")
 	try {
 		const userInfo = await Auth.currentAuthenticatedUser();
 		const userClaims = {username: userInfo.username, email: userInfo.attributes.email, sub: userInfo.attributes.sub}
 		setUserClaims(userClaims);
+		fetchUserPreferences(setUserPreferences);
 	} catch (error) {
 		console.error("Error fetching user data:", error);
 	}

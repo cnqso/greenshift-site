@@ -118,14 +118,18 @@ function App() {
 	const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
 
 	function updateUserInfo() {
-		fetchUserData(setUserInfo);
+		fetchUserData(setUserInfo, setUserPreferences);
 	}
 	function updateUserPreferences() {
 		fetchUserPreferences(setUserPreferences);
 	}
 
 	useEffect(() => {
+		if (userPreferences && userInfo) {
+			return;
+		}
 		if (userInfo) {
+			updateUserPreferences();
 			return;
 		}
 		updateUserInfo();
