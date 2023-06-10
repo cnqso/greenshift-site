@@ -1,6 +1,6 @@
 /** @format */
 
-import { useState, useRef } from "react";
+import { useState, useRef, useContext } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { XButton } from "../assets/SVGs";
 import Select from "react-select";
@@ -11,6 +11,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { sendToCluod } from "../requests";
 import WorksheetInfoBar from "./WorksheetInfoBar";
+import {ErrorContext} from "../assets/errors";
 
 const modules = {
 	toolbar: [],
@@ -275,6 +276,7 @@ export default function WorksheetGen() {
 		let output = input.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
 		return output;
 	}
+	const {setError} = useContext(ErrorContext);
 
 	async function submitGenerate(e: any) {
 		e.preventDefault();
@@ -282,7 +284,7 @@ export default function WorksheetGen() {
 		const body = {
 			generation_requests: generationItems,
 		};
-		const data = await sendToCluod("worksheetgenerate", body);
+		const data = await sendToCluod("worksheetgenerate", body, setError);
 
 		if (data) {
 			let newHTMLText = "";

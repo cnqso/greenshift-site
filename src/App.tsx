@@ -1,6 +1,6 @@
 /** @format */
 
-import { useState, useEffect } from "react";
+import { useState, useEffect} from "react";
 import RichText from "./Readability/RichText";
 import "./App.css";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
@@ -14,6 +14,7 @@ import Generations from "./Generations/Generations";
 import { Amplify } from "aws-amplify";
 import { Authenticator } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
+import {ErrorProvider, ErrorModal} from "./assets/errors";
 
 import awsExports from "./aws-exports";
 import Modal from "@mui/material/Modal";
@@ -74,6 +75,8 @@ const formFields = {
 		},
 	},
 };
+
+
 
 function AuthModal({ show, onClose, propDrill }: { show: boolean; onClose: () => void; propDrill: any }) {
 	if (!show) return null;
@@ -185,6 +188,7 @@ function App() {
 						updateUserPreferences: updateUserPreferences,
 					}}
 				/>
+				<ErrorProvider>
 				<Routes>
 					<Route path='/readability' element={<Readability />} />
 					<Route path='/' element={<Home />} />
@@ -192,6 +196,8 @@ function App() {
 					<Route path='worksheetgenerator' element={<WorksheetGen />} />
 					<Route path='generations' element={<Generations />} />
 				</Routes>
+				<ErrorModal />
+				</ErrorProvider>
 			</div>
 			<footer className='footer'>
 				<p>© 2023</p>

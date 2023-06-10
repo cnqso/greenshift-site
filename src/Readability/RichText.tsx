@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import NeuralNetworkGen from "../assets/NeuralNetworkGen";
@@ -13,6 +13,7 @@ import { motion } from "framer-motion";
 import { Collapse } from "react-collapse";
 import {sendToCluod} from "../requests"
 import {orderText, plainLanguageDifficulty} from "../assets/utilities"
+import {ErrorContext} from "../assets/errors";
 
 const modules = {
 	toolbar: [],
@@ -116,13 +117,14 @@ export default function RichText() {
 		0: { selection: { value: "reading comprehension", label: "Comprehension" }, quant: 3 },
 	});
 	const [premiumModel, setPremiumModel] = useState(false);
+	const {setError} = useContext(ErrorContext)
 
 
 	async function submitAnalyze(e: any) {
 		e.preventDefault();
 		setLoading(true);
 		const body = { text: plainText, target_readability: targetReadability };
-		const data = await sendToCluod("analyze", body);
+		const data = await sendToCluod("analyze", body, setError);
 		if (data) {
 			setHTMLText(data.analyzed_text);
 			setCurrentReadability(data.readability.text_ari[1] + ", " + data.readability.text_ari[0]);
@@ -137,7 +139,7 @@ export default function RichText() {
 		e.preventDefault();
 		setLoading(true);
 		const body = { desired_reading_level: targetReadability, texts: [plainText] };
-		const data = await sendToCluod("simplify", body);
+		const data = await sendToCluod("simplify", body, setError);
 		if (data) {
 			setHTMLText(`<div>${data.readability_data.output}</div>`);
 		} else {
@@ -155,7 +157,7 @@ export default function RichText() {
 			texts: [plainText],
 			generation_requests: requestArray,
 		};
-		const data = await sendToCluod("readabilitygenerate", body);
+		const data = await sendToCluod("readabilitygenerate", body, setError);
 
 		if (data) {
 			let newHTMLText = "";

@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { useState, ReactNode } from "react";
+import { useState, ReactNode, useContext } from "react";
 import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
@@ -12,6 +12,7 @@ import { sendToCluod } from "../requests";
 import NeuralNetworkGen from "../assets/NeuralNetworkGen";
 import "./LessonPlan.css";
 import LessonPDF from "./LessonPDF";
+import {ErrorContext} from "../assets/errors";
 
 const steps = ["Information", "Objectives", "Assessments", "Procedure", "Materials"];
 
@@ -96,6 +97,7 @@ export default function HorizontalLinearStepper() {
 		materials: "",
 	});
 	const [loading, setLoading] = useState<boolean>(false);
+	const {setError} = useContext(ErrorContext);
 
 	const submitStep = async (input: any) => {
 		setLoading(true);
@@ -106,7 +108,7 @@ export default function HorizontalLinearStepper() {
 		}
 		console.log(JSON.stringify(body, null, 2))
 
-		const data = await sendToCluod("lessonplan", body);
+		const data = await sendToCluod("lessonplan", body, setError);
 		const parsedData = JSON.parse(data.lessonPlan);
 		if (parsedData) {
 			console.log(parsedData);
