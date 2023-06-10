@@ -8,7 +8,6 @@ import StepLabel from "@mui/material/StepLabel";
 import Button from "@mui/material/Button";
 import { StepOne, StepTwo, StepThree, StepFour, StepFive } from "./LessonStep";
 import type { LessonPlan } from "../@types/lessonPlan.types";
-import { sendToCluod } from "../requests";
 import NeuralNetworkGen from "../assets/NeuralNetworkGen";
 import "./LessonPlan.css";
 import LessonPDF from "./LessonPDF";
@@ -77,7 +76,7 @@ function StepContent({
 }
 
 
-export default function HorizontalLinearStepper() {
+export default function LessonPlan({sendToCluod}: {sendToCluod: Function}) {
 	const [activeStep, setActiveStep] = useState(0);
 	const [skipped, setSkipped] = useState(new Set<number>());
 	const [outputText, setOutputText] = useState<LessonPlan>({

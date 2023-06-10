@@ -9,7 +9,6 @@ import NeuralNetworkGen from "../assets/NeuralNetworkGen";
 import "./WorksheetGen.css";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { sendToCluod } from "../requests";
 import WorksheetInfoBar from "./WorksheetInfoBar";
 import {ErrorContext} from "../assets/errors";
 
@@ -259,7 +258,7 @@ function SelectOptions({
 	);
 }
 
-export default function WorksheetGen() {
+export default function WorksheetGen({sendToCluod}: {sendToCluod: Function}) {
 	const [generationItems, setGenerationItems] = useState({
 		0: {
 			selection: { value: "short answer questions", label: "Short Answer Questions" },

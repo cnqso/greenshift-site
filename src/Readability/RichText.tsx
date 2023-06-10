@@ -11,7 +11,6 @@ import { XButton } from "../assets/SVGs";
 import type { ListItems, GenerationRequest } from "../@types/readability.types";
 import { motion } from "framer-motion";
 import { Collapse } from "react-collapse";
-import {sendToCluod} from "../requests"
 import {orderText, plainLanguageDifficulty} from "../assets/utilities"
 import {ErrorContext} from "../assets/errors";
 
@@ -103,7 +102,7 @@ function generationObjectToRequest(items: ListItems): GenerationRequest[] {
 	return tallyList;
 }
 
-export default function RichText() {
+export default function RichText({sendToCluod}: {sendToCluod: Function}) {
 	const [HTMLText, setHTMLText] = useState("Write something");
 	const [plainText, setPlainText] = useState("Write something");
 	const [generationText, setGenerationText] = useState("");

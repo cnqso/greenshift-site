@@ -1,40 +1,10 @@
 /** @format */
 
 import { Auth } from "aws-amplify";
-import { useContext } from 'react';
 
 // const url = "https://gcfz4xy1q7.execute-api.us-east-2.amazonaws.com/Prod/";
 const url = "http://localhost:8000/";
-async function sendToCluod(api: string, body: any, onError: Function) {
-	const currentSession = await Auth.currentSession();
-	const idToken = currentSession.getIdToken().getJwtToken();
 
-	try {
-		const response = await fetch(url + `api/${api}/`, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: " " + idToken,
-			},
-			body: JSON.stringify(body),
-		});
-		const responseData = await response.json();
-
-		if (response.ok) {
-			return responseData;
-		} else {
-			console.error("An error occurred while fetching the analyzed text.");
-			console.log(JSON.stringify(responseData, null, 2));
-			onError(responseData.error);
-			return false;
-		}
-	} catch (error: any) {
-		console.error("An error occurred while fetching the analyzed text:", error);
-		onError(error.toString())
-		
-		return false;
-	}
-}
 
 async function fetchUserData(setUserClaims: Function, setUserPreferences: Function) {
 	console.log("Grabbing user data")
@@ -111,4 +81,4 @@ async function fetchUserPreferences(setUserPreferences: Function,) {
 
 
 
-export { sendToCluod, fetchUserData, fetchUserGenerations, fetchUserPreferences};
+export { fetchUserData, fetchUserGenerations, fetchUserPreferences};

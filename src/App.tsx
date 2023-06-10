@@ -1,6 +1,6 @@
 /** @format */
 
-import { useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import RichText from "./Readability/RichText";
 import "./App.css";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
@@ -14,7 +14,7 @@ import Generations from "./Generations/Generations";
 import { Amplify } from "aws-amplify";
 import { Authenticator } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
-import {ErrorProvider, ErrorModal} from "./assets/errors";
+import { ErrorProvider, ErrorModal } from "./assets/errors";
 
 import awsExports from "./aws-exports";
 import Modal from "@mui/material/Modal";
@@ -76,8 +76,6 @@ const formFields = {
 	},
 };
 
-
-
 function AuthModal({ show, onClose, propDrill }: { show: boolean; onClose: () => void; propDrill: any }) {
 	if (!show) return null;
 
@@ -112,13 +110,47 @@ function AuthModal({ show, onClose, propDrill }: { show: boolean; onClose: () =>
 
 function App() {
 	const [showAuthModal, setShowAuthModal] = useState(false);
-
-	function toggleAuthModal() {
-		setShowAuthModal(!showAuthModal);
-	}
-
 	const [userPreferences, setUserPreferences] = useState<UserPreferences | null>(null);
 	const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+
+	// const url = "https://gcfz4xy1q7.execute-api.us-east-2.amazonaws.com/Prod/";
+	const url = "http://localhost:8000/";
+	async function sendToCluod(api: string, body: any, onError: Function) {
+		const currentSession = await Auth.currentSession();
+		const idToken = currentSession.getIdToken().getJwtToken();
+
+		try {
+			const response = await fetch(url + `api/${api}/`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: " " + idToken,
+				},
+				body: JSON.stringify(body),
+			});
+			const responseData = await response.json();
+
+			if (responseData?.new_credits) {
+				setUserPreferences({transactions: userPreferences?.transactions || {},
+					generations: userPreferences?.generations || {},
+					credits: responseData.new_credits,
+					subscription: userPreferences?.subscription || "",});
+			}
+			if (response.ok) {
+				return responseData;
+			} else {
+				console.error("An error occurred while fetching the analyzed text.");
+				console.log(JSON.stringify(responseData, null, 2));
+				onError(responseData.error);
+				return false;
+			}
+		} catch (error: any) {
+			console.error("An error occurred while fetching the analyzed text:", error);
+			onError(error.toString());
+
+			return false;
+		}
+	}
 
 	function updateUserInfo() {
 		fetchUserData(setUserInfo, setUserPreferences);
@@ -137,6 +169,12 @@ function App() {
 		}
 		updateUserInfo();
 	}, []);
+
+
+
+	function toggleAuthModal() {
+		setShowAuthModal(!showAuthModal);
+	}
 
 	const getStartedOrPremium = () => {
 		if (!userPreferences) {
@@ -189,14 +227,14 @@ function App() {
 					}}
 				/>
 				<ErrorProvider>
-				<Routes>
-					<Route path='/readability' element={<Readability />} />
-					<Route path='/' element={<Home />} />
-					<Route path='/lessonplanner' element={<LessonPlan />} />
-					<Route path='worksheetgenerator' element={<WorksheetGen />} />
-					<Route path='generations' element={<Generations />} />
-				</Routes>
-				<ErrorModal />
+					<Routes>
+						<Route path='/readability' element={<Readability sendToCluod={sendToCluod}/>} />
+						<Route path='/' element={<Home />} />
+						<Route path='/lessonplanner' element={<LessonPlan sendToCluod={sendToCluod}/>} />
+						<Route path='worksheetgenerator' element={<WorksheetGen sendToCluod={sendToCluod}/>} />
+						<Route path='generations' element={<Generations />} />
+					</Routes>
+					<ErrorModal />
 				</ErrorProvider>
 			</div>
 			<footer className='footer'>
