@@ -31,7 +31,7 @@ type FormData = yup.InferType<typeof schema>;
 
 
 
-const StepOne = ({ handleNext }: { handleNext: any }) => {
+const StepOne = ({ handleNext, premiumModel, setPremiumModel }: { handleNext: any, premiumModel: boolean, setPremiumModel: any }) => {
 	const {
 		register,
 		handleSubmit,
@@ -40,7 +40,6 @@ const StepOne = ({ handleNext }: { handleNext: any }) => {
 		resolver: yupResolver(schema),
 	});
 
-	const [premiumModel, setPremiumModel] = useState(false);
 
 	const onSubmit = (data: FormData) => {
 		console.log(JSON.stringify(data, null, 2));

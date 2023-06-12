@@ -51,7 +51,6 @@ const Tab = ({
 };
 
 const TextItem = ({ type, item, uniqueID }: { type: any; item: any; uniqueID: any }) => {
-
 	// I use a lot of optional chaining here because the data formats are subject to change
 	// and I don't want the app to crash if the data is misformatted
 	// Crashing an app for a missing string is melodramatic, wouldn't you say?
@@ -62,12 +61,11 @@ const TextItem = ({ type, item, uniqueID }: { type: any; item: any; uniqueID: an
 
 	const toggleCollapse = () => setIsOpen(!isOpen);
 	const getTitle = (input: string) => {
-
 		if (type === "worksheetGeneration") {
 			//The formatting for worksheetGeneration is different from the other generations
 			//This is a mistake that, for complicated reasons, would cost more to fix than to accomodate
 			const ninput = item.completions[0]?.input?.text;
-			return (ninput.length > 30 ? ninput.substring(0, 30) + "..." : ninput);
+			return ninput.length > 30 ? ninput.substring(0, 30) + "..." : ninput;
 		}
 
 		if (type === "lessonPlan") {
@@ -75,8 +73,8 @@ const TextItem = ({ type, item, uniqueID }: { type: any; item: any; uniqueID: an
 			return item.completions[0]?.lesson_plan?.specification?.topic;
 		}
 
-		return (input.length > 30 ? input.substring(0, 30) + "..." : input);
-	}
+		return input.length > 30 ? input.substring(0, 30) + "..." : input;
+	};
 
 	const renderBody = () => {
 		switch (type) {
@@ -158,16 +156,28 @@ const TextItem = ({ type, item, uniqueID }: { type: any; item: any; uniqueID: an
 			let output = input.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
 			return output;
 		};
-		
+		let creditsUsed = 0;
+		for (let i = 0; i < item.completions.length; i++) {
+			creditsUsed += (item?.completions[i].usage?.completion_tokens ?? 0) + (item?.completions[i].usage?.prompt_tokens ?? 0)
+		}
 
-		return completions.map((item: any, index: any) => (
-			<div style={{ backgroundColor: "#f9f9f9" }} key={index}>
-				<h4>{`${item?.input?.quant ?? "0"} ${item?.input?.selection?.value ?? "questions"} on ${
-					item?.input?.text ?? "N/A"
-				} `}</h4>
-				<p dangerouslySetInnerHTML={{ __html: replaceMarkdownWithHTML(item?.output ?? "N/A") }} />
+		return (
+			<div>
+				{completions.map((item: any, index: any) => (
+					<div style={{ backgroundColor: "#f9f9f9" }} key={index}>
+						<h4>{`${item?.input?.quant ?? "0"} ${
+							item?.input?.selection?.value ?? "questions"
+						} on ${item?.input?.text ?? "N/A"} `}</h4>
+						<p
+							dangerouslySetInnerHTML={{
+								__html: replaceMarkdownWithHTML(item?.output ?? "N/A"),
+							}}
+						/>
+					</div>
+				))}
+				<p>{`(${creditsUsed} tokens)`}</p>
 			</div>
-		));
+		);
 	};
 
 	const renderLessonPlan = () => {

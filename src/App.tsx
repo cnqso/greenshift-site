@@ -1,7 +1,7 @@
 /** @format */
 
 import { useState, useEffect } from "react";
-import RichText from "./Readability/RichText";
+import RichText from "./Readability/Readability";
 import "./App.css";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import { Auth } from "aws-amplify";
@@ -112,12 +112,25 @@ function App() {
 	const [showAuthModal, setShowAuthModal] = useState(false);
 	const [userPreferences, setUserPreferences] = useState<UserPreferences | null>(null);
 	const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+	const [premiumModel, setPremiumModel] = useState(false);
+
+	function gatekeepPremiumModel() {
+		// if the user is not logged in, doesn't have premium, etc, throw a modal and do not change the state
+		// otherwise, it's just a proxy for setPremiumModel
+		// replace all passed versions of setPremiumModel with this function
+		return true
+	}
 
 	// const url = "https://gcfz4xy1q7.execute-api.us-east-2.amazonaws.com/Prod/";
 	const url = "http://localhost:8000/";
 	async function sendToCluod(api: string, body: any, onError: Function) {
 		const currentSession = await Auth.currentSession();
 		const idToken = currentSession.getIdToken().getJwtToken();
+		body.premiumModel = premiumModel;
+
+		// If the user is not logged in, don't send, show the auth modal
+		// If they have insufficient credits, show the same error message they would get from the server
+		// If they're trying to use a premium feature without a premium subscription show a unique modal
 
 		try {
 			const response = await fetch(url + `api/${api}/`, {
@@ -228,10 +241,10 @@ function App() {
 				/>
 				<ErrorProvider>
 					<Routes>
-						<Route path='/readability' element={<Readability sendToCluod={sendToCluod}/>} />
+						<Route path='/readability' element={<Readability sendToCluod={sendToCluod} premiumModel={premiumModel} setPremiumModel={setPremiumModel}/>} />
 						<Route path='/' element={<Home />} />
-						<Route path='/lessonplanner' element={<LessonPlan sendToCluod={sendToCluod}/>} />
-						<Route path='worksheetgenerator' element={<WorksheetGen sendToCluod={sendToCluod}/>} />
+						<Route path='/lessonplanner' element={<LessonPlan sendToCluod={sendToCluod} premiumModel={premiumModel} setPremiumModel={setPremiumModel}/>} />
+						<Route path='worksheetgenerator' element={<WorksheetGen sendToCluod={sendToCluod} premiumModel={premiumModel} setPremiumModel={setPremiumModel}/>} />
 						<Route path='generations' element={<Generations />} />
 					</Routes>
 					<ErrorModal />

@@ -258,7 +258,7 @@ function SelectOptions({
 	);
 }
 
-export default function WorksheetGen({sendToCluod}: {sendToCluod: Function}) {
+export default function WorksheetGen({sendToCluod, premiumModel, setPremiumModel}: {sendToCluod: Function, premiumModel: boolean, setPremiumModel: Function}) {
 	const [generationItems, setGenerationItems] = useState({
 		0: {
 			selection: { value: "short answer questions", label: "Short Answer Questions" },
@@ -270,7 +270,6 @@ export default function WorksheetGen({sendToCluod}: {sendToCluod: Function}) {
 	const [generationVisible, setGenerationVisible] = useState(true);
 	const [generationText, setGenerationText] = useState("");
 	const [gradeLevel, setGradeLevel] = useState(5);
-	const [premiumModel, setPremiumModel] = useState(false);
 	function replaceMarkdownWithHTML(input: string): string {
 		let output = input.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
 		return output;

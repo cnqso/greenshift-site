@@ -18,21 +18,23 @@ const steps = ["Information", "Objectives", "Assessments", "Procedure", "Materia
 function StepContent({
 	step,
 	handleNext,
-
 	handleBack,
 	outputText,
 	setOutputText,
+	premiumModel,
+	setPremiumModel,
 }: {
 	step: number;
 	handleNext: any;
-
 	handleBack: any;
 	outputText: LessonPlan;
 	setOutputText: any;
+	premiumModel: boolean;
+	setPremiumModel: any;
 }) {
 	switch (step) {
 		case 0:
-			return <StepOne handleNext={handleNext} />;
+			return <StepOne handleNext={handleNext} premiumModel={premiumModel} setPremiumModel={setPremiumModel} />;
 		case 1:
 			return (
 				<StepTwo
@@ -76,7 +78,7 @@ function StepContent({
 }
 
 
-export default function LessonPlan({sendToCluod}: {sendToCluod: Function}) {
+export default function LessonPlan({sendToCluod, premiumModel, setPremiumModel}: {sendToCluod: Function, premiumModel: boolean, setPremiumModel: Function}) {
 	const [activeStep, setActiveStep] = useState(0);
 	const [skipped, setSkipped] = useState(new Set<number>());
 	const [outputText, setOutputText] = useState<LessonPlan>({
@@ -197,6 +199,8 @@ export default function LessonPlan({sendToCluod}: {sendToCluod: Function}) {
 						handleBack={handleBack}
 						outputText={outputText}
 						setOutputText={setOutputText}
+						premiumModel={premiumModel}
+						setPremiumModel={setPremiumModel}
 					/>
 				</>
 			)}
