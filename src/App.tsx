@@ -11,6 +11,7 @@ import Account from "./Account/Account";
 import LessonPlan from "./LessonPlan/LessonPlan";
 import WorksheetGen from "./WorksheetGen/WorksheetGen";
 import Generations from "./Generations/Generations";
+import Payments from "./Payments/Payments";
 import { Amplify } from "aws-amplify";
 import { Authenticator } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
@@ -131,7 +132,8 @@ function App() {
 		// If the user is not logged in, don't send, show the auth modal
 		// If they have insufficient credits, show the same error message they would get from the server
 		// If they're trying to use a premium feature without a premium subscription show a unique modal
-
+			// Alternatively, if they are premium and trying to upgrade to premium, don't let them
+		
 		try {
 			const response = await fetch(url + `api/${api}/`, {
 				method: "POST",
@@ -246,6 +248,7 @@ function App() {
 						<Route path='/lessonplanner' element={<LessonPlan sendToCluod={sendToCluod} premiumModel={premiumModel} setPremiumModel={setPremiumModel}/>} />
 						<Route path='worksheetgenerator' element={<WorksheetGen sendToCluod={sendToCluod} premiumModel={premiumModel} setPremiumModel={setPremiumModel}/>} />
 						<Route path='generations' element={<Generations />} />
+						<Route path='payments' element={<Payments sendToCluod={sendToCluod}/>} />
 					</Routes>
 					<ErrorModal />
 				</ErrorProvider>

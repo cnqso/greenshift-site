@@ -34,6 +34,11 @@ const HomePage = () => {
 						<h3>View Generations</h3>
 					</Link>
 				</div>
+				<div className='feature-item'>
+					<Link to='/payments'>
+						<h3>Zubscribe</h3>
+					</Link>
+				</div>
 			</div>
 		</div>
 	);
