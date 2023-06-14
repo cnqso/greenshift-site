@@ -69,11 +69,11 @@ async function fetchUserPreferences(setUserPreferences: Function,) {
 				Authorization: `${userInfo.signInUserSession.idToken.jwtToken}`,
 			},
 		});
-
+		
 		const data = await response.json();
-		console.log(JSON.stringify(JSON.parse(data.preferences.S), null, 2));
+		console.log(JSON.stringify(JSON.parse(data.preferences), null, 2));
 
-		setUserPreferences(JSON.parse(data.preferences.S));
+		setUserPreferences(JSON.parse(data.preferences));
 	} catch (error) {
 		console.error("Error fetching user data:", error);
 	}

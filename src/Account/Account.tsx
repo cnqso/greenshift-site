@@ -23,10 +23,10 @@ interface UserClaims {
 }
 
 interface UserData {
-	transactions: { [key: string]: Transaction };
-	generations: { [key: string]: Generation };
 	credits: number;
 	subscription: string;
+	subscription_expiration: string;
+	stripeId: string;
 }
 
 interface DatabaseInfo {
@@ -36,12 +36,6 @@ interface DatabaseInfo {
 	UserId: {
 		S: string;
 	};
-}
-
-interface Transaction {
-	amount: number;
-	type: string;
-	subscription: string;
 }
 
 interface Generation {
@@ -69,7 +63,6 @@ const Account = ({ propDrill }: { propDrill: any }) => {
 		updateUserInfo();
 	}, []);
 
-
 	function seePreferences() {
 		console.log("see generations");
 		updateUserPreferences();
@@ -92,9 +85,15 @@ const Account = ({ propDrill }: { propDrill: any }) => {
 						<span>Subscription: {userPreferences?.subscription ?? "..."}</span>
 					</div>
 					<div>
-						{userPreferences?.subscription !== "none" ? (
-							<span>Subscription renews: {userPreferences?.subscription?.expiration}</span>
-						) : null}
+						<span>
+							Subscription renewal:{" "}
+							{new Date(
+								parseInt(userPreferences?.subscription_expiration) * 1000
+							).toLocaleString(undefined, { year: "numeric", month: "long", day: "numeric" })}
+						</span>
+					</div>
+					<div>
+						<span>Stripe ID: {userPreferences?.stripeId ?? "..."}</span>
 					</div>
 				</div>
 			) : (

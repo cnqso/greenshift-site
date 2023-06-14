@@ -9,7 +9,7 @@ const Message = ({ message }: { message: any }) => (
 	</section>
 );
 
-export default function Payments({ sendToCluod }: any) {
+export default function Payments({ sendToCluod, userPreferences }: any) {
 	let [message, setMessage] = useState("");
 	let [success, setSuccess] = useState(false);
 	let [sessionId, setSessionId] = useState<any>("");
@@ -22,7 +22,7 @@ export default function Payments({ sendToCluod }: any) {
 	};
 
 	const createPortalSession = async () => {
-		const portalSession = await sendToCluod("create-portal-session", { "session_id": sessionId }, setError);
+		const portalSession = await sendToCluod("create-portal-session", { nothin: "nothing" }, setError);
 		console.log(portalSession);
 		window.location.href = portalSession.sessionURL;
 	};
@@ -42,34 +42,40 @@ export default function Payments({ sendToCluod }: any) {
 		}
 	}, [sessionId]);
 
-	if (!success && message === "") {
-		return (
-			<section>
-				<div className='product'>
-					<Logo />
-					<div className='description'>
-						<h3>Premium Plan</h3>
-						<h5>$5.00 / month</h5>
+	const subscriptionExpiration = parseInt(userPreferences?.subscription_expiration ?? "000");
+	const subscriptionLapsed = subscriptionExpiration*1000 < Date.now();
+	const premium = userPreferences?.subscription === "premium";
+	const stripeId = userPreferences?.stripeId;
+	console.log(subscriptionExpiration, Date.now(), subscriptionLapsed, premium, stripeId)
+
+	return (
+		<div>
+			{message && <Message message={message} />}
+			{(!premium || subscriptionLapsed) && (
+				<section>
+					<div className='product'>
+						<Logo />
+						<div className='description'>
+							<h3>Premium Plan</h3>
+							<h5>$5.00 / month</h5>
+						</div>
 					</div>
-				</div>
-				<button onClick={createCheckoutSession}>Checkout</button>
-			</section>
-		);
-	} else if (success && sessionId !== "") {
-		return (
-			<section>
-				<div className='product Box-root'>
-					<Logo />
-					<div className='description Box-root'>
-						<h3>Subscription to starter plan successful!</h3>
+					<button onClick={createCheckoutSession}>Checkout</button>
+				</section>
+			)}
+			{stripeId && (
+				<section>
+					<div className='product Box-root'>
+						<Logo />
+						<div className='description Box-root'>
+							<h3>Subscription to starter plan successful!</h3>
+						</div>
 					</div>
-				</div>
-				<button onClick={createPortalSession}>Manage Billing Information</button>
-			</section>
-		);
-	} else {
-		return <Message message={message} />;
-	}
+					<button onClick={createPortalSession}>Manage Billing Information</button>
+				</section>
+			)}
+		</div>
+	);
 }
 
 const Logo = () => (

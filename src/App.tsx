@@ -31,10 +31,10 @@ interface UserInfo {
 }
 
 interface UserPreferences {
-	transactions: { [key: string]: Transaction };
-	generations: { [key: string]: Generation };
 	credits: number;
 	subscription: string;
+	subscription_expiration: string;
+	stripeId: string;
 }
 
 interface DatabaseInfo {
@@ -46,17 +46,6 @@ interface DatabaseInfo {
 	};
 }
 
-interface Transaction {
-	amount: number;
-	type: string;
-	subscription: string;
-}
-
-interface Generation {
-	input: string;
-	output: string;
-	reading_level: number;
-}
 
 interface Generations {
 	[key: string]: { [S: string]: string };
@@ -146,10 +135,11 @@ function App() {
 			const responseData = await response.json();
 
 			if (responseData?.new_credits) {
-				setUserPreferences({transactions: userPreferences?.transactions || {},
-					generations: userPreferences?.generations || {},
+				setUserPreferences({
 					credits: responseData.new_credits,
-					subscription: userPreferences?.subscription || "",});
+					subscription: userPreferences?.subscription || "",
+					subscription_expiration: userPreferences?.subscription_expiration || "",
+					stripeId: userPreferences?.stripeId || "",});
 			}
 			if (response.ok) {
 				return responseData;
@@ -248,7 +238,7 @@ function App() {
 						<Route path='/lessonplanner' element={<LessonPlan sendToCluod={sendToCluod} premiumModel={premiumModel} setPremiumModel={setPremiumModel}/>} />
 						<Route path='worksheetgenerator' element={<WorksheetGen sendToCluod={sendToCluod} premiumModel={premiumModel} setPremiumModel={setPremiumModel}/>} />
 						<Route path='generations' element={<Generations />} />
-						<Route path='payments' element={<Payments sendToCluod={sendToCluod}/>} />
+						<Route path='payments' element={<Payments sendToCluod={sendToCluod} userPreferences={userPreferences}/>} />
 					</Routes>
 					<ErrorModal />
 				</ErrorProvider>
