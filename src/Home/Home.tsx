@@ -39,6 +39,11 @@ const HomePage = () => {
 						<h3>Zubscribe</h3>
 					</Link>
 				</div>
+				<div className='feature-item'>
+					<Link to='/premium'>
+						<h3>Bremium</h3>
+					</Link>
+				</div>
 			</div>
 		</div>
 	);

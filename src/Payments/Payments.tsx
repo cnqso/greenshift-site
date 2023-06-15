@@ -56,11 +56,11 @@ export default function Payments({ sendToCluod, userPreferences }: any) {
 					<div className='product'>
 						<Logo />
 						<div className='description'>
-							<h3>Premium Plan</h3>
+							<h3>Piaget Bot Premium Subscription</h3>
 							<h5>$5.00 / month</h5>
 						</div>
 					</div>
-					<button onClick={createCheckoutSession}>Checkout</button>
+					<button onClick={createCheckoutSession}>Checkout with Stripe</button>
 				</section>
 			)}
 			{stripeId && (
@@ -68,7 +68,7 @@ export default function Payments({ sendToCluod, userPreferences }: any) {
 					<div className='product Box-root'>
 						<Logo />
 						<div className='description Box-root'>
-							<h3>Subscription to starter plan successful!</h3>
+							{!subscriptionLapsed && (<h3>Subscription to Piaget Bot Premium successful!</h3>)}
 						</div>
 					</div>
 					<button onClick={createPortalSession}>Manage Billing Information</button>
