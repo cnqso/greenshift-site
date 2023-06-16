@@ -11,7 +11,7 @@ import Modal from "@mui/material/Modal";
 import { Box } from "@mui/system";
 import { Authenticator } from "@aws-amplify/ui-react";
 
-function AccountModal ({
+function AccountModal({
 	show,
 	onClose,
 	userPreferences,
@@ -23,15 +23,14 @@ function AccountModal ({
 }: {
 	show: boolean;
 	onClose: () => void;
-	userPreferences: UserPreferences|null;
-	userInfo: UserInfo|null;
+	userPreferences: UserPreferences | null;
+	userInfo: UserInfo | null;
 	updateUserInfo: Function;
 	updateUserPreferences: Function;
 	toggleAccountModal: any;
 	sendToCluod: Function;
 }) {
 	const { setError } = useContext(ErrorContext);
-
 
 	if (!show) return null;
 
@@ -95,15 +94,15 @@ function AccountModal ({
 										<div>
 											<span>Credits: {userPreferences?.credits ?? "..."}</span>
 										</div>
-										{userPreferences?.subscription ? (
+										{userPreferences?.subscription === "premium" ? (
 											<>
 												<div>
-													<span>Account Plan: Premium</span>
-													<button
-														onClick={createPortalSession}
-														className='premiumTag'>
-														Manage Subscription
-													</button>
+													<span>
+														Account Plan: Premium<button
+															onClick={createPortalSession}
+															style={{ fontSize: "0.85em", marginLeft: "8px" }}>Manage Subscription
+														</button>
+													</span>
 												</div>
 												<div>
 													<span>
@@ -125,11 +124,10 @@ function AccountModal ({
 														to='/premium'
 														onClick={toggleAccountModal}
 														className='premiumTag'>
-														Go premium!
+														Go Premium!
 													</Link>
 												</div>
-												<div>
-												</div>
+												<div></div>
 												<div>
 													{/* Must remove */}
 													<span>
@@ -138,6 +136,13 @@ function AccountModal ({
 												</div>
 											</>
 										)}
+										<Link
+											to='/generations'
+											onClick={toggleAccountModal}
+											className='linkButton'
+											style={{ marginBlock: "7px" }}>
+											Generation History
+										</Link>
 									</div>
 								) : (
 									<p>Loading user info...</p>
@@ -151,6 +156,6 @@ function AccountModal ({
 			</Box>
 		</Modal>
 	);
-};
+}
 
 export default AccountModal;

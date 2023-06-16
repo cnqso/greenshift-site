@@ -61,12 +61,16 @@
 }
 
 .premiumTag {
-	padding: 2px;
+	padding: 4px;
 	background-color: #fce2ff;
 	text-decoration: none;
 	color: #000;
   margin-left: 10px;
+  border-radius: 5px;
+  border: 1px solid #f8c4ff;
+  cursor: pointer;
 }
 .premiumTag:hover {
-  background-color: #f8c4ff;
+  background-color: #fbdaff;
+  border: 1px solid #fce2ff;
 }

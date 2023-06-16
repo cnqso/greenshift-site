@@ -156,7 +156,7 @@ export default function SelectOptions({
 				</AnimatePresence>
 			</ul>
 
-			<motion.div layout className='buttons' style={{ marginTop: "-13px" }}>
+			<motion.div layout className='readabilityButtons' style={{ marginTop: "-13px" }}>
 				{loading ? (
 					<NeuralNetworkGen />
 				) : (

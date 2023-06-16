@@ -32,23 +32,40 @@ h1 {
   font-size: 3.2em;
   line-height: 1.1;
 }
-/* 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
+
+button, .linkButton {
+  
   cursor: pointer;
-  transition: border-color 0.25s;
+  background-color: #2e2e2e;
+  border: none;
+  padding-inline: 7px;
+  padding-block: 3px;
+  border-radius: 5px;
+  text-decoration: none;
+  color: #fff
+  
 }
-button:hover {
-  border-color: #646cff;
+.linkButton {
+  width: max-content;
+  display: flex;
 }
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-} */
+button:hover, .linkButton:hover {
+  background-color: #222222;
+}
+
+/* {display: flex;
+  align-items: center;
+  height: 100%;
+  padding-inline: 20px;
+  
+  color: #FFFFFF;
+  background-color: #222;
+  border: none;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;} */
+
+
 

@@ -103,7 +103,7 @@ function generationObjectToRequest(items: ListItems): GenerationRequest[] {
 	return tallyList;
 }
 
-export default function RichText({sendToCluod, premiumModel, setPremiumModel}: {sendToCluod: Function, premiumModel: boolean, setPremiumModel: Function}) {
+export default function Readability({sendToCluod, premiumModel, setPremiumModel}: {sendToCluod: Function, premiumModel: boolean, setPremiumModel: Function}) {
 	const [HTMLText, setHTMLText] = useState("Write something");
 	const [plainText, setPlainText] = useState("Write something");
 	const [generationText, setGenerationText] = useState("");
@@ -212,11 +212,11 @@ export default function RichText({sendToCluod, premiumModel, setPremiumModel}: {
 			{loading ? (
 				<NeuralNetworkGen />
 			) : (
-				<div className='buttons'>
-					<button style={{ marginRight: "10px" }} onClick={submitAnalyze}>
+				<div className='readabilityButtons'>
+					<button onClick={submitAnalyze}>
 						Analyze
 					</button>
-					<button style={{ marginRight: "10px" }} onClick={submitGPT}>
+					<button onClick={submitGPT}>
 						Simplify
 					</button>
 				</div>

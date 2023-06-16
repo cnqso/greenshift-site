@@ -18,7 +18,7 @@
 	border-radius: 3px; 
 }
 .ql-container.ql-snow {
-	border: none;
+    border: none !important;
 }
 .ql-toolbar.ql-snow {
 	display: none;
@@ -83,11 +83,24 @@
 /* Selection and generation */
 
 
-.buttons {
+.readabilityButtons {
 	height: 127px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
+}
+
+.readabilityButtons button {
+	margin-inline: 10px;
+	font-size: 1.35em;
+	padding-inline: 10px;
+	padding-block: 8px;
+	background-color: #1e1e1e;
+	border-radius: 5px;
+	border: none;
+}
+.readabilityButtons button:hover {
+	background-color: #000000;
 }
 
 .RemoveGenerationButton {
@@ -110,6 +123,7 @@
   }
 
 .SelectOptions li {
+	margin-top: 5px;
 	display: block;
 	width: 100%;
 	flex: 0 0 80px;
@@ -147,3 +161,4 @@
 	background-color: #1e1e1e;
 	color: #ddd;
   }
+

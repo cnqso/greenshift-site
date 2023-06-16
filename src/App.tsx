@@ -3,11 +3,12 @@
 import { useState, useEffect } from "react";
 import RichText from "./Readability/Readability";
 import "./App.css";
-import type { UserPreferences, UserInfo } from './@types/internal.types';
+import type { UserPreferences, UserInfo } from "./@types/internal.types";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import { Auth } from "aws-amplify";
 import Readability from "./Readability/Readability";
 import Home from "./Home/Home";
+import About from "./About/About";
 import AccountModal from "./Account/Account";
 import LessonPlan from "./LessonPlan/LessonPlan";
 import WorksheetGen from "./WorksheetGen/WorksheetGen";
@@ -25,10 +26,6 @@ import { fetchUserData, fetchUserPreferences } from "./requests";
 import { Tooltip, Badge, SvgIcon } from "@mui/material";
 
 Amplify.configure(awsExports);
-
-
-
-
 
 function App() {
 	const [showAccountModal, setShowAccountModal] = useState(false);
@@ -49,11 +46,29 @@ function App() {
 		const currentSession = await Auth.currentSession();
 		const idToken = currentSession.getIdToken().getJwtToken();
 		body.premiumModel = premiumModel;
-
+		// onError("Not enough credits");
+		// return false;
 		// If the user is not logged in, don't send, show the auth modal
 		// If they have insufficient credits, show the same error message they would get from the server
 		// If they're trying to use a premium feature without a premium subscription show a unique modal
 		// Alternatively, if they are premium and trying to upgrade to premium, don't let them
+		if (!userInfo || !idToken || !userPreferences) {
+			onError("Not logged in")
+			return false;
+		}
+
+		if (userPreferences?.credits < 5) {
+			onError("Not enough credits");
+			return false;
+		}
+		if (premiumModel === true && userPreferences?.subscription !== "premium") {
+			onError("Not premium");
+			return false;
+		}
+		if (api === "create-checkout-session" && userPreferences?.subscription === "premium") {
+			onError("Already premium");
+			return false;
+		}
 
 		try {
 			const response = await fetch(url + `api/${api}/`, {
@@ -115,26 +130,20 @@ function App() {
 	const getStartedOrPremium = () => {
 		if (!userPreferences) {
 			return (
-				<Link className='navlink' to='/'>
+				<button className='navbutton specialnavbutton' onClick={toggleAccountModal}>
 					Get Started
-				</Link>
+				</button>
 			);
 		}
 		if (userPreferences?.subscription === "premium") {
 			return null;
 		}
 		return (
-			<Link className='navlink' to='/'>
+			<Link className='navlink specialnavbutton' to='/premium'>
 				Premium
 			</Link>
 		);
 	};
-
-	const CoinIcon = (props:any) => (
-		<SvgIcon {...props}>
-			<circle cx='12' cy='12' r='8' />
-		</SvgIcon>
-	);
 
 	return (
 		<Router>
@@ -149,31 +158,40 @@ function App() {
 						<Link className='navlink' to='/'>
 							Dashboard
 						</Link>
-						<Link className='navlink' to='/'>
+						<Link className='navlink' to='/about'>
 							About
 						</Link>
-						
-							{userInfo ? (<button className='navbutton' onClick={toggleAccountModal}>
-								<Tooltip PopperProps={{modifiers:[{name: "offset", options: { offset: [0, 10],}}]}} title={`Credits: ${userPreferences?.credits}`}>
-									<div><>{"Account"}</></div>
-								</Tooltip></button>
-							) : (
-								<button className='navbutton' onClick={toggleAccountModal}>"Login"</button>
-							)}
-						
-						
+
+						{userInfo ? (
+							<button className='navbutton' onClick={toggleAccountModal}>
+								<Tooltip
+									PopperProps={{
+										modifiers: [{ name: "offset", options: { offset: [0, 10] } }],
+									}}
+									title={`Credits: ${userPreferences?.credits}`}>
+									<div>
+										<>{"Account"}</>
+									</div>
+								</Tooltip>
+							</button>
+						) : (
+							<button className='navbutton' onClick={toggleAccountModal}>
+								Sign In
+							</button>
+						)}
+
 						{getStartedOrPremium()}
 					</nav>
 				</header>
 				<AccountModal
 					show={showAccountModal}
 					onClose={toggleAccountModal}
-					userPreferences = {userPreferences}
-					userInfo= {userInfo}
-					updateUserInfo= {updateUserInfo}
-					updateUserPreferences= {updateUserPreferences}
-					toggleAccountModal= {toggleAccountModal}
-					sendToCluod= {sendToCluod}
+					userPreferences={userPreferences}
+					userInfo={userInfo}
+					updateUserInfo={updateUserInfo}
+					updateUserPreferences={updateUserPreferences}
+					toggleAccountModal={toggleAccountModal}
+					sendToCluod={sendToCluod}
 				/>
 				<ErrorProvider>
 					<Routes>
@@ -187,7 +205,7 @@ function App() {
 								/>
 							}
 						/>
-						<Route path='/' element={<Home />} />
+						<Route path='/' element={<Home userPreferences={userPreferences} />} />
 						<Route
 							path='/lessonplanner'
 							element={
@@ -217,6 +235,7 @@ function App() {
 							path='premium'
 							element={<Premium sendToCluod={sendToCluod} userPreferences={userPreferences} />}
 						/>
+						<Route path='about' element={<About />} />
 					</Routes>
 					<ErrorModal />
 				</ErrorProvider>

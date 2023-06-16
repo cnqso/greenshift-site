@@ -5,7 +5,11 @@
 import React from "react";
 import "./Home.css";
 import { Link } from "react-router-dom";
-const HomePage = () => {
+import type {UserPreferences} from "../@types/internal.types";
+
+
+
+const HomePage = ({userPreferences}:{userPreferences: UserPreferences|null}) => {
 	return (
 		<div className='homepage'>
 
@@ -29,21 +33,7 @@ const HomePage = () => {
 
 					<p>Create a detailed lesson plan, materials included, in seconds. </p>
 				</div>
-				<div className='feature-item'>
-					<Link to='/generations'>
-						<h3>View Generations</h3>
-					</Link>
-				</div>
-				<div className='feature-item'>
-					<Link to='/payments'>
-						<h3>Zubscribe</h3>
-					</Link>
-				</div>
-				<div className='feature-item'>
-					<Link to='/premium'>
-						<h3>Bremium</h3>
-					</Link>
-				</div>
+
 			</div>
 		</div>
 	);
