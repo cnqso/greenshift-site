@@ -147,8 +147,8 @@ function App() {
 
 	return (
 		<Router>
-			<div className='App'>
-				<header className='header'>
+			<header className='header'>
+					<div className='header-content'>
 					<h1 className='logo'>
 						<Link className='navlink mainlink' to='/'>
 							Piaget Bot
@@ -182,7 +182,10 @@ function App() {
 
 						{getStartedOrPremium()}
 					</nav>
+					</div>
 				</header>
+			<div className='App'>
+				
 				<AccountModal
 					show={showAccountModal}
 					onClose={toggleAccountModal}
