@@ -1,22 +1,25 @@
 /** @format */
 
-#root {
-	
-	
-	text-align: center;
-}
+
 
 .App {
+	scrollbar-gutter: stable;
+  font-size: 18px;
+}
+
+.appBody {
   margin: 0 auto;
 	min-height: 100vh;
   max-width: 1280px;
+  
+	text-align: center;
 }
 
 
 .header {
   margin: 0 auto;
   background-color: #222;
-  width: 100vw;
+  width: 100%;
   margin-left: 0;
 }
 
@@ -31,11 +34,12 @@
 }
 
 .footer {
-  display: none;
-	position: fixed;
-	left: 0;
-	bottom: 0;
+  height: 65px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 	width: 100%;
+  background-color: #222;
 	color: #fff;
 }
 
@@ -116,4 +120,28 @@
 
 .specialnavbutton:hover {
   background-color: #84296c;
+}
+
+
+@media screen and (max-width: 500px) {
+  .header-content {
+    flex-direction: column;
+    height: 100%;
+  }
+  .navbutton, .navlink {
+    padding-inline: 10px;
+  }
+  .mainlink {
+    font-size: 1em;
+  }
+  .specialnavbutton {
+    font-size: 1em;
+  }
+  .appBody {
+    margin: 0 auto;
+    min-height: 100vh;
+    max-width: 315px;
+    padding: 0px;
+    text-align: center;
+  }
 }

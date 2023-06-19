@@ -41,12 +41,12 @@ const Tab = ({
 	}
 
 	return (
-		<button
+		<div
 			onClick={onTabClick}
 			className='generationsTab'
 			style={{ backgroundColor: isActive ? "black" : "white", color: isActive ? "white" : "black" }}>
 			{label}
-		</button>
+		</div>
 	);
 };
 

@@ -91,16 +91,16 @@ function AccountModal({
 										<div>
 											<span>Email: {userInfo["email"]}</span>
 										</div>
-										<div>
-											<span>Credits: {userPreferences?.credits ?? "..."}</span>
-										</div>
+
 										{userPreferences?.subscription === "premium" ? (
 											<>
 												<div>
 													<span>
-														Account Plan: Premium<button
+														Account Plan: Premium
+														<button
 															onClick={createPortalSession}
-															style={{ fontSize: "0.85em", marginLeft: "8px" }}>Manage Subscription
+															style={{ fontSize: "0.85em", marginLeft: "8px" }}>
+															Manage Subscription
 														</button>
 													</span>
 												</div>
@@ -119,6 +119,11 @@ function AccountModal({
 										) : (
 											<>
 												<div>
+													<div>
+														<span>
+															Credits: {userPreferences?.credits ?? "..."}
+														</span>
+													</div>
 													<span>Account Plan: Basic</span>
 													<Link
 														to='/premium'

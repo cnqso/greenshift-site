@@ -15,7 +15,10 @@ import WorksheetGen from "./WorksheetGen/WorksheetGen";
 import Generations from "./Generations/Generations";
 import Payments from "./Payments/Payments";
 import Premium from "./Premium/Premium";
+import Contact from "./Contact/Contact";
+import Dashboard from "./Dashboard/Dashboard";
 import { Amplify } from "aws-amplify";
+import { QuestionIcon, WebsiteIcon, GithubIcon } from "./assets/icons";
 
 import "@aws-amplify/ui-react/styles.css";
 import { ErrorProvider, ErrorModal } from "./assets/errors";
@@ -53,7 +56,7 @@ function App() {
 		// If they're trying to use a premium feature without a premium subscription show a unique modal
 		// Alternatively, if they are premium and trying to upgrade to premium, don't let them
 		if (!userInfo || !idToken || !userPreferences) {
-			onError("Not logged in")
+			onError("Not logged in");
 			return false;
 		}
 
@@ -147,104 +150,126 @@ function App() {
 
 	return (
 		<Router>
-			<header className='header'>
+			<div className='App'>
+				<header className='header'>
 					<div className='header-content'>
-					<h1 className='logo'>
-						<Link className='navlink mainlink' to='/'>
-							Piaget Bot
-						</Link>
-					</h1>
-					<nav className='navigation'>
-						<Link className='navlink' to='/'>
-							Dashboard
-						</Link>
-						<Link className='navlink' to='/about'>
-							About
-						</Link>
+						<h1 className='logo'>
+							<Link className='navlink mainlink' to='/'>
+								Piaget Bot
+							</Link>
+						</h1>
+						<nav className='navigation'>
+							<Link className='navlink' to='/dashboard'>
+								Dashboard
+							</Link>
 
-						{userInfo ? (
-							<button className='navbutton' onClick={toggleAccountModal}>
-								<Tooltip
-									PopperProps={{
-										modifiers: [{ name: "offset", options: { offset: [0, 10] } }],
-									}}
-									title={`Credits: ${userPreferences?.credits}`}>
-									<div>
-										<>{"Account"}</>
-									</div>
-								</Tooltip>
-							</button>
-						) : (
-							<button className='navbutton' onClick={toggleAccountModal}>
-								Sign In
-							</button>
-						)}
 
-						{getStartedOrPremium()}
-					</nav>
+							{userInfo ? (
+								<button className='navbutton' onClick={toggleAccountModal}>
+									<Tooltip
+										PopperProps={{
+											modifiers: [{ name: "offset", options: { offset: [0, 10] } }],
+										}}
+										disableHoverListener={userPreferences?.subscription === "premium"}
+										title={`Credits: ${userPreferences?.credits}`}>
+										<div>
+											<>{"Account"}</>
+										</div>
+									</Tooltip>
+								</button>
+							) : (
+								<button className='navbutton' onClick={toggleAccountModal}>
+									Sign In
+								</button>
+							)}
+
+							{getStartedOrPremium()}
+						</nav>
 					</div>
 				</header>
-			<div className='App'>
-				
-				<AccountModal
-					show={showAccountModal}
-					onClose={toggleAccountModal}
-					userPreferences={userPreferences}
-					userInfo={userInfo}
-					updateUserInfo={updateUserInfo}
-					updateUserPreferences={updateUserPreferences}
-					toggleAccountModal={toggleAccountModal}
-					sendToCluod={sendToCluod}
-				/>
-				<ErrorProvider>
-					<Routes>
-						<Route
-							path='/readability'
-							element={
-								<Readability
-									sendToCluod={sendToCluod}
-									premiumModel={premiumModel}
-									setPremiumModel={setPremiumModel}
-								/>
-							}
-						/>
-						<Route path='/' element={<Home userPreferences={userPreferences} />} />
-						<Route
-							path='/lessonplanner'
-							element={
-								<LessonPlan
-									sendToCluod={sendToCluod}
-									premiumModel={premiumModel}
-									setPremiumModel={setPremiumModel}
-								/>
-							}
-						/>
-						<Route
-							path='worksheetgenerator'
-							element={
-								<WorksheetGen
-									sendToCluod={sendToCluod}
-									premiumModel={premiumModel}
-									setPremiumModel={setPremiumModel}
-								/>
-							}
-						/>
-						<Route path='generations' element={<Generations />} />
-						<Route
-							path='payments'
-							element={<Payments sendToCluod={sendToCluod} userPreferences={userPreferences} />}
-						/>
-						<Route
-							path='premium'
-							element={<Premium sendToCluod={sendToCluod} userPreferences={userPreferences} />}
-						/>
-						<Route path='about' element={<About />} />
-					</Routes>
-					<ErrorModal />
-				</ErrorProvider>
+				<div className='appBody'>
+					<AccountModal
+						show={showAccountModal}
+						onClose={toggleAccountModal}
+						userPreferences={userPreferences}
+						userInfo={userInfo}
+						updateUserInfo={updateUserInfo}
+						updateUserPreferences={updateUserPreferences}
+						toggleAccountModal={toggleAccountModal}
+						sendToCluod={sendToCluod}
+					/>
+					<ErrorProvider>
+						<Routes>
+							<Route
+								path='/readability'
+								element={
+									<Readability
+										sendToCluod={sendToCluod}
+										premiumModel={premiumModel}
+										setPremiumModel={setPremiumModel}
+									/>
+								}
+							/>
+							<Route
+								path='/'
+								element={
+									<Home
+										userPreferences={userPreferences}
+										toggleAccountModal={toggleAccountModal}
+									/>
+								}
+							/>
+							<Route
+								path='/lessonplanner'
+								element={
+									<LessonPlan
+										sendToCluod={sendToCluod}
+										premiumModel={premiumModel}
+										setPremiumModel={setPremiumModel}
+									/>
+								}
+							/>
+							<Route
+								path='worksheetgenerator'
+								element={
+									<WorksheetGen
+										sendToCluod={sendToCluod}
+										premiumModel={premiumModel}
+										setPremiumModel={setPremiumModel}
+									/>
+								}
+							/>
+							<Route path='generations' element={<Generations />} />
+							<Route
+								path='payments'
+								element={
+									<Payments sendToCluod={sendToCluod} userPreferences={userPreferences} />
+								}
+							/>
+							<Route
+								path='premium'
+								element={
+									<Premium sendToCluod={sendToCluod} userPreferences={userPreferences} />
+								}
+							/>
+							<Route path='about' element={<About />} />
+							<Route path='contact'  element={<Contact />} />
+							<Route path='dashboard'  element={<Dashboard />} />
+						</Routes>
+						<ErrorModal />
+					</ErrorProvider>
+				</div>
 			</div>
 			<footer className='footer'>
-				<p>© 2023</p>
+				<div className='footerContent'>
+				<span style={{paddingInline: 10}}>© 2023 PiagetBot</span>
+					<Link to='about'>
+						<QuestionIcon />
+					</Link><span style={{paddingInline: 5}}/>
+					<GithubIcon /> <span style={{paddingInline: 3.5}}/>
+					
+					<WebsiteIcon />
+				</div>
 			</footer>
 		</Router>
 	);

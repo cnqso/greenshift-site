@@ -42,7 +42,8 @@ button, .linkButton {
   padding-block: 3px;
   border-radius: 5px;
   text-decoration: none;
-  color: #fff
+  color: #fff;
+  transition: 0.3s;
   
 }
 .linkButton {
@@ -50,7 +51,7 @@ button, .linkButton {
   display: flex;
 }
 button:hover, .linkButton:hover {
-  background-color: #222222;
+  background-color: #181818;
 }
 
 /* {display: flex;
