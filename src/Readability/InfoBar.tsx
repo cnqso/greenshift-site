@@ -20,8 +20,10 @@ function InfoBar({
 }) {
 	const plainLangTarget = plainLanguageDifficulty(targetReadability);
 	let plainLangTargetString = "";
-	if (targetReadability < 17) {
-		plainLangTargetString = plainLangTarget[1] + ", " + plainLangTarget[0];
+	if (targetReadability < 13) {
+		plainLangTargetString = plainLangTarget[0];
+	} else if (targetReadability < 17) {
+		plainLangTargetString = "Undergraduate " + (targetReadability-12).toString();
 	} else {
 		plainLangTargetString = plainLangTarget[1];
 	}
@@ -31,23 +33,24 @@ function InfoBar({
   }
   
 	return (
-		<div className='infoBar'>
-      			<span className='infoBarText'>
-			<MaterialUISwitch checked={premiumModel} onChange={handleSwitch} sx={{ m: 1 }} /><span>{premiumModel ? "Premium Model" : "Basic Model"}</span>
-
+		<div className='infoBar' style={{alignItems: "center"}}>
+      			<span className='infoBarText leftInfo'>
+				<span style={{maxWidth: "50px", maxHeight:"50px"}}>
+			<MaterialUISwitch checked={premiumModel} onChange={handleSwitch} sx={{ m: 1 }} />
+			</span>
 			</span>
 			<span className='infoBarText'>
-				<span>Current difficulty:{"  "}</span>
-				<span>{currentReadability}</span>
+				<div>Current level:{"  "}</div>
+				<span style={{whiteSpace: "nowrap"}}>{currentReadability.length > 15 ? currentReadability.slice(0, 16) : currentReadability}</span>
 			</span>
 
-			<span className='infoBarText'>
-				<span>Target difficulty:{"  "}</span>
-				<span>{plainLangTargetString}</span>
+			<span className='infoBarText rightInfo'>
+				<div >Target level:{"  "}</div>
+				<span style={{whiteSpace: "nowrap"}}>{plainLangTargetString}
 				<UpDownSelector
 					value={targetReadability}
 					setValue={setTargetReadability}
-				/>
+				/></span>
 			</span>
 		</div>
 	);

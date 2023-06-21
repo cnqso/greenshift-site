@@ -16,6 +16,7 @@ const FeatureCard = ({ title, img, link }: { title: string; img: any, link: stri
 			<img src={img} alt='placeholder' />
 			<div className="dashboardTitle" >
 				<h3 className='title'>{title}</h3>
+                <br/><br/><br/><br/>
 
 		</div>
         </Link>
@@ -64,35 +65,5 @@ const Dashboard = ({
 		</div>
 	);
 };
-
-// const HomePage = ({userPreferences}:{userPreferences: UserPreferences|null}) => {
-// 	return (
-// 		<div className='homepage'>
-
-// 			<div className='feature-items'>
-// 				<div className='feature-item'>
-// 					<Link to='/readability'>
-// 						<h3>Readability</h3>
-// 					</Link>
-// 					<p>Turn anything into the perfect reading material.</p>
-// 				</div>
-// 				<div className='feature-item'>
-// 					<Link to='/worksheetgenerator'>
-// 						<h3>Worksheet Generator</h3>
-// 					</Link>
-// 					<p>Turn state standards into lesson calendars</p>
-// 				</div>
-// 				<div className='feature-item'>
-// 					<Link to='/lessonplanner'>
-// 						<h3>Lesson Planner</h3>
-// 					</Link>
-
-// 					<p>Create a detailed lesson plan, materials included, in seconds. </p>
-// 				</div>
-
-// 			</div>
-// 		</div>
-// 	);
-// };
 
 export default Dashboard;

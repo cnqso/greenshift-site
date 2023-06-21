@@ -38,6 +38,7 @@ const styles = StyleSheet.create({
 	},
 	author: {
 		marginTop: 5,
+		marginBottom: 12,
 		fontSize: 15,
 		textAlign: "center",
 	},

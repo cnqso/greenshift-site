@@ -7,6 +7,21 @@
 	margin-top: 10px;
 }
 
+.stepOneForm input {
+	background-color: #fff;
+	border: 1px solid #000;
+	border-radius: 5px;
+	margin-bottom: 5px;
+	grid-column: 1;
+	color: #000;
+
+}
+
+.stepOneForm label {
+	text-align: right;
+	grid-column: 1;
+	text-align: left;
+}
 
 
 .stepOne {
@@ -17,7 +32,7 @@
 
 .stepOneForm {
 	display: grid;
-	grid-template-columns: 0.6fr 1fr 0fr;
+	grid-template-columns: 1fr 0fr;
 	text-align: left;
 	overflow: visible;
 }
@@ -50,13 +65,19 @@
 	border-radius: 5px;
 }
 
+.formError {
+	color: #c60000;
 
+}
 
 .lessonPlanTextBox .ql-editor {
 	font-family: "Spectral", serif;
 	font-size: 1.1rem;
 	line-height: 1.5;
 	color: #2d2d2d;
+	border: 2px solid #000000;
+	border-radius: 3px;
+	padding: 1rem;
 }
 
 .subject {
@@ -84,6 +105,7 @@
 }
 .textBoxLabel {
 	font-size: 1.25rem;
+	padding: 10px;
 	font-weight: 500;
 	margin: 0;
 }
@@ -94,13 +116,38 @@
 }
 
 .stepLabel {
-	font-size: 1.8rem;
+	font-size: 1.3rem;
 	font-weight: 500;
 }
 
 .pdfViewer {
 	margin: 10px auto;
-	width: 100%;
+	width: 80%;
 	min-height: 500px;
 	aspect-ratio: 8.5 / 11;
+}
+
+@media screen and (max-width: 800px) {
+.formError {
+	grid-column: 1;
+
+}
+	
+}
+
+@media screen and (max-width: 580px) {
+.MuiStepLabel-labelContainer {
+	display: none;
+}
+}
+
+@media screen and (max-width: 500px) {
+.stepOne {
+	width: 250px;
+	margin: 0 auto;
+	overflow: visible;
+}
+.lessonPlan {
+	width: 100%;
+}
 }

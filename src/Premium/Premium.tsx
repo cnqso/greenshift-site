@@ -73,9 +73,7 @@ export default function Premium({userPreferences, sendToCluod}: { userPreference
             </div>
             <br/><br/>
           </section>
-        <footer className="footer">
-          <p>© 2023 PiagetBot</p>
-        </footer>
+
       </div>
     )
 

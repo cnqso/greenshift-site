@@ -1,9 +1,10 @@
+/** @format */
+
 .worksheetGenList {
 	margin: 0 auto;
 }
 
 .worksheetGenList ul {
-	
 	display: flex;
 
 	margin: 0 auto;
@@ -11,17 +12,23 @@
 	flex-direction: column;
 	justify-content: space-between;
 	align-items: flex-end;
-	font-size: 1.4em;
-  }
+	font-size: 1.2em;
+}
 
 .worksheetGenList li {
 	display: block;
+	width: 100%;
 	margin: 0 auto;
 	padding-bottom: 20px;
-	flex: 1 1 auto;
-  }
 
-.worksheetInfoTextBox {
+}
+
+.worksheetGenListItem {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: space-between;
+	align-items: center;
 }
 
 .worksheetInfoTextBox .ql-editor {
@@ -31,7 +38,27 @@
 	font-size: 1.2rem;
 	line-height: 1.5;
 	color: #2d2d2d;
-	padding: 8.61px; /* Required to get the height to 48px */ 
-	border-radius: 3px; 
-	min-width: 250px;
+	padding: 8.61px; /* Required to get the height to 48px */
+	border-radius: 3px;
+	min-width: 200px;
+}
+
+.toTestFor {
+	display: flex;
+	height: 48px;
+	margin-left: 4px;
+	align-items: center;
+	font-size: 0.8em;
+	width: 194;
+	min-width: 194;
+}
+
+@media screen and (max-width: 630px) {
+.worksheetGenListItem {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+}
+
 }

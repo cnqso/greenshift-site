@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import RichText from "./Readability/Readability";
 import "./App.css";
 import type { UserPreferences, UserInfo } from "./@types/internal.types";
-import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Link, useLocation } from "react-router-dom";
 import { Auth } from "aws-amplify";
 import Readability from "./Readability/Readability";
 import Home from "./Home/Home";
@@ -19,22 +19,47 @@ import Contact from "./Contact/Contact";
 import Dashboard from "./Dashboard/Dashboard";
 import { Amplify } from "aws-amplify";
 import { QuestionIcon, WebsiteIcon, GithubIcon } from "./assets/icons";
-
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import "@aws-amplify/ui-react/styles.css";
 import { ErrorProvider, ErrorModal } from "./assets/errors";
-
 import awsExports from "./aws-exports";
-
 import { fetchUserData, fetchUserPreferences } from "./requests";
-import { Tooltip, Badge, SvgIcon } from "@mui/material";
+import { Tooltip } from "@mui/material";
 
 Amplify.configure(awsExports);
+
+const cre = createTheme;
+
+  const theme = createTheme({
+	palette: {
+	  primary: {
+		main: "#000",
+		
+	  },
+	  secondary: {
+		main: "#fff",
+	  },
+	},
+	typography: {
+		fontFamily: "Spectra",
+	},
+  });
+
+const useScrollToTop = () => {
+	const { pathname } = useLocation();
+  
+	useEffect(() => {
+	  window.scrollTo(0, 0);
+	}, [pathname]);
+	return null;
+  };
 
 function App() {
 	const [showAccountModal, setShowAccountModal] = useState(false);
 	const [userPreferences, setUserPreferences] = useState<UserPreferences | null>(null);
 	const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
 	const [premiumModel, setPremiumModel] = useState(false);
+	useScrollToTop();
 
 	function gatekeepPremiumModel() {
 		// if the user is not logged in, doesn't have premium, etc, throw a modal and do not change the state
@@ -149,7 +174,7 @@ function App() {
 	};
 
 	return (
-		<Router>
+		<ThemeProvider theme={theme}>
 			<div className='App'>
 				<header className='header'>
 					<div className='header-content'>
@@ -165,7 +190,7 @@ function App() {
 
 
 							{userInfo ? (
-								<button className='navbutton' onClick={toggleAccountModal}>
+								<button className='navbutton' onClick={toggleAccountModal} style={{boxShadow: "none"}}>
 									<Tooltip
 										PopperProps={{
 											modifiers: [{ name: "offset", options: { offset: [0, 10] } }],
@@ -254,7 +279,7 @@ function App() {
 							/>
 							<Route path='about' element={<About />} />
 							<Route path='contact'  element={<Contact />} />
-							<Route path='dashboard'  element={<Dashboard />} />
+							<Route path='dashboard'  element={<Dashboard userPreferences={userPreferences} />} />
 						</Routes>
 						<ErrorModal />
 					</ErrorProvider>
@@ -271,7 +296,7 @@ function App() {
 					<WebsiteIcon />
 				</div>
 			</footer>
-		</Router>
+			</ThemeProvider>
 	);
 }
 

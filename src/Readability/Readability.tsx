@@ -223,13 +223,13 @@ export default function Readability({sendToCluod, premiumModel, setPremiumModel}
 			)}
 
 			<Collapse isOpened={!generationVisible}>
-				<div
+				<button
 					className='collapseBar'
 					onClick={() => {
 						setGenerationVisible(!generationVisible);
 					}}>
 					Add reading questions
-				</div>
+				</button>
 			</Collapse>
 			<Collapse isOpened={generationVisible}>
 				<SelectOptions

@@ -44,14 +44,28 @@ button, .linkButton {
   text-decoration: none;
   color: #fff;
   transition: 0.3s;
+  box-shadow: 2px 2px 2px 1px rgba(0,0,0,0.2);
   
 }
 .linkButton {
   width: max-content;
   display: flex;
+  
 }
 button:hover, .linkButton:hover {
   background-color: #181818;
+  box-shadow: none;
+}
+
+.disabled {
+  background-color: #2e2e2e;
+  color: #b3b3b3;
+  box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.1);
+}
+
+.disabled:hover {
+  background-color: #2e2e2e;
+  box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.1);
 }
 
 /* {display: flex;

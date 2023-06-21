@@ -63,6 +63,7 @@ const StepOne = ({ handleNext, premiumModel, setPremiumModel }: { handleNext: an
 				<input
 					id='subject'
 					{...register("subject")}
+					placeholder="United States History"
 					className={`input ${errors.subject ? "error" : ""}`}
 				/>
 				<p className='formError'>{errors.subject?.message}</p>
@@ -70,7 +71,7 @@ const StepOne = ({ handleNext, premiumModel, setPremiumModel }: { handleNext: an
 				<label htmlFor='topic' className='label'>
 					Topic* :
 				</label>
-				<input id='topic' {...register("topic")} className={`input ${errors.topic ? "error" : ""}`} />
+				<input id='topic' {...register("topic")} placeholder="The Cuban Missile Crisis" className={`input ${errors.topic ? "error" : ""}`} />
 				<p className='formError'>{errors.topic?.message}</p>
 
 				<label htmlFor='grade' className='label'>
@@ -79,6 +80,7 @@ const StepOne = ({ handleNext, premiumModel, setPremiumModel }: { handleNext: an
 				<input
 					id='grade'
 					{...register("gradeLevel")}
+					placeholder="10"
 					className={`input ${errors.gradeLevel ? "error" : ""}`}
 				/>
 				<p className='formError'>{errors.gradeLevel?.message}</p>
@@ -89,6 +91,7 @@ const StepOne = ({ handleNext, premiumModel, setPremiumModel }: { handleNext: an
 				<input
 					id='focusPoints'
 					{...register("focusPoints")}
+					placeholder="JFK, M.A.D., Cuban Revolution"
 					className={`input ${errors.focusPoints ? "error" : ""}`}
 				/>
 				<p className='formError'>{errors.focusPoints?.message}</p>
@@ -99,12 +102,10 @@ const StepOne = ({ handleNext, premiumModel, setPremiumModel }: { handleNext: an
 			{/*This is hacky, but also I'm a genius */}
 				
 			<Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-				<Button color='inherit' disabled={true} sx={{ mr: 1 }}>
-					Back
-				</Button>
-				<Box sx={{ flex: "1 1 auto" }} />
+				
+				<div style={{ flex: "1 1 auto" }} />
 
-				<Button type='submit'>{"Next"}</Button>
+				<button type='submit'>{"Next"}</button>
 			</Box>
 		</form>
 	);
@@ -133,12 +134,10 @@ const StepTwo = ({
 				<TextBox outputText={outputText} setOutputText={setOutputText} step={2} />
 			</div>
 			<Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-				<Button color='inherit' onClick={handleBack} sx={{ mr: 1 }}>
-					Back
-				</Button>
-				<Box sx={{ flex: "1 1 auto" }} />
+				
+				<div style={{ flex: "1 1 auto" }} />
 
-				<Button onClick={onSubmit}>{"Next"}</Button>
+				<button onClick={onSubmit}>{"Next"}</button>
 			</Box>
 		</div>
 	);
@@ -166,12 +165,10 @@ const StepThree = ({
 				<TextBox outputText={outputText} setOutputText={setOutputText} step={3} />
 			</div>
 			<Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-				<Button color='inherit' onClick={handleBack} sx={{ mr: 1 }}>
-					Back
-				</Button>
+
 				<Box sx={{ flex: "1 1 auto" }} />
 
-				<Button onClick={onSubmit}>{"Next"}</Button>
+				<button onClick={onSubmit}>{"Next"}</button>
 			</Box>
 		</div>
 	);
@@ -204,11 +201,9 @@ const StepFour = ({
 				<TextBox outputText={outputText} setOutputText={setOutputText} step={4} />
 			</div>
 			<Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-				<Button color='inherit' onClick={handleBack} sx={{ mr: 1 }}>
-					Back
-				</Button>
+
 				<Box sx={{ flex: "1 1 auto" }} />
-				<Button onClick={onSubmit}>{"Next"}</Button>
+				<button onClick={onSubmit}>{"Next"}</button>
 			</Box>
 		</div>
 	);
@@ -235,12 +230,10 @@ const StepFive = ({
 				<TextBox outputText={outputText} setOutputText={setOutputText} step={5} />
 			</div>
 			<Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-				<Button color='inherit' onClick={handleBack} sx={{ mr: 1 }}>
-					Back
-				</Button>
+
 				<Box sx={{ flex: "1 1 auto" }} />
 
-				<Button onClick={onSubmit}>{"Finish"}</Button>
+				<button onClick={onSubmit}>{"Finish"}</button>
 			</Box>
 		</div>
 	);

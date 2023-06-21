@@ -10,16 +10,6 @@ section {
   margin-block: 60px;
 }
 
-/* If I decide to abandon the b&w scheme*/
-.hero {
-  background: linear-gradient(135deg, #6ee7b7 0%, #e370e5 100%);
-  color: #fff;
-  padding: 4rem;
-}
-.hero h2 {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-}
 
 
 
@@ -80,6 +70,8 @@ section {
 
 .textBox h2 {
   margin-top: 0px;
+  margin-bottom: 10px;
+  font-size: 1.9em;
 }
 
 

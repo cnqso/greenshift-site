@@ -29,7 +29,7 @@ function generateCSS(layers: number): string {
           opacity: 0;
         }
     }
-    circle {
+    .circleNode {
     animation: circleFade ${duration + delay}s ease-in-out;
     animation-fill-mode: both;
     }
@@ -78,7 +78,7 @@ function createNeuralNetwork(layers: LayerConfig): string {
 
     for (let j = 0; j < layer; j++) {
       const y = yStart + j * nodeSpace;
-      svg.push(`<circle cx="${x}" cy="${y}" r="${nodeRadius}" />`);
+      svg.push(`<circle class="circleNode" cx="${x}" cy="${y}" r="${nodeRadius}" />`);
     }
   });
 

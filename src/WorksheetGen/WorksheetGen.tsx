@@ -10,7 +10,7 @@ import "./WorksheetGen.css";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import WorksheetInfoBar from "./WorksheetInfoBar";
-import {ErrorContext} from "../assets/errors";
+import { ErrorContext } from "../assets/errors";
 
 const modules = {
 	toolbar: [],
@@ -97,7 +97,17 @@ function optionsToTextRequest(options: any) {
 	return textRequests;
 }
 
-const SelectOption = ({ id, items, setItems }: { id: number; items: any; setItems: any }) => {
+const SelectOption = ({
+	id,
+	items,
+	setItems,
+	removeGen,
+}: {
+	id: number;
+	items: any;
+	setItems: any;
+	removeGen: any;
+}) => {
 	const thisSelectOptionRef = useRef(null);
 	// const thisItem = items[id];
 	const [HTMLText, setHTMLText] = useState(items[id].text);
@@ -116,24 +126,15 @@ const SelectOption = ({ id, items, setItems }: { id: number; items: any; setItem
 	}
 
 	return (
-		<>
+		<span className='worksheetGenListItem'>
+			<span style={{display: "flex", alignItems: "center", justifyContent: "center"}}>
+			<UpDownSelector items={items} setItems={setItems} id={id} />
+			<span style={{padding: 5}}/>
 			<Select
 				key={id}
 				options={questionOptions}
 				defaultValue={items[id].selection}
 				onChange={handleChange}
-				styles={{
-					control: (baseStyles, state) => ({
-						...baseStyles,
-						width: "302px",
-						height: "48px",
-						marginLeft: "5px",
-					}),
-					input: (baseStyles) => ({
-						...baseStyles,
-						color: "transparent",
-					}),
-				}}
 				theme={(theme) => ({
 					...theme,
 					borderRadius: 0,
@@ -145,19 +146,9 @@ const SelectOption = ({ id, items, setItems }: { id: number; items: any; setItem
 						primary: "black",
 					},
 				})}
-			/>
-			<span
-				style={{
-					display: "flex",
-					height: "48px",
-					marginLeft: "4px",
-					alignItems: "center",
-					fontSize: "0.8em",
-					width: "194",
-					minWidth: "194",
-				}}>
-				to test for understanding of
-			</span>
+			/></span>
+
+			<span className='toTestFor'>to test for understanding of</span>
 			<span className='worksheetInfoTextBox'>
 				<ReactQuill
 					ref={thisSelectOptionRef}
@@ -168,7 +159,8 @@ const SelectOption = ({ id, items, setItems }: { id: number; items: any; setItem
 					formats={formats}
 				/>
 			</span>
-		</>
+			<RemoveGenerationButton onClick={removeGen} />
+		</span>
 	);
 };
 
@@ -203,20 +195,18 @@ function SelectOptions({
 							transition={{ type: "spring" }}
 							key={key}
 							style={{ marginBottom: "-15px" }}>
-							<span style={{ display: "flex", justifyContent: "space-around" }}>
-								<UpDownSelector items={items} setItems={setItems} id={parseInt(key, 10)} />
-								<SelectOption id={parseInt(key, 10)} items={items} setItems={setItems} />
-
-								<RemoveGenerationButton
-									onClick={() => {
-										if (Object.keys(items).length > 1) {
-											const newItems = { ...items };
-											delete newItems[parseInt(key, 10)];
-											setItems(newItems);
-										}
-									}}
-								/>
-							</span>
+							<SelectOption
+								id={parseInt(key, 10)}
+								items={items}
+								setItems={setItems}
+								removeGen={() => {
+									if (Object.keys(items).length > 1) {
+										const newItems = { ...items };
+										delete newItems[parseInt(key, 10)];
+										setItems(newItems);
+									}
+								}}
+							/>
 						</motion.li>
 					))}
 				</AnimatePresence>
@@ -258,7 +248,15 @@ function SelectOptions({
 	);
 }
 
-export default function WorksheetGen({sendToCluod, premiumModel, setPremiumModel}: {sendToCluod: Function, premiumModel: boolean, setPremiumModel: Function}) {
+export default function WorksheetGen({
+	sendToCluod,
+	premiumModel,
+	setPremiumModel,
+}: {
+	sendToCluod: Function;
+	premiumModel: boolean;
+	setPremiumModel: Function;
+}) {
 	const [generationItems, setGenerationItems] = useState({
 		0: {
 			selection: { value: "short answer questions", label: "Short Answer Questions" },
@@ -274,7 +272,7 @@ export default function WorksheetGen({sendToCluod, premiumModel, setPremiumModel
 		let output = input.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
 		return output;
 	}
-	const {setError} = useContext(ErrorContext);
+	const { setError } = useContext(ErrorContext);
 
 	async function submitGenerate(e: any) {
 		e.preventDefault();
@@ -308,7 +306,7 @@ export default function WorksheetGen({sendToCluod, premiumModel, setPremiumModel
 				premiumModel={premiumModel}
 				setPremiumModel={setPremiumModel}
 			/>
-			<br/>
+			<br />
 			<SelectOptions
 				submitGenerate={submitGenerate}
 				items={generationItems}

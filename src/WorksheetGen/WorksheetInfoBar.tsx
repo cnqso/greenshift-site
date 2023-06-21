@@ -30,17 +30,24 @@ function WorksheetInfoBar({
 	}
 
 	return (
-		<div className='infoBar'>
+
+
+		<div className='infoBar worksheetInfoBar' style={{alignItems: "center"}}>
+			<span className='infoBarText leftInfo'>
+			<span style={{maxWidth: "50px", maxHeight:"50px"}}>
+			<MaterialUISwitch checked={premiumModel} onChange={handleSwitch} sx={{ m: 1 }} />
+			</span>
+			</span>
 			<span className='infoBarText'>
-			<MaterialUISwitch checked={premiumModel} onChange={handleSwitch} sx={{ m: 1 }} /><span>{premiumModel ? "Premium Model" : "Basic Model"}</span>
-			
+				
+				<span style={{whiteSpace: "nowrap"}}>{"   "}</span>
 			</span>
 
-			<span className='infoBarText'>
+			<span className='infoBarText rightInfo'>
 				<span>Grade Level:{"  "}</span>
-				<span>{plainLangTargetString}</span>
+				<span style={{whiteSpace: "nowrap"}}>{plainLangTargetString}
 				<UpDownSelector value={gradeLevel} setValue={setGradeLevel} />
-			</span>
+			</span></span>
 		</div>
 	);
 }

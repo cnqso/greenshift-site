@@ -41,9 +41,9 @@
 /* Top bar */
 
 .infoBar {
-	width: 75%;
-	display: flex;
-	justify-content: space-between;
+	width: 80%;
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
 	align-items: center;
 	margin: 10px auto;
 	font-size: 1.2em;
@@ -54,14 +54,31 @@
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
+	display: flex;
+	flex-direction: column;
+	text-align: center;
+	justify-content: center;
+	
 }
+
+
+
+
 
 .up-down-selector {
 	display: inline-flex;
 	flex-direction: column;
 	align-items: center;
+	justify-content: center;
 	margin-left: 0.2em;
 	transform: translateY(-0.3em);
+	border-radius: 0px;
+
+}
+.triangle-button:hover {
+	background-color: transparent;
+	color: #222;
+	transform: scale(1.1);
 }
 
 .triangle-button {
@@ -74,14 +91,13 @@
 	color: #000000;
 	background-color: transparent;
 	cursor: pointer;
+	box-shadow: none;
+	border-radius: 0px;
 }
 
 .triangle-button:focus {
 	outline: none;
 }
-
-/* Selection and generation */
-
 
 .readabilityButtons {
 	height: 127px;
@@ -95,7 +111,6 @@
 	font-size: 1.35em;
 	padding-inline: 10px;
 	padding-block: 8px;
-	background-color: #1e1e1e;
 	border-radius: 5px;
 	border: none;
 }
@@ -119,7 +134,7 @@
 	flex-direction: column;
 	justify-content: space-between;
 
-	font-size: 1.4em;
+	font-size: 1.2em;
   }
 
 .SelectOptions li {
@@ -147,18 +162,36 @@
   }
 
   .collapseBar {
-	font-weight: 500;
-	background-color:  #2e2e2e;
-	color: #fff;
-	cursor: pointer;
-	width: fit-content;
-	margin: 0 auto;
+	
+	
 	padding: 0.15em 1.25em;
 	border-radius: 5px;
   }
-
-  .collapseBar:hover {
-	background-color: #1e1e1e;
-	color: #ddd;
+  .leftInfo {
+	text-align: left;
+  }
+  .rightInfo {
+	text-align: right;
   }
 
+
+  @media screen and (max-width: 630px) {
+	.infoBar {
+		font-size: 1em;
+		width: 98%;
+		grid-template-columns: 1fr;
+		grid-template-rows: 1fr 1fr 1fr;
+	}
+	.leftInfo {
+		text-align: center;
+		align-items: center;
+		justify-content: center;
+		margin-right: 20px;
+	}
+	.rightInfo {
+		text-align: center;
+	}
+	.worksheetInfoBar {
+		grid-template-rows: 1fr !important;
+	}
+  }

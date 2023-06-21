@@ -183,10 +183,11 @@ export default function LessonPlan({sendToCluod, premiumModel, setPremiumModel}:
 
 			{activeStep === 5 ? (
 				<div>
+					<h2 style={{marginBottom: 0, marginTop: 12}}>All Set!</h2>
 					<LessonPDF outputText={outputText}/>
-					<Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-						<Box sx={{ flex: "1 1 auto" }} />
-						<Button onClick={handleReset}>Reset</Button>
+					<Box sx={{ display: "flex", justifyContent: "center" }}>
+
+						<button onClick={handleReset}>Reset</button>
 					</Box>
 				</div>
 			) : loading ? (
