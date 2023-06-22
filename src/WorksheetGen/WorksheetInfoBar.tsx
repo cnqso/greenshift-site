@@ -11,22 +11,26 @@ function WorksheetInfoBar({
 	setPremiumModel,
 	gradeLevel,
 	setGradeLevel,
+	setError,
 }: {
 	premiumModel: boolean;
 	setPremiumModel: Function;
 	gradeLevel: number;
 	setGradeLevel: Function;
+	setError: any;
 }) {
 	const plainLangTarget = plainLanguageDifficulty(gradeLevel);
 	let plainLangTargetString = "";
-	if (gradeLevel < 17) {
-		plainLangTargetString = plainLangTarget[1] + ", " + plainLangTarget[0];
+	if (gradeLevel < 13) {
+		plainLangTargetString = plainLangTarget[0];
+	} else if (gradeLevel < 17) {
+		plainLangTargetString = "Undergraduate " + (gradeLevel-12).toString();
 	} else {
 		plainLangTargetString = plainLangTarget[1];
 	}
 
 	function handleSwitch(event: React.ChangeEvent<HTMLInputElement>) {
-		setPremiumModel(event.target.checked);
+		setPremiumModel(setError, event.target.checked);
 	}
 
 	return (
@@ -45,7 +49,7 @@ function WorksheetInfoBar({
 
 			<span className='infoBarText rightInfo'>
 				<span>Grade Level:{"  "}</span>
-				<span style={{whiteSpace: "nowrap"}}>{plainLangTargetString}
+				<span className="infoBarLevelAdjust">{plainLangTargetString}
 				<UpDownSelector value={gradeLevel} setValue={setGradeLevel} />
 			</span></span>
 		</div>

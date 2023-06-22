@@ -196,6 +196,7 @@ export default function Readability({sendToCluod, premiumModel, setPremiumModel}
 				setTargetReadability={setTargetReadability}
 				premiumModel={premiumModel}
 				setPremiumModel={setPremiumModel}
+				setError={setError}
 			/>
 			<div className='editorBox'>
 				{cleanText ? null : <ClearFormattingButton onClick={clearFormattingHandler} />}

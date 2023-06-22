@@ -61,29 +61,35 @@ function App() {
 	const [premiumModel, setPremiumModel] = useState(false);
 	useScrollToTop();
 
-	function gatekeepPremiumModel() {
-		// if the user is not logged in, doesn't have premium, etc, throw a modal and do not change the state
-		// otherwise, it's just a proxy for setPremiumModel
-		// replace all passed versions of setPremiumModel with this function
-		return true;
+	function gatekeepPremiumModel(onError: Function, trueFalse: boolean) {
+			// if the user is not logged in, doesn't have premium, etc, throw a modal and do not change the state
+			// otherwise, it's just a proxy for setPremiumModel
+			// replace all passed versions of setPremiumModel with this function
+			if (!trueFalse) {
+				setPremiumModel(false);
+				return
+			}
+			if (userPreferences?.subscription !== "premium") {
+				onError("Not premium");
+				return;
+			}
+			setPremiumModel(trueFalse);
+
 	}
 
 	// const url = "https://gcfz4xy1q7.execute-api.us-east-2.amazonaws.com/Prod/";
 	const url = "http://localhost:8000/";
 	async function sendToCluod(api: string, body: any, onError: Function) {
-		const currentSession = await Auth.currentSession();
-		const idToken = currentSession.getIdToken().getJwtToken();
-		body.premiumModel = premiumModel;
-		// onError("Not enough credits");
-		// return false;
-		// If the user is not logged in, don't send, show the auth modal
-		// If they have insufficient credits, show the same error message they would get from the server
-		// If they're trying to use a premium feature without a premium subscription show a unique modal
-		// Alternatively, if they are premium and trying to upgrade to premium, don't let them
-		if (!userInfo || !idToken || !userPreferences) {
-			onError("Not logged in");
+		if (!userInfo || !userPreferences) {
+			toggleAccountModal();
 			return false;
 		}
+		const currentSession = await Auth.currentSession();
+		const idToken = currentSession.getIdToken().getJwtToken();
+		
+		body.premiumModel = premiumModel;
+		console.log("sending request")
+		
 
 		if (userPreferences?.credits < 5) {
 			onError("Not enough credits");
@@ -231,7 +237,7 @@ function App() {
 									<Readability
 										sendToCluod={sendToCluod}
 										premiumModel={premiumModel}
-										setPremiumModel={setPremiumModel}
+										setPremiumModel={gatekeepPremiumModel}
 									/>
 								}
 							/>
@@ -250,7 +256,7 @@ function App() {
 									<LessonPlan
 										sendToCluod={sendToCluod}
 										premiumModel={premiumModel}
-										setPremiumModel={setPremiumModel}
+										setPremiumModel={gatekeepPremiumModel}
 									/>
 								}
 							/>
@@ -260,7 +266,7 @@ function App() {
 									<WorksheetGen
 										sendToCluod={sendToCluod}
 										premiumModel={premiumModel}
-										setPremiumModel={setPremiumModel}
+										setPremiumModel={gatekeepPremiumModel}
 									/>
 								}
 							/>

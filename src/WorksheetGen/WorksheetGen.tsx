@@ -12,6 +12,14 @@ import "react-quill/dist/quill.snow.css";
 import WorksheetInfoBar from "./WorksheetInfoBar";
 import { ErrorContext } from "../assets/errors";
 
+interface IGenerationItems {
+	[key: number]: {
+		selection: { value: string; label: string };
+		quant: number;
+		text: string;
+	};
+}
+
 const modules = {
 	toolbar: [],
 	clipboard: {
@@ -61,16 +69,16 @@ const UpDownSelector = ({ items, setItems, id }: { items: any; setItems: Functio
 	};
 
 	return (
-		<span style={{ fontSize: "1.3em", display: "flex" }}>
-			<div style={{ marginTop: "2px" }}>{thisItem.quant}</div>
-			<div className='up-down-selector' tabIndex={0}>
+		<span style={{ fontSize: "1.3em", display: "flex", alignItems: "center" }}>
+			<div>{thisItem.quant}</div>
+			<div className='up-down-selector' style={{ margin: 0 }} tabIndex={0}>
 				<button className='triangle-button' onClick={onUp}>
-					<svg width='20' height='25' viewBox='0 0 15 10'>
+					<svg width='20' height='13.333333' viewBox='0 0 15 10'>
 						<path d='M0,10 L7.5,0 L15,10 Z' fill='currentColor' />
 					</svg>
 				</button>
 				<button className='triangle-button' onClick={onDown}>
-					<svg width='20' height='25' viewBox='0 0 15 15'>
+					<svg width='20' height='13.333333' viewBox='0 0 15 10'>
 						<path d='M0,0 L7.5,10 L15,0 Z' fill='currentColor' />
 					</svg>
 				</button>
@@ -127,39 +135,43 @@ const SelectOption = ({
 
 	return (
 		<span className='worksheetGenListItem'>
-			<span style={{display: "flex", alignItems: "center", justifyContent: "center"}}>
-			<UpDownSelector items={items} setItems={setItems} id={id} />
-			<span style={{padding: 5}}/>
-			<Select
-				key={id}
-				options={questionOptions}
-				defaultValue={items[id].selection}
-				onChange={handleChange}
-				theme={(theme) => ({
-					...theme,
-					borderRadius: 0,
-					colors: {
-						...theme.colors,
-						primary50: "2e2e2e",
-						primary25: "#dddddd",
-						neutral10: "black",
-						primary: "black",
-					},
-				})}
-			/></span>
-
-			<span className='toTestFor'>to test for understanding of</span>
-			<span className='worksheetInfoTextBox'>
-				<ReactQuill
-					ref={thisSelectOptionRef}
-					theme='snow'
-					value={HTMLText}
-					onChange={handleTextChange}
-					modules={modules}
-					formats={formats}
+			<span style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+				<UpDownSelector items={items} setItems={setItems} id={id} />
+				<span style={{ padding: 5 }} />
+				<Select
+					key={id}
+					options={questionOptions}
+					defaultValue={items[id].selection}
+					onChange={handleChange}
+					theme={(theme) => ({
+						...theme,
+						borderRadius: 0,
+						colors: {
+							...theme.colors,
+							primary50: "2e2e2e",
+							primary25: "#dddddd",
+							neutral10: "black",
+							primary: "black",
+						},
+					})}
 				/>
 			</span>
-			<RemoveGenerationButton onClick={removeGen} />
+
+			<span className='toTestFor'>to test for understanding of</span>
+			<span style={{ display: "flex", alignItems: "center" }}>
+				<span className='worksheetInfoTextBox'>
+					<ReactQuill
+						ref={thisSelectOptionRef}
+						theme='snow'
+						value={HTMLText}
+						onChange={handleTextChange}
+						modules={modules}
+						formats={formats}
+					/>
+				</span>
+
+				<RemoveGenerationButton onClick={removeGen} />
+			</span>
 		</span>
 	);
 };
@@ -169,13 +181,13 @@ function SelectOptions({
 	items,
 	setItems,
 	loading,
-	setGenerationVisible,
+
 }: {
 	submitGenerate: React.MouseEventHandler<HTMLButtonElement>;
 	items: any;
 	setItems: Function;
 	loading: boolean;
-	setGenerationVisible: Function;
+
 }) {
 	const [count, setCount] = useState(0);
 
@@ -248,6 +260,8 @@ function SelectOptions({
 	);
 }
 
+
+
 export default function WorksheetGen({
 	sendToCluod,
 	premiumModel,
@@ -257,7 +271,7 @@ export default function WorksheetGen({
 	premiumModel: boolean;
 	setPremiumModel: Function;
 }) {
-	const [generationItems, setGenerationItems] = useState({
+	const [generationItems, setGenerationItems] = useState<IGenerationItems>({
 		0: {
 			selection: { value: "short answer questions", label: "Short Answer Questions" },
 			quant: 3,
@@ -265,13 +279,37 @@ export default function WorksheetGen({
 		},
 	});
 	const [loading, setLoading] = useState(false);
-	const [generationVisible, setGenerationVisible] = useState(true);
 	const [generationText, setGenerationText] = useState("");
 	const [gradeLevel, setGradeLevel] = useState(5);
+
 	function replaceMarkdownWithHTML(input: string): string {
-		let output = input.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+		//Check if it's a multiple-choice question, if not, just convert markdown bolding to HTML
+		if (!input.includes("1.") || !input.includes("A.")) {
+			return input.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+		}
+
+		// Split questions by their numbers
+		const questions = input.split(/<p>\d+\./).slice(1);
+		let output = "<ol>";
+		for (let q of questions) {
+			// Split answers by their letters
+			const parts = q.split(/<p>\**[A-Z]\./).slice(1);
+			let question = q.split("</p>")[0];
+			output += `<li>${question.trim()}<ol type="A">`;
+			for (let p of parts) {
+				if (p.endsWith("**</p>")) {
+					p = p.slice(0, -6);
+					output += `<li><strong>${p.trim()}</strong></li>`;
+					continue;
+				}
+				output += `<li>${p.replace("</p>", "").trim()}</li>`; // remove closing paragraph tags and add list item tags
+			}
+			output += "</ol></li>";
+		}
+		output += "</ol>";
 		return output;
 	}
+
 	const { setError } = useContext(ErrorContext);
 
 	async function submitGenerate(e: any) {
@@ -287,7 +325,7 @@ export default function WorksheetGen({
 			console.log(data.generation_data);
 			const genKeys = Object.keys(generationItems);
 			for (let i = 0; i < genKeys.length; i++) {
-				newHTMLText += `<div><h4>${"capitalizedType"}</h4>${replaceMarkdownWithHTML(
+				newHTMLText += `<div><h4 class="worksheetSubtitle">${generationItems[i].selection.label}</h4>${replaceMarkdownWithHTML(
 					data.generation_data[i]
 				)}</div>`;
 			}
@@ -299,12 +337,13 @@ export default function WorksheetGen({
 	}
 
 	return (
-		<div>
+		<div className='WorksheetGen'>
 			<WorksheetInfoBar
 				gradeLevel={gradeLevel}
 				setGradeLevel={setGradeLevel}
 				premiumModel={premiumModel}
 				setPremiumModel={setPremiumModel}
+				setError={setError}
 			/>
 			<br />
 			<SelectOptions
@@ -312,9 +351,8 @@ export default function WorksheetGen({
 				items={generationItems}
 				setItems={setGenerationItems}
 				loading={loading}
-				setGenerationVisible={setGenerationVisible}
 			/>
-			<div style={{ marginTop: "-15px" }} dangerouslySetInnerHTML={{ __html: generationText }} />
+			{generationText && <div className="OutputTextbox" dangerouslySetInnerHTML={{ __html: generationText }} />}
 		</div>
 	);
 }

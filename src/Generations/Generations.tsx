@@ -152,10 +152,36 @@ const TextItem = ({ type, item, uniqueID }: { type: any; item: any; uniqueID: an
 	};
 
 	const renderWorksheetGeneration = () => {
-		const replaceMarkdownWithHTML = (input: string) => {
-			let output = input.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+		function replaceMarkdownWithHTML(input: string): string {
+			
+			//Check if it's a multiple-choice question, if not, just convert markdown bolding to HTML
+			if (!input.includes("1.") || !input.includes("A.")) {
+				return input.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+			}
+
+			
+			// Split questions by their numbers
+			const questions = input.split(/\n\d+\./).slice();
+			console.log(questions);
+			let output = "<ol>";
+			for (let q of questions) {
+				// Split answers by their letters
+				const parts = q.split(/\n\**[A-Z]\./).slice(1);
+				let question = q.split("\n")[0].replace("1. ", "");
+				output += `<li>${question.trim()}<ol type="A">`;
+				for (let p of parts) {
+					if (p.endsWith("**")) {
+						p = p.slice(0, -2);
+						output += `<li><strong>${p.trim()}</strong></li>`;
+						continue;
+					}
+					output += `<li>${p.trim()}</li>`; // remove closing paragraph tags and add list item tags
+				}
+				output += "</ol></li>";
+			}
+			output += "</ol>";
 			return output;
-		};
+		}
 		let creditsUsed = 0;
 		for (let i = 0; i < item.completions.length; i++) {
 			creditsUsed += (item?.completions[i].usage?.completion_tokens ?? 0) + (item?.completions[i].usage?.prompt_tokens ?? 0)
@@ -185,36 +211,39 @@ const TextItem = ({ type, item, uniqueID }: { type: any; item: any; uniqueID: an
 		const lessonPlan = completion.lesson_plan;
 		const spec = lessonPlan.specification;
 		return (
-			<div>
+			<div >
+				<div className="lessonReviewStats">
 				<p>Subject: {spec.subject}</p>
 				<p>Grade: {spec.gradeLevel}</p>
 				<p>Focus points: {spec?.focusPoints ?? "None"}</p>
-				<p>{`${model}, ${
-					(completion?.usage?.completion_tokens ?? 0) + (completion?.usage?.prompt_tokens ?? 0)
-				} tokens`}</p>
+				
+				</div>
 				<div className='lessonPlanReviewer'>
 					<div className='subject'>{title}</div>
-					<div className='objectives lessonPlanTextBox'>
-						<h4 className='textBoxLabel'>Objectives</h4>
+					<div className='lessonPlanTextBox'>
+						<h4 className='reviewBoxLabel'>Objectives</h4>
 						{/* {cleanText ? null : <ClearFormattingButton onClick={clearFormattingHandler} />} */}
-						<div className='ql-editor'>{lessonPlan?.swbat}</div>
+						<div className='ql-editor-review'>{lessonPlan?.swbat}</div>
 					</div>
 
-					<div className='materials lessonPlanTextBox'>
-						<h4 className='textBoxLabel'>Materials</h4>
-						<div className='ql-editor'>{lessonPlan?.materials}</div>
+					<div className='lessonPlanTextBox'>
+						<h4 className='reviewBoxLabel'>Materials</h4>
+						<div className='ql-editor-review'>{lessonPlan?.materials}</div>
 					</div>
 
-					<div className='activities lessonPlanTextBox'>
-						<h4 className='textBoxLabel'>Procedure</h4>
-						<div className='ql-editor'>{lessonPlan?.activities}</div>
+					<div className='lessonPlanTextBox'>
+						<h4 className='reviewBoxLabel'>Procedure</h4>
+						<div className='ql-editor-review'>{lessonPlan?.activities}</div>
 					</div>
 
-					<div className='assessments lessonPlanTextBox'>
-						<h4 className='textBoxLabel'>Assessments</h4>
-						<div className='ql-editor'>{lessonPlan?.assessments}</div>
+					<div className='lessonPlanTextBox'>
+						<h4 className='reviewBoxLabel'>Assessments</h4>
+						<div className='ql-editor-review'>{lessonPlan?.assessments}</div>
 					</div>
 				</div>
+				<div className="lessonReviewStats" style={{justifyContent: "center"}}>{`${model}, ${
+					(completion?.usage?.completion_tokens ?? 0) + (completion?.usage?.prompt_tokens ?? 0)
+				} tokens`}</div>
 			</div>
 		);
 	};
@@ -298,7 +327,8 @@ const Generations = () => {
 			</div>
 			{loading && <div style={{ textAlign: "center" }}>Loading...</div>}
 			<div className='generationsReader'>
-				{Object.keys(userGenerations[activeTab]).map((item: any, index: any) => (
+				{/* people say that object order isn't reliable, and this may be true, but the stakes are low enough and the data consistent enough that this should do fine */}
+				{Object.keys(userGenerations[activeTab]).reverse().map((item: any, index: any) => (
 					<TextItem
 						key={index}
 						type={activeTab}

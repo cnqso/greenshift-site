@@ -11,12 +11,14 @@ function InfoBar({
 	setTargetReadability,
   premiumModel,
   setPremiumModel,
+  setError,
 }: {
 	currentReadability: string;
 	targetReadability: number;
 	setTargetReadability: Function;
   premiumModel: boolean;
   setPremiumModel: Function;
+  setError: any;
 }) {
 	const plainLangTarget = plainLanguageDifficulty(targetReadability);
 	let plainLangTargetString = "";
@@ -29,7 +31,7 @@ function InfoBar({
 	}
 
   function handleSwitch(event: React.ChangeEvent<HTMLInputElement>) {
-    setPremiumModel(event.target.checked);
+    setPremiumModel(setError, event.target.checked);
   }
   
 	return (
@@ -46,7 +48,7 @@ function InfoBar({
 
 			<span className='infoBarText rightInfo'>
 				<div >Target level:{"  "}</div>
-				<span style={{whiteSpace: "nowrap"}}>{plainLangTargetString}
+				<span className="infoBarLevelAdjust">{plainLangTargetString}
 				<UpDownSelector
 					value={targetReadability}
 					setValue={setTargetReadability}

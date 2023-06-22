@@ -23,6 +23,7 @@ function StepContent({
 	setOutputText,
 	premiumModel,
 	setPremiumModel,
+	setError,
 }: {
 	step: number;
 	handleNext: any;
@@ -31,10 +32,11 @@ function StepContent({
 	setOutputText: any;
 	premiumModel: boolean;
 	setPremiumModel: any;
+	setError: any;
 }) {
 	switch (step) {
 		case 0:
-			return <StepOne handleNext={handleNext} premiumModel={premiumModel} setPremiumModel={setPremiumModel} />;
+			return <StepOne handleNext={handleNext} premiumModel={premiumModel} setPremiumModel={setPremiumModel}  setError={setError}/>;
 		case 1:
 			return (
 				<StepTwo
@@ -202,6 +204,7 @@ export default function LessonPlan({sendToCluod, premiumModel, setPremiumModel}:
 						setOutputText={setOutputText}
 						premiumModel={premiumModel}
 						setPremiumModel={setPremiumModel}
+						setError={setError}
 					/>
 				</>
 			)}

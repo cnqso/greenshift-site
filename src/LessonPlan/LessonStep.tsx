@@ -31,7 +31,7 @@ type FormData = yup.InferType<typeof schema>;
 
 
 
-const StepOne = ({ handleNext, premiumModel, setPremiumModel }: { handleNext: any, premiumModel: boolean, setPremiumModel: any }) => {
+const StepOne = ({ handleNext, premiumModel, setPremiumModel, setError }: { handleNext: any, premiumModel: boolean, setPremiumModel: any; setError: any }) => {
 	const {
 		register,
 		handleSubmit,
@@ -47,7 +47,7 @@ const StepOne = ({ handleNext, premiumModel, setPremiumModel }: { handleNext: an
 	};
 
 	function handleSwitch(event: React.ChangeEvent<HTMLInputElement>) {
-		setPremiumModel(event.target.checked);
+		setPremiumModel(setError, event.target.checked);
 	}
 
 	return (

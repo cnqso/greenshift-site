@@ -29,12 +29,30 @@ function ErrorModal() {
 			if (error === "Not logged in") {
 				setErrorText(() => <p>You must be logged in to use this feature. </p>);
 			}
-			if (error === "Not enough credits") {
+			else if (error === "Not enough credits") {
 				setErrorText(() => (
 					<div>
 						<p>
 							You've run out of free credits for this month. Upgrade to premium for unlimited
 							access to all our features.
+						</p>
+						<p style={{ textAlign: "center" }}>
+							<Link
+								style={{ fontSize: "1.2em", padding: "5px", marginLeft: 0 }}
+								to='/premium'
+								onClick={() => exitError()}
+								className='premiumTag'>
+								Go premium!
+							</Link>
+						</p>
+					</div>
+				));
+			} else if (error === "Not premium") {
+				setErrorText(() => (
+					<div>
+						<p>
+							You must be a premium member to access this feature. Upgrade to premium for
+							unlimited access.
 						</p>
 						<p style={{ textAlign: "center" }}>
 							<Link
@@ -47,29 +65,15 @@ function ErrorModal() {
 						</p>
 					</div>
 				));
-			} else if (error === "Not premium") {
-				<div>
-					<p>
-						You must be a premium member to access this feature. Upgrade to premium for unlimited
-						access.
-					</p>
-					<p style={{ textAlign: "center" }}>
-						<Link
-							style={{ fontSize: "1.2em", padding: "5px" }}
-							to='/premium'
-							onClick={() => exitError()}
-							className='premiumTag'>
-							Go premium!
-						</Link>
-					</p>
-				</div>;
 			} else if (error === "Already premium") {
-				<div>
-					<p>
-						Our records show that you are already a premium member. If you believe this is an
-						error, please manage your subscription from the account screen or contact support.
-					</p>
-				</div>;
+				setErrorText(() => (
+					<div>
+						<p>
+							Our records show that you are already a premium member. If you believe this is an
+							error, please manage your subscription from the account screen or contact support.
+						</p>
+					</div>
+				));
 			} else if (error === "Invalid input") {
 				setErrorText(() => <p>Please enter a valid input.</p>);
 			} else if (error === "No user claims found") {
@@ -92,6 +96,7 @@ function ErrorModal() {
 					));
 				}
 			} else {
+				console.log(error)
 				setErrorText(() => (
 					<>
 						<p>A server error has occurred. Please try again or contact support.</p>
@@ -127,7 +132,7 @@ function ErrorModal() {
 					boxShadow: 24,
 					p: 4,
 				}}>
-				<div>
+				<div style={{fontSize: "1.15em"}}>
 					<div className='ClearFormattingButton' onClick={exitError}>
 						<XButton />
 					</div>

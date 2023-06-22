@@ -71,23 +71,26 @@
 	align-items: center;
 	justify-content: center;
 	margin-left: 0.2em;
-	transform: translateY(-0.3em);
 	border-radius: 0px;
 
 }
 .triangle-button:hover {
 	background-color: transparent;
 	color: #222;
-	transform: scale(1.1);
+	transform: scale(1.2);
+}
+
+.triangle-button:active {
+	transform: scale(1);
 }
 
 .triangle-button {
+	margin: 2px;
 	display: inline-flex;
 	justify-content: center;
 	align-items: center;
 	border: none;
 	padding: 0;
-	margin-top: 0.2em;
 	color: #000000;
 	background-color: transparent;
 	cursor: pointer;
@@ -106,6 +109,13 @@
 	justify-content: center;
 }
 
+.infoBarLevelAdjust {
+		white-space: nowrap;
+		display: flex;
+		align-items: center;
+		justify-content: right;
+}
+
 .readabilityButtons button {
 	margin-inline: 10px;
 	font-size: 1.35em;
@@ -122,6 +132,8 @@
 	cursor: pointer;
 	margin-top: auto;
 	margin-bottom: auto;
+	height: 24px;
+	width: 24px;
 
 }
 
@@ -194,4 +206,8 @@
 	.worksheetInfoBar {
 		grid-template-rows: 1fr !important;
 	}
+	.infoBarLevelAdjust {
+		justify-content: center;
+}
+
   }
