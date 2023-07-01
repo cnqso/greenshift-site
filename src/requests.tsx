@@ -2,8 +2,8 @@
 
 import { Auth } from "aws-amplify";
 
-// const url = "https://gcfz4xy1q7.execute-api.us-east-2.amazonaws.com/Prod/";
-const url = "http://localhost:8000/";
+const url = "https://gcfz4xy1q7.execute-api.us-east-2.amazonaws.com/Prod/";
+// const url = "http://localhost:8000/";
 
 
 async function fetchUserData(setUserClaims: Function, setUserPreferences: Function) {
@@ -58,7 +58,7 @@ async function fetchUserGenerations() {
 }
 
 async function fetchUserPreferences(setUserPreferences: Function,) {
-	console.log("Fetching user generations from server")
+	console.log("Fetching user preferences from server")
 	try {
 
 		const userInfo = await Auth.currentAuthenticatedUser();

@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from "react";
 import RichText from "./Readability/Readability";
+
 import "./App.css";
 import type { UserPreferences, UserInfo } from "./@types/internal.types";
 import { BrowserRouter as Router, Route, Routes, Link, useLocation } from "react-router-dom";
-import { Auth } from "aws-amplify";
+import { Auth, Hub } from "aws-amplify";
 import Readability from "./Readability/Readability";
 import Home from "./Home/Home";
 import About from "./About/About";
@@ -19,7 +20,7 @@ import Contact from "./Contact/Contact";
 import Dashboard from "./Dashboard/Dashboard";
 import { Amplify } from "aws-amplify";
 import { QuestionIcon, WebsiteIcon, GithubIcon } from "./assets/icons";
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 import "@aws-amplify/ui-react/styles.css";
 import { ErrorProvider, ErrorModal } from "./assets/errors";
 import awsExports from "./aws-exports";
@@ -28,57 +29,73 @@ import { Tooltip } from "@mui/material";
 
 Amplify.configure(awsExports);
 
-const cre = createTheme;
-
-  const theme = createTheme({
+const theme = createTheme({
 	palette: {
-	  primary: {
-		main: "#000",
-		
-	  },
-	  secondary: {
-		main: "#fff",
-	  },
+		primary: {
+			main: "#000",
+		},
+		secondary: {
+			main: "#fff",
+		},
 	},
 	typography: {
 		fontFamily: "Spectra",
 	},
-  });
+});
 
 const useScrollToTop = () => {
 	const { pathname } = useLocation();
-  
+
 	useEffect(() => {
-	  window.scrollTo(0, 0);
+		window.scrollTo(0, 0);
 	}, [pathname]);
 	return null;
-  };
-
+};
 function App() {
 	const [showAccountModal, setShowAccountModal] = useState(false);
 	const [userPreferences, setUserPreferences] = useState<UserPreferences | null>(null);
 	const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
 	const [premiumModel, setPremiumModel] = useState(false);
+	const [signInEventDiffers, setSignInEventDiffers] = useState(false);
 	useScrollToTop();
 
-	function gatekeepPremiumModel(onError: Function, trueFalse: boolean) {
-			// if the user is not logged in, doesn't have premium, etc, throw a modal and do not change the state
-			// otherwise, it's just a proxy for setPremiumModel
-			// replace all passed versions of setPremiumModel with this function
-			if (!trueFalse) {
+	Hub.listen("auth", (data) => {
+		switch (data.payload.event) {
+			case "signIn":
+				setSignInEventDiffers(!signInEventDiffers);
+				break;
+			case "signUp":
+				setSignInEventDiffers(!signInEventDiffers);
+				break;
+			case "signOut":
+				setUserInfo(null);
+				setUserPreferences(null);
 				setPremiumModel(false);
-				return
-			}
-			if (userPreferences?.subscription !== "premium") {
-				onError("Not premium");
-				return;
-			}
-			setPremiumModel(trueFalse);
+				setSignInEventDiffers(!signInEventDiffers);
+				break;
+			case "signIn_failure":
+				setSignInEventDiffers(!signInEventDiffers);
+				break;
+		}
+	});
 
+	function gatekeepPremiumModel(onError: Function, trueFalse: boolean) {
+		// if the user is not logged in, doesn't have premium, etc, throw a modal and do not change the state
+		// otherwise, it's just a proxy for setPremiumModel
+		// replace all passed versions of setPremiumModel with this function
+		if (!trueFalse) {
+			setPremiumModel(false);
+			return;
+		}
+		if (userPreferences?.subscription !== "premium") {
+			onError("Not premium");
+			return;
+		}
+		setPremiumModel(trueFalse);
 	}
 
-	// const url = "https://gcfz4xy1q7.execute-api.us-east-2.amazonaws.com/Prod/";
-	const url = "http://localhost:8000/";
+	const url = "https://gcfz4xy1q7.execute-api.us-east-2.amazonaws.com/Prod/";
+	// const url = "http://localhost:8000/";
 	async function sendToCluod(api: string, body: any, onError: Function) {
 		if (!userInfo || !userPreferences) {
 			toggleAccountModal();
@@ -86,10 +103,9 @@ function App() {
 		}
 		const currentSession = await Auth.currentSession();
 		const idToken = currentSession.getIdToken().getJwtToken();
-		
+
 		body.premiumModel = premiumModel;
-		console.log("sending request")
-		
+		console.log("sending request");
 
 		if (userPreferences?.credits < 5) {
 			onError("Not enough credits");
@@ -155,7 +171,7 @@ function App() {
 			return;
 		}
 		updateUserInfo();
-	}, []);
+	}, [signInEventDiffers]);
 
 	function toggleAccountModal() {
 		setShowAccountModal(!showAccountModal);
@@ -194,9 +210,11 @@ function App() {
 								Dashboard
 							</Link>
 
-
 							{userInfo ? (
-								<button className='navbutton' onClick={toggleAccountModal} style={{boxShadow: "none"}}>
+								<button
+									className='navbutton'
+									onClick={toggleAccountModal}
+									style={{ boxShadow: "none" }}>
 									<Tooltip
 										PopperProps={{
 											modifiers: [{ name: "offset", options: { offset: [0, 10] } }],
@@ -284,8 +302,11 @@ function App() {
 								}
 							/>
 							<Route path='about' element={<About />} />
-							<Route path='contact'  element={<Contact />} />
-							<Route path='dashboard'  element={<Dashboard userPreferences={userPreferences} />} />
+							<Route path='contact' element={<Contact />} />
+							<Route
+								path='dashboard'
+								element={<Dashboard userPreferences={userPreferences} />}
+							/>
 						</Routes>
 						<ErrorModal />
 					</ErrorProvider>
@@ -293,16 +314,16 @@ function App() {
 			</div>
 			<footer className='footer'>
 				<div className='footerContent'>
-				<span style={{paddingInline: 10}}>© 2023 PiagetBot</span>
+					<span style={{ paddingInline: 10 }}>© 2023 PiagetBot</span>
 					<Link to='about'>
 						<QuestionIcon />
-					</Link><span style={{paddingInline: 5}}/>
-					<GithubIcon /> <span style={{paddingInline: 3.5}}/>
-					
+					</Link>
+					<span style={{ paddingInline: 5 }} />
+					<GithubIcon /> <span style={{ paddingInline: 3.5 }} />
 					<WebsiteIcon />
 				</div>
 			</footer>
-			</ThemeProvider>
+		</ThemeProvider>
 	);
 }
 

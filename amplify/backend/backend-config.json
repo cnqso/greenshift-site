@@ -8,6 +8,13 @@
       "serviceType": "imported"
     }
   },
+  "hosting": {
+    "amplifyhosting": {
+      "providerPlugin": "awscloudformation",
+      "service": "amplifyhosting",
+      "type": "manual"
+    }
+  },
   "parameters": {
     "AMPLIFY_auth_greenshift2e9314b0_allowUnauthenticatedIdentities": {
       "usedBy": [
@@ -182,6 +189,22 @@
         {
           "category": "auth",
           "resourceName": "greenshift46fb5cb2"
+        }
+      ]
+    },
+    "AMPLIFY_hosting_amplifyhosting_appId": {
+      "usedBy": [
+        {
+          "category": "hosting",
+          "resourceName": "amplifyhosting"
+        }
+      ]
+    },
+    "AMPLIFY_hosting_amplifyhosting_type": {
+      "usedBy": [
+        {
+          "category": "hosting",
+          "resourceName": "amplifyhosting"
         }
       ]
     }

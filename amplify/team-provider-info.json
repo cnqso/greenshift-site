@@ -39,6 +39,12 @@
           "unauthRoleArn": "arn:aws:iam::652628641462:role/Cognito_greenshiftUnauth_Role",
           "unauthRoleName": "Cognito_greenshiftUnauth_Role"
         }
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "dsu6louyw67f5",
+          "type": "manual"
+        }
       }
     }
   }
