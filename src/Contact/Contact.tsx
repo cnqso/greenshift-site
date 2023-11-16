@@ -42,7 +42,8 @@ function Contact() {
 		setSubmissionSuccess(false);
 		setSubmissionError(false);
 		try {
-			const response = await fetch("https://formsubmit.co/d166b1a93693ca8e0027e61a19444137", {
+			console.log(formInput);
+			const response = await fetch("https://formsubmit.co/support@piagetbot.com", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -53,6 +54,7 @@ function Contact() {
 			setIsSubmitting(false);
 
 			if (response.ok) {
+				console.log(response);
 				setSubmissionSuccess(true);
 				setFormInput({
 					name: "",
@@ -73,7 +75,7 @@ function Contact() {
 			<h1>Contact</h1>
 			<div className='blurb'>
 				If you have any questions, issues, or requests, contact us at the form below or email us at
-				<a href="mailto:support@piagetbot.com">support@piagetbot.com</a>
+				{"  "}<a href="mailto:support@piagetbot.com">support@piagetbot.com</a>
 				<br />
 			</div>
 			{!submissionSuccess ? (

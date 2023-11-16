@@ -10,7 +10,14 @@ section {
   margin-block: 60px;
 }
 
+.scrollbarless {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
 
+.scrollbarless::-webkit-scrollbar {
+  display: none;
+}
 
 
 .features {

@@ -126,7 +126,8 @@ export default function Readability({sendToCluod, premiumModel, setPremiumModel}
 		const data = await sendToCluod("analyze", body, setError);
 		if (data) {
 			setHTMLText(data.analyzed_text);
-			setCurrentReadability(data.readability.text_ari[1] + ", " + data.readability.text_ari[0]);
+			setCurrentReadability(data.readability.text_ari[0]);
+			console.log(data.readability);
 		} else {
 			// Error handling
 

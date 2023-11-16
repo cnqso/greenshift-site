@@ -3,14 +3,12 @@
 import React, { useState, useEffect } from "react";
 import "./Home.css";
 import { Link } from "react-router-dom";
-import type { UserPreferences } from "../@types/internal.types";
+import type { UserPreferences, UserInfo } from "../@types/internal.types";
 import lessonplansvg from "../assets/svgs/lessonplan.svg";
 import readabilitysvg from "../assets/svgs/readability.svg";
 import listsvg from "../assets/svgs/list.svg";
 import pathingsvg from "../assets/svgs/pathing.svg";
 import { QuestionIcon, WebsiteIcon, GithubIcon } from "../assets/icons";
-
-const AnimatedComponent = () => {
 	const strings = [
 `>4 essay question prompts on the themes in "Breakfast of Champions" by Kurt Vonnegut<
 
@@ -67,6 +65,8 @@ Sample answer: The Lewis and Clark Expedition was sponsored by the United States
 2. What was the purpose of the Lewis and Clark Expedition?
 Sample answer: The purpose of the Lewis and Clark Expedition was to explore the newly acquired territory of Louisiana and to find a practical route across the western region of North America. Additionally, President Thomas Jefferson wanted the expedition to establish trade with Native American tribes and to discover new plant and animal species. The expedition was also tasked with collecting geographical and scientific data along the way.`,
 	];
+const AnimatedComponent = () => {
+
 	const [index, setIndex] = useState(0);
 	const [typedString, setTypedString] = useState("");
 	const [clear, setClear] = useState(false);
@@ -86,7 +86,7 @@ Sample answer: The purpose of the Lewis and Clark Expedition was to explore the 
 			if (typedString.length < strings[index].length) {
 				timeout = setTimeout(() => {
 					setTypedString(strings[index].slice(0, typedString.length + 1));
-				}, 8);
+				}, 6);
 			}
 		}
 		return () => clearTimeout(timeout);
@@ -98,7 +98,7 @@ Sample answer: The purpose of the Lewis and Clark Expedition was to explore the 
 
 	return (
 		<div className='editorBox' onClick={handleClick} >
-			<div className='ql-editor' style={{height: "500px", cursor: "pointer"}}>
+			<div className='ql-editor scrollbarless' style={{height: "385px", cursor: "pointer", fontSize: "0.83em"}}>
 				<div style={{cursor: "pointer"}}>
 					{typedString}
 					<span className='blinking-cursor'>|</span>
@@ -120,12 +120,23 @@ const FeatureCard = ({ title, description, img }: { title: string; description: 
 };
 
 const HomePage = ({
+	userInfo,
 	userPreferences,
 	toggleAccountModal,
 }: {
+	userInfo: UserInfo | null;
 	userPreferences: UserPreferences | null;
 	toggleAccountModal: () => void;
 }) => {
+
+
+	let contactLink = "https://formsubmit.co/el/rurudu"
+	if (userInfo?.email) {
+		contactLink += `?email=${userInfo.email}`
+	}
+
+
+
 	return (
 		<div className='Home'>
 			{/* Top Section */}
@@ -136,7 +147,7 @@ const HomePage = ({
 			</section>
 
 			<section className='mission textBox'>
-				Piaget Bot is a suite of by-teachers for-teachers tools for planning lessons more efficiently.
+				Piaget Bot is a suite of tools for planning lessons more efficiently and effectively.
 				Our goal is to free up teachers' time and energy for the most important part of the job:
 				teaching.
 				<br />
@@ -198,13 +209,14 @@ const HomePage = ({
 			{/* Contact Section */}
 			<section className='textBox'>
 				<h2>Contact</h2>
-				<p>Have any questions? We would love to hear from you.</p>
-				<Link
+				<p>Have any questions? Contact us using <a href={contactLink} target="_blank">this form</a>, or email us at {"  "}<a href='mailto:support@piagetbot.com'>support@piagetbot.com</a></p>
+				
+				{/* <Link
 					to='/contact'
 					className='linkButton'
 					style={{ margin: "0 auto", fontSize: "1.2em", padding: "10px", marginTop: "15px" }}>
 					Message Us
-				</Link>
+				</Link> */}
 			</section>
 
 		</div>

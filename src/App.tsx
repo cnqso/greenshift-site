@@ -180,7 +180,7 @@ function App() {
 	const getStartedOrPremium = () => {
 		if (!userPreferences) {
 			return (
-				<button className='navbutton specialnavbutton' onClick={toggleAccountModal}>
+				<button className='navbutton specialnavbutton' style={{ boxShadow: "none" }} onClick={toggleAccountModal}>
 					Get Started
 				</button>
 			);
@@ -189,7 +189,7 @@ function App() {
 			return null;
 		}
 		return (
-			<Link className='navlink specialnavbutton' to='/premium'>
+			<Link className='navlink specialnavbutton' style={{ boxShadow: "none" }} to='/premium'>
 				Premium
 			</Link>
 		);
@@ -227,7 +227,7 @@ function App() {
 									</Tooltip>
 								</button>
 							) : (
-								<button className='navbutton' onClick={toggleAccountModal}>
+								<button className='navbutton' style={{ boxShadow: "none" }} onClick={toggleAccountModal}>
 									Sign In
 								</button>
 							)}
@@ -263,6 +263,7 @@ function App() {
 								path='/'
 								element={
 									<Home
+										userInfo={userInfo}
 										userPreferences={userPreferences}
 										toggleAccountModal={toggleAccountModal}
 									/>
@@ -307,6 +308,7 @@ function App() {
 								path='dashboard'
 								element={<Dashboard userPreferences={userPreferences} />}
 							/>
+							<Route path='*' element={<div><h1>404</h1><div>No page with this URL was found.</div></div>} />
 						</Routes>
 						<ErrorModal />
 					</ErrorProvider>

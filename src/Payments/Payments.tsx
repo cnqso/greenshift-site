@@ -18,6 +18,7 @@ export default function Payments({ sendToCluod, userPreferences }: any) {
 
 	const createCheckoutSession = async () => {
 		const checkoutSession = await sendToCluod("create-checkout-session", { nothin: "nothing" }, setError);
+		if (checkoutSession === false) return;
 		console.log(checkoutSession);
 		window.location.href = checkoutSession.sessionURL;
 	};
@@ -64,7 +65,7 @@ export default function Payments({ sendToCluod, userPreferences }: any) {
 					<button onClick={createCheckoutSession}>Checkout with Stripe</button>
 				</section>
 			)}
-			{stripeId && (
+			{stripeId && premium && (
 				<section>
 					<div className='product Box-root'>
 						<Logo />

@@ -7,12 +7,18 @@ import { fetchUserGenerations } from "../requests";
 
 import "./Generations.css";
 
+// const generators: any = [
+// 	["text simplification", "textSimplification"],
+// 	["reading question generation", "readingQuestionGeneration"],
+// 	["lesson plan", "lessonPlan"],
+// 	["worksheet generation", "worksheetGeneration"],
+// 	["misformatted", "misformatted"],
+// ];
 const generators: any = [
 	["text simplification", "textSimplification"],
 	["reading question generation", "readingQuestionGeneration"],
 	["lesson plan", "lessonPlan"],
 	["worksheet generation", "worksheetGeneration"],
-	["misformatted", "misformatted"],
 ];
 const Tab = ({
 	title,

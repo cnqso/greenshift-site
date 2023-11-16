@@ -109,12 +109,12 @@ function AccountModal({
 														Subscription renewal: {subscriptionExpiration}
 													</span>
 												</div>
-												<div>
-													{/* Must remove */}
+												{/* <div>
+												
 													<span>
 														Stripe ID: {userPreferences?.stripeId ?? "..."}
 													</span>
-												</div>
+												</div> */}
 											</>
 										) : (
 											<>
@@ -133,12 +133,11 @@ function AccountModal({
 													</Link>
 												</div>
 												<div></div>
-												<div>
-													{/* Must remove */}
+												{/* <div>
 													<span>
 														Stripe ID: {userPreferences?.stripeId ?? "..."}
 													</span>
-												</div>
+												</div> */}
 											</>
 										)}
 										<Link
